@@ -284,14 +284,6 @@
   .toast.error { border-left: 3px solid var(--error); }
   @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-  /* ─── SETUP BANNER ─── */
-  .setup-banner { background: rgba(240,165,0,0.1); border: 1px solid rgba(240,165,0,0.3); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
-  .setup-banner .icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
-  .setup-banner h3 { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 4px; }
-  .setup-banner p { font-size: 12px; color: rgba(245,247,250,0.7); line-height: 1.6; }
-  .setup-banner code { font-family: 'IBM Plex Mono', monospace; background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; color: var(--gold-light); font-size: 11px; }
-  .setup-banner a { color: var(--gold); font-weight: 600; }
-
   @media (max-width: 640px) {
     .auth-card { padding: 28px 20px; }
     .form-row, .form-grid-3, .form-grid-4 { grid-template-columns: 1fr; }
@@ -391,15 +383,6 @@
   </div>
 
   <div class="main-content">
-    <!-- SETUP BANNER -->
-    <div class="setup-banner" id="setup-banner">
-      <div class="icon">⚙️</div>
-      <div>
-        <h3>SETUP REQUIRED — Connect Your Google Sheet Backend</h3>
-        <p>This app needs a Google Apps Script Web App URL to save data. Follow the <a href="#" onclick="showSetupGuide()">Setup Guide</a> to create your free backend in 5 minutes, then paste the URL in <strong>Settings → API URL</strong>. Until then, data is stored locally in your browser only.</p>
-      </div>
-    </div>
-
     <!-- DASHBOARD TAB -->
     <div id="tab-dashboard">
       <div class="stats-grid">
@@ -468,14 +451,6 @@
           <div class="profile-field"><label>Province / Region</label><p id="pf-province"></p></div>
           <div class="profile-field"><label>Station</label><p id="pf-station"></p></div>
           <div class="profile-field"><label>Account Created</label><p id="pf-created"></p></div>
-        </div>
-        <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--border);">
-          <div class="form-section-title">Google Sheet API URL</div>
-          <div style="display:flex;gap:8px;margin-top:8px;">
-            <input type="url" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec" style="flex:1;padding:10px 12px;background:var(--input-bg);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--white);font-size:12px;font-family:'Sora',sans-serif;outline:none;">
-            <button class="btn-action btn-new" onclick="saveApiUrl()">Save</button>
-          </div>
-          <p style="font-size:11px;color:var(--gray);margin-top:8px;">Paste your Google Apps Script Web App URL here to enable cloud sync.</p>
         </div>
       </div>
     </div>
@@ -575,38 +550,11 @@
 <!-- ─── TOAST CONTAINER ─── -->
 <div class="toast-wrap" id="toast-wrap"></div>
 
-<!-- ═══ SETUP GUIDE MODAL ═══ -->
-<div class="modal-overlay" id="setup-modal">
-  <div class="modal" style="max-width:680px;">
-    <div class="modal-header">
-      <div class="modal-title">⚙️ Setup <span>Google Sheet Backend</span></div>
-      <button class="btn-close" onclick="document.getElementById('setup-modal').classList.remove('open')">✕</button>
-    </div>
-    <div style="font-size:13px;line-height:1.8;color:rgba(245,247,250,0.85);">
-      <p style="margin-bottom:16px;">Follow these steps to create your <strong style="color:var(--gold)">free Google Sheets backend</strong> in about 5 minutes:</p>
-      <ol style="padding-left:20px;display:flex;flex-direction:column;gap:10px;">
-        <li>Go to <a href="https://sheets.google.com" target="_blank" style="color:var(--gold)">sheets.google.com</a> and create a new spreadsheet named <strong>BFP_Inspections</strong>.</li>
-        <li>Create two sheets (tabs) named exactly: <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace;color:var(--gold-light)">Users</code> and <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace;color:var(--gold-light)">Inspections</code>.</li>
-        <li>In the spreadsheet, click <strong>Extensions → Apps Script</strong>.</li>
-        <li>Delete existing code and paste the contents of <strong>apps-script.gs</strong> (included in the download package).</li>
-        <li>Click <strong>Deploy → New deployment → Web App</strong>.</li>
-        <li>Set <em>Execute as</em>: <strong>Me</strong>, and <em>Who has access</em>: <strong>Anyone</strong>.</li>
-        <li>Click <strong>Deploy</strong>, authorize the app, and copy the <strong>Web App URL</strong>.</li>
-        <li>Come back here, go to <strong>My Profile</strong>, and paste the URL in the <em>Google Sheet API URL</em> field.</li>
-      </ol>
-      <p style="margin-top:16px;padding:12px;background:rgba(240,165,0,0.1);border-radius:8px;border-left:3px solid var(--gold);font-size:12px;">💡 <strong>Tip:</strong> Until you set up the backend, all data is saved in your browser's localStorage. Your records won't be lost — they'll sync to the Sheet once you configure the URL.</p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-submit" onclick="document.getElementById('setup-modal').classList.remove('open')">Got It</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ═══════════════════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════════════════
-let API_URL = localStorage.getItem('bfp_api_url') || '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzf2T5DjedkF1Tv__x3G5EQXJQs-MRpK4XeEDnxgJlzwpp5hrgaoVmgt1rfnMMh3zIy/exec';
 let currentUser = null;
 
 const SUBCLASS_MAP = {
@@ -775,9 +723,6 @@ function initApp() {
   document.getElementById('pf-province').textContent = currentUser.province || '—';
   document.getElementById('pf-station').textContent = currentUser.station;
   document.getElementById('pf-created').textContent = new Date(currentUser.created).toLocaleDateString('en-PH', {year:'numeric',month:'long',day:'numeric'});
-
-  if (API_URL) document.getElementById('api-url-input').value = API_URL;
-  if (API_URL) document.getElementById('setup-banner').style.display = 'none';
 
   loadRecords();
 }
@@ -993,23 +938,6 @@ function exportCSV() {
   a.download = `BFP_BWC_Inspections_${new Date().toISOString().slice(0,10)}.csv`;
   a.click(); URL.revokeObjectURL(url);
   showToast('CSV exported successfully','success');
-}
-
-// ═══════════════════════════════════════════════════════
-//  SETTINGS
-// ═══════════════════════════════════════════════════════
-function saveApiUrl() {
-  const url = document.getElementById('api-url-input').value.trim();
-  API_URL = url;
-  localStorage.setItem('bfp_api_url', url);
-  document.getElementById('setup-banner').style.display = url ? 'none' : 'flex';
-  showToast(url ? 'API URL saved. Syncing data…' : 'API URL cleared','success');
-  if (url) loadRecords();
-}
-
-function showSetupGuide() {
-  document.getElementById('setup-modal').classList.add('open');
-  return false;
 }
 
 // ═══════════════════════════════════════════════════════
