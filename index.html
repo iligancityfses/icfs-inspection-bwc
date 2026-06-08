@@ -554,7 +554,7 @@
 // ═══════════════════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbzf2T5DjedkF1Tv__x3G5EQXJQs-MRpK4XeEDnxgJlzwpp5hrgaoVmgt1rfnMMh3zIy/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxsetlR2xATxrfNKB2u36GLQfbkzXLbeLUL5RNN6paJ4LU-UHgRk_Tj-bTRAZmoYx1w/exec';
 let currentUser = null;
 
 const SUBCLASS_MAP = {
@@ -580,14 +580,15 @@ function saveUsers(u) { localStorage.setItem('bfp_users', JSON.stringify(u)); }
 function getRecords() { return JSON.parse(localStorage.getItem('bfp_records') || '[]'); }
 function saveRecords(r) { localStorage.setItem('bfp_records', JSON.stringify(r)); }
 
+// All API calls use GET with a JSON-encoded "payload" parameter.
+// This is required because Google Apps Script does not support CORS
+// preflight (OPTIONS) requests, which are triggered by POST with
+// Content-Type: application/json. GET requests bypass this limitation.
 async function apiPost(action, data) {
   if (!API_URL) return null;
   try {
-    const resp = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action, ...data })
-    });
+    const payload = encodeURIComponent(JSON.stringify(data));
+    const resp = await fetch(`${API_URL}?action=${action}&payload=${payload}`);
     return await resp.json();
   } catch(e) { return null; }
 }
