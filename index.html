@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFP BWC Inspection System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628;
+    --navy-mid: #112240;
+    --navy-light: #1d3461;
+    --red: #c0392b;
+    --red-bright: #e74c3c;
+    --gold: #f0a500;
+    --gold-light: #f7c948;
+    --white: #f5f7fa;
+    --gray: #8892a4;
+    --border: rgba(255,255,255,0.08);
+    --card-bg: rgba(17,34,64,0.95);
+    --input-bg: rgba(10,22,40,0.8);
+    --success: #27ae60;
+    --error: #e74c3c;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(192,57,43,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 90%, rgba(240,165,0,0.06) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* ─── AUTH SCREENS ─── */
+  #auth-screen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 20px;
+  }
+
+  .auth-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--red);
+    border-radius: 12px;
+    padding: 48px 40px;
+    width: 100%; max-width: 460px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+    animation: slideUp 0.5s ease;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .auth-logo {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 32px;
+  }
+
+  .auth-logo-icon {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, var(--red), var(--red-bright));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(192,57,43,0.4);
+  }
+
+  .auth-logo-text h1 { font-size: 15px; font-weight: 700; color: var(--white); letter-spacing: 0.5px; }
+  .auth-logo-text p { font-size: 11px; color: var(--gray); font-weight: 400; margin-top: 2px; letter-spacing: 0.3px; }
+
+  .auth-title { font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .auth-subtitle { font-size: 13px; color: var(--gray); margin-bottom: 28px; line-height: 1.5; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row.single { grid-template-columns: 1fr; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 11px; font-weight: 600; color: var(--gold); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 6px; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 11px 14px;
+    background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 7px; color: var(--white); font-family: 'Sora', sans-serif; font-size: 13px;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--gold); box-shadow: 0 0 0 3px rgba(240,165,0,0.1);
+  }
+  .form-group select option { background: var(--navy-mid); color: var(--white); }
+  .form-group input::placeholder { color: rgba(136,146,164,0.6); }
+
+  .btn-primary {
+    width: 100%; padding: 13px;
+    background: linear-gradient(135deg, var(--red), #a93226);
+    border: none; border-radius: 8px;
+    color: #fff; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px;
+    box-shadow: 0 4px 15px rgba(192,57,43,0.35);
+    margin-top: 4px;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(192,57,43,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .auth-switch { text-align: center; margin-top: 20px; font-size: 13px; color: var(--gray); }
+  .auth-switch a { color: var(--gold); text-decoration: none; font-weight: 600; cursor: pointer; }
+  .auth-switch a:hover { color: var(--gold-light); }
+
+  .msg { font-size: 12.5px; padding: 10px 14px; border-radius: 6px; margin-bottom: 14px; display: none; }
+  .msg.error { background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3); color: #e74c3c; display: block; }
+  .msg.success { background: rgba(39,174,96,0.15); border: 1px solid rgba(39,174,96,0.3); color: #27ae60; display: block; }
+
+  /* ─── APP SHELL ─── */
+  #app-screen { display: none; min-height: 100vh; flex-direction: column; }
+
+  .topbar {
+    background: var(--card-bg); border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 100;
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 12px; }
+  .topbar-logo { width: 32px; height: 32px; background: linear-gradient(135deg, var(--red), var(--red-bright)); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .topbar-title { font-size: 14px; font-weight: 700; color: var(--white); }
+  .topbar-sub { font-size: 11px; color: var(--gray); margin-top: 1px; }
+
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .user-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 20px; padding: 5px 14px 5px 8px; font-size: 12px;
+  }
+  .user-avatar { width: 24px; height: 24px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--navy); }
+  .btn-logout { background: none; border: 1px solid rgba(192,57,43,0.4); color: var(--red-bright); padding: 6px 14px; border-radius: 6px; font-size: 12px; font-family: 'Sora', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .btn-logout:hover { background: rgba(192,57,43,0.1); }
+
+  .nav-tabs {
+    background: var(--navy-mid); border-bottom: 1px solid var(--border);
+    display: flex; padding: 0 24px; gap: 4px;
+  }
+  .nav-tab {
+    padding: 12px 18px; font-size: 13px; font-weight: 500; color: var(--gray);
+    cursor: pointer; border-bottom: 2px solid transparent;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-tab:hover { color: var(--white); }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .main-content { flex: 1; padding: 28px 24px; max-width: 1280px; width: 100%; margin: 0 auto; }
+
+  /* ─── DASHBOARD ─── */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 20px 22px; transition: transform 0.2s;
+  }
+  .stat-card:hover { transform: translateY(-2px); }
+  .stat-label { font-size: 11px; font-weight: 600; color: var(--gray); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
+  .stat-value { font-size: 32px; font-weight: 700; font-family: 'IBM Plex Mono', monospace; color: var(--white); }
+  .stat-sub { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  .stat-card.red .stat-value { color: var(--red-bright); }
+  .stat-card.gold .stat-value { color: var(--gold); }
+  .stat-card.green .stat-value { color: #2ecc71; }
+
+  /* ─── TABLE ─── */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  .section-title { font-size: 16px; font-weight: 700; color: var(--white); }
+  .section-title span { color: var(--gold); }
+
+  .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .filter-bar input, .filter-bar select {
+    padding: 8px 12px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; color: var(--white); font-family: 'Sora', sans-serif; font-size: 12px; outline: none;
+  }
+  .filter-bar input:focus, .filter-bar select:focus { border-color: var(--gold); }
+  .filter-bar select option { background: var(--navy-mid); }
+
+  .btn-action {
+    padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: 'Sora', sans-serif; transition: all 0.2s; border: none;
+  }
+  .btn-new { background: var(--red); color: #fff; }
+  .btn-new:hover { background: var(--red-bright); }
+  .btn-export { background: rgba(240,165,0,0.15); border: 1px solid rgba(240,165,0,0.3) !important; color: var(--gold); }
+  .btn-export:hover { background: rgba(240,165,0,0.25); }
+  .btn-action.outline { background: transparent; border: 1px solid var(--border); color: var(--gray); }
+  .btn-action.outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead { background: var(--navy-mid); }
+  thead th { padding: 11px 14px; text-align: left; font-size: 10px; font-weight: 600; color: var(--gold); letter-spacing: 0.8px; text-transform: uppercase; white-space: nowrap; border-bottom: 1px solid var(--border); }
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody td { padding: 11px 14px; color: rgba(245,247,250,0.85); vertical-align: middle; }
+  .td-name { font-weight: 600; color: var(--white); max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .td-mono { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; }
+
+  .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; letter-spacing: 0.3px; }
+  .badge-low { background: rgba(39,174,96,0.15); color: #2ecc71; border: 1px solid rgba(39,174,96,0.25); }
+  .badge-moderate { background: rgba(240,165,0,0.15); color: var(--gold); border: 1px solid rgba(240,165,0,0.25); }
+  .badge-high { background: rgba(231,76,60,0.15); color: var(--red-bright); border: 1px solid rgba(231,76,60,0.25); }
+  .badge-occ { background: rgba(52,152,219,0.15); color: #5dade2; border: 1px solid rgba(52,152,219,0.25); }
+  .badge-reinspect { background: rgba(155,89,182,0.15); color: #bb8fce; border: 1px solid rgba(155,89,182,0.25); }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--gray); }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-state p { font-size: 14px; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    z-index: 200; align-items: flex-start; justify-content: center;
+    padding: 20px; overflow-y: auto; backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--navy-mid); border: 1px solid var(--border);
+    border-top: 3px solid var(--red); border-radius: 12px;
+    width: 100%; max-width: 780px; padding: 32px;
+    margin: auto; animation: slideUp 0.3s ease;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+  }
+
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+  .modal-title { font-size: 18px; font-weight: 700; }
+  .modal-title span { color: var(--gold); }
+  .btn-close { background: none; border: none; color: var(--gray); font-size: 22px; cursor: pointer; padding: 0; line-height: 1; }
+  .btn-close:hover { color: var(--white); }
+
+  .form-section { margin-bottom: 20px; }
+  .form-section-title {
+    font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-transform: uppercase;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 14px;
+  }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+  .form-grid-full { grid-column: 1 / -1; }
+
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--gray); padding: 10px 20px; border-radius: 7px; font-size: 13px; font-family: 'Sora', sans-serif; cursor: pointer; }
+  .btn-cancel:hover { border-color: var(--gray); color: var(--white); }
+  .btn-submit { background: var(--red); border: none; color: #fff; padding: 10px 24px; border-radius: 7px; font-size: 13px; font-weight: 600; font-family: 'Sora', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .btn-submit:hover { background: var(--red-bright); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .loading-dots::after { content: ''; animation: dots 1.2s steps(3,end) infinite; }
+  @keyframes dots { 0% { content: '.'; } 33% { content: '..'; } 66% { content: '...'; } }
+
+  .checkbox-group { display: flex; align-items: center; gap: 8px; margin-top: 22px; }
+  .checkbox-group input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--red); cursor: pointer; }
+  .checkbox-group label { font-size: 13px; color: var(--white); cursor: pointer; }
+
+  /* ─── PROFILE TAB ─── */
+  .profile-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 28px; max-width: 600px; }
+  .profile-header { display: flex; align-items: center; gap: 18px; margin-bottom: 28px; }
+  .profile-avatar { width: 64px; height: 64px; background: linear-gradient(135deg, var(--red), var(--gold)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; color: var(--white); flex-shrink: 0; }
+  .profile-info h2 { font-size: 20px; font-weight: 700; }
+  .profile-info p { font-size: 13px; color: var(--gray); margin-top: 3px; }
+  .profile-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .profile-field label { font-size: 10px; font-weight: 600; color: var(--gold); letter-spacing: 0.8px; text-transform: uppercase; }
+  .profile-field p { font-size: 13px; color: var(--white); margin-top: 4px; }
+
+  /* ─── SPINNER ─── */
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── TOAST ─── */
+  .toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+  .toast { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 8px; padding: 12px 18px; font-size: 13px; min-width: 240px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); animation: toastIn 0.3s ease; }
+  .toast.success { border-left: 3px solid var(--success); }
+  .toast.error { border-left: 3px solid var(--error); }
+  @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+  /* ─── SETUP BANNER ─── */
+  .setup-banner { background: rgba(240,165,0,0.1); border: 1px solid rgba(240,165,0,0.3); border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
+  .setup-banner .icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .setup-banner h3 { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 4px; }
+  .setup-banner p { font-size: 12px; color: rgba(245,247,250,0.7); line-height: 1.6; }
+  .setup-banner code { font-family: 'IBM Plex Mono', monospace; background: rgba(0,0,0,0.3); padding: 1px 6px; border-radius: 4px; color: var(--gold-light); font-size: 11px; }
+  .setup-banner a { color: var(--gold); font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .auth-card { padding: 28px 20px; }
+    .form-row, .form-grid-3, .form-grid-4 { grid-template-columns: 1fr; }
+    .form-grid-2 { grid-template-columns: 1fr; }
+    .main-content { padding: 16px 12px; }
+    .modal { padding: 20px 16px; }
+    .topbar { padding: 0 14px; }
+    .nav-tabs { padding: 0 12px; overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ AUTH SCREEN ═══ -->
+<div id="auth-screen">
+  <div class="auth-card" id="login-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🔥</div>
+      <div class="auth-logo-text">
+        <h1>BFP INSPECTION SYSTEM</h1>
+        <p>Bureau of Fire Protection · BWC Module</p>
+      </div>
+    </div>
+    <h2 class="auth-title">Inspector Login</h2>
+    <p class="auth-subtitle">Sign in to access your inspection dashboard and manage BWC records.</p>
+    <div class="msg" id="login-msg"></div>
+    <div class="form-group"><label>Employee ID / Username</label><input type="text" id="login-username" placeholder="e.g. FO1DELACRUZ" autocomplete="username"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="Your password" autocomplete="current-password"></div>
+    <button class="btn-primary" id="btn-login">Sign In</button>
+    <p class="auth-switch">No account yet? <a onclick="showRegister()">Create Inspector Account →</a></p>
+  </div>
+
+  <div class="auth-card" id="register-card" style="display:none; max-width:540px;">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🔥</div>
+      <div class="auth-logo-text">
+        <h1>BFP INSPECTION SYSTEM</h1>
+        <p>Bureau of Fire Protection · BWC Module</p>
+      </div>
+    </div>
+    <h2 class="auth-title">Create Inspector Account</h2>
+    <p class="auth-subtitle">Fill in your official BFP personnel information to register.</p>
+    <div class="msg" id="reg-msg"></div>
+    <div class="form-row">
+      <div class="form-group"><label>First Name</label><input type="text" id="reg-fname" placeholder="Juan"></div>
+      <div class="form-group"><label>Last Name</label><input type="text" id="reg-lname" placeholder="Dela Cruz"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Rank</label>
+        <select id="reg-rank">
+          <option value="">Select Rank</option>
+          <option>FO1</option><option>FO2</option><option>FO3</option>
+          <option>SFO1</option><option>SFO2</option><option>SFO3</option>
+          <option>FINSP</option><option>FSINSP</option><option>FCINSP</option>
+          <option>FSSUPT</option><option>FCHIEFS</option><option>FSCHIEF</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Station / Unit</label><input type="text" id="reg-station" placeholder="Iligan City Fire Station"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>City / Municipality</label><input type="text" id="reg-city" placeholder="Iligan City"></div>
+      <div class="form-group"><label>Province / Region</label><input type="text" id="reg-province" placeholder="Lanao del Norte"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Employee ID / Username</label><input type="text" id="reg-username" placeholder="FO1DELACRUZ"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="Min. 6 characters"></div>
+    </div>
+    <button class="btn-primary" id="btn-register">Create Account</button>
+    <p class="auth-switch">Already have an account? <a onclick="showLogin()">Sign In →</a></p>
+  </div>
+</div>
+
+<!-- ═══ APP SCREEN ═══ -->
+<div id="app-screen" style="display:none; flex-direction:column;">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">🔥</div>
+      <div>
+        <div class="topbar-title">BFP Inspection System</div>
+        <div class="topbar-sub">BWC Module · <span id="tb-station"></span></div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-badge">
+        <div class="user-avatar" id="user-avatar"></div>
+        <span id="user-display-name" style="font-size:12px;"></span>
+      </div>
+      <button class="btn-logout" onclick="logout()">Log Out</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 Dashboard</div>
+    <div class="nav-tab" data-tab="inspections" onclick="switchTab('inspections')">📋 Inspections</div>
+    <div class="nav-tab" data-tab="new" onclick="openNewModal()">➕ New Record</div>
+    <div class="nav-tab" data-tab="profile" onclick="switchTab('profile')">👤 My Profile</div>
+  </div>
+
+  <div class="main-content">
+    <!-- SETUP BANNER -->
+    <div class="setup-banner" id="setup-banner">
+      <div class="icon">⚙️</div>
+      <div>
+        <h3>SETUP REQUIRED — Connect Your Google Sheet Backend</h3>
+        <p>This app needs a Google Apps Script Web App URL to save data. Follow the <a href="#" onclick="showSetupGuide()">Setup Guide</a> to create your free backend in 5 minutes, then paste the URL in <strong>Settings → API URL</strong>. Until then, data is stored locally in your browser only.</p>
+      </div>
+    </div>
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Total Inspections</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">All records in the system</div></div>
+        <div class="stat-card gold"><div class="stat-label">My Inspections</div><div class="stat-value" id="stat-mine">0</div><div class="stat-sub">Recorded by you</div></div>
+        <div class="stat-card red"><div class="stat-label">High Hazard</div><div class="stat-value" id="stat-high">0</div><div class="stat-sub">Require priority attention</div></div>
+        <div class="stat-card green"><div class="stat-label">With FSIC</div><div class="stat-value" id="stat-fsic">0</div><div class="stat-sub">FSIC date recorded</div></div>
+      </div>
+      <div class="section-header">
+        <div class="section-title">Recent <span>Inspections</span></div>
+      </div>
+      <div class="table-wrap" id="recent-table-wrap">
+        <table><thead><tr>
+          <th>Establishment</th><th>Address</th><th>Occupancy</th>
+          <th>Hazard</th><th>Date Inspected</th><th>Inspector</th>
+        </tr></thead>
+        <tbody id="recent-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- INSPECTIONS TAB -->
+    <div id="tab-inspections" style="display:none;">
+      <div class="section-header">
+        <div class="section-title">Inspection <span>Records</span></div>
+        <div class="filter-bar">
+          <input type="text" id="search-input" placeholder="Search establishment..." oninput="renderTable()" style="width:180px;">
+          <select id="filter-occupancy" onchange="renderTable()"><option value="">All Occupancy</option>
+            <option>ASSEMBLY</option><option>EDUCATIONAL</option><option>DAY CARE</option>
+            <option>HEALTH CARE</option><option>RESIDENTIAL</option><option>MERCANTILE</option>
+            <option>BUSINESS</option><option>INDUSTRIAL</option><option>STORAGE</option>
+            <option>SPECIAL STRUCTURE</option><option>DETENTION & CORRECTIONAL</option>
+          </select>
+          <select id="filter-hazard" onchange="renderTable()"><option value="">All Hazard</option>
+            <option>LOW</option><option>MODERATE</option><option>HIGH</option>
+          </select>
+          <button class="btn-action btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+          <button class="btn-action btn-new" onclick="openNewModal()">+ New Record</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table><thead><tr>
+          <th>#</th><th>Establishment</th><th>Address</th><th>Contact Person</th>
+          <th>Contact No.</th><th>Occupancy</th><th>Sub-class</th>
+          <th>Hazard</th><th>Floor Area</th><th>Storeys</th>
+          <th>Date Inspected</th><th>FSIC Date</th><th>1st Insp.</th><th>Re-insp.</th><th>Inspector</th>
+        </tr></thead>
+        <tbody id="main-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div id="tab-profile" style="display:none;">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profile-avatar"></div>
+          <div class="profile-info">
+            <h2 id="profile-fullname"></h2>
+            <p id="profile-rank-station"></p>
+          </div>
+        </div>
+        <div class="profile-detail">
+          <div class="profile-field"><label>Username / Employee ID</label><p id="pf-username"></p></div>
+          <div class="profile-field"><label>Rank</label><p id="pf-rank"></p></div>
+          <div class="profile-field"><label>City / Municipality</label><p id="pf-city"></p></div>
+          <div class="profile-field"><label>Province / Region</label><p id="pf-province"></p></div>
+          <div class="profile-field"><label>Station</label><p id="pf-station"></p></div>
+          <div class="profile-field"><label>Account Created</label><p id="pf-created"></p></div>
+        </div>
+        <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--border);">
+          <div class="form-section-title">Google Sheet API URL</div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <input type="url" id="api-url-input" placeholder="https://script.google.com/macros/s/.../exec" style="flex:1;padding:10px 12px;background:var(--input-bg);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--white);font-size:12px;font-family:'Sora',sans-serif;outline:none;">
+            <button class="btn-action btn-new" onclick="saveApiUrl()">Save</button>
+          </div>
+          <p style="font-size:11px;color:var(--gray);margin-top:8px;">Paste your Google Apps Script Web App URL here to enable cloud sync.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NEW INSPECTION MODAL ═══ -->
+<div class="modal-overlay" id="new-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">New <span>Inspection Record</span></div>
+        <div style="font-size:12px;color:var(--gray);margin-top:4px;">Fill in all required fields from the BWC inspection form</div>
+      </div>
+      <button class="btn-close" onclick="closeNewModal()">✕</button>
+    </div>
+
+    <div class="msg" id="modal-msg"></div>
+
+    <div class="form-section">
+      <div class="form-section-title">General Information</div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>Province / District *</label><input type="text" id="f-province" placeholder="Lanao del Norte"></div>
+        <div class="form-group"><label>City / Municipality *</label><input type="text" id="f-city" placeholder="Iligan City"></div>
+        <div class="form-group"><label>Name of Fire Marshal</label><input type="text" id="f-marshal" placeholder="FSINSP Juan Dela Cruz"></div>
+        <div class="form-group"><label>Name of Inspector *</label><input type="text" id="f-inspector" placeholder="FO2 Maria Santos" readonly></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Establishment Details</div>
+      <div class="form-grid-2">
+        <div class="form-group" style="grid-column:1/-1"><label>Name of Establishment *</label><input type="text" id="f-estname" placeholder="ABC Commercial Building"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Address</label><input type="text" id="f-address" placeholder="Purok X, Barangay Y, Iligan City"></div>
+        <div class="form-group"><label>Date & Time of Inspection *</label><input type="datetime-local" id="f-datetime"></div>
+        <div class="form-group"><label>Date of FSIC Issued</label><input type="date" id="f-fsic-date"></div>
+        <div class="form-group"><label>Contact Person (Client)</label><input type="text" id="f-contact-person" placeholder="Juan Dela Cruz"></div>
+        <div class="form-group"><label>Contact Number</label><input type="tel" id="f-contact-number" placeholder="09XX-XXX-XXXX"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Technical Information — Occupancy</div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>Type of Occupancy *</label>
+          <select id="f-occupancy" onchange="updateSubclass()">
+            <option value="">Select Occupancy Type</option>
+            <option>ASSEMBLY</option><option>EDUCATIONAL</option><option>DAY CARE</option>
+            <option>HEALTH CARE</option><option>RESIDENTIAL BOARD & CARE</option>
+            <option>RESIDENTIAL</option><option>DETENTION & CORRECTIONAL</option>
+            <option>MERCANTILE</option><option>BUSINESS</option>
+            <option>INDUSTRIAL</option><option>STORAGE</option><option>SPECIAL STRUCTURE</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Sub-Classification</label>
+          <select id="f-subclass">
+            <option value="">Select Occupancy first</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Building Details</div>
+      <div class="form-grid-4">
+        <div class="form-group"><label>Floor Area (m²)</label><input type="number" id="f-floorarea" placeholder="0" min="0"></div>
+        <div class="form-group"><label>Height (m)</label><input type="number" id="f-height" placeholder="0" min="0"></div>
+        <div class="form-group"><label>No. of Storeys</label><input type="number" id="f-storeys" placeholder="0" min="0"></div>
+        <div class="form-group"><label>Basement Level(s)</label><input type="number" id="f-basement" placeholder="0" min="0"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Hazard & Inspection Result</div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>Hazard Classification *</label>
+          <select id="f-hazard">
+            <option value="">Select Hazard Level</option>
+            <option>LOW</option><option>MODERATE</option><option>HIGH</option>
+          </select>
+        </div>
+        <div class="form-group"><label>No. of Re-inspections</label><input type="number" id="f-reinspect" placeholder="0" min="0" value="0"></div>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="f-first-insp" checked>
+        <label for="f-first-insp">✓ 1st Inspection conducted</label>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeNewModal()">Cancel</button>
+      <button class="btn-submit" id="btn-submit-record" onclick="submitRecord()">Save Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST CONTAINER ─── -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- ═══ SETUP GUIDE MODAL ═══ -->
+<div class="modal-overlay" id="setup-modal">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-header">
+      <div class="modal-title">⚙️ Setup <span>Google Sheet Backend</span></div>
+      <button class="btn-close" onclick="document.getElementById('setup-modal').classList.remove('open')">✕</button>
+    </div>
+    <div style="font-size:13px;line-height:1.8;color:rgba(245,247,250,0.85);">
+      <p style="margin-bottom:16px;">Follow these steps to create your <strong style="color:var(--gold)">free Google Sheets backend</strong> in about 5 minutes:</p>
+      <ol style="padding-left:20px;display:flex;flex-direction:column;gap:10px;">
+        <li>Go to <a href="https://sheets.google.com" target="_blank" style="color:var(--gold)">sheets.google.com</a> and create a new spreadsheet named <strong>BFP_Inspections</strong>.</li>
+        <li>Create two sheets (tabs) named exactly: <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace;color:var(--gold-light)">Users</code> and <code style="background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace;color:var(--gold-light)">Inspections</code>.</li>
+        <li>In the spreadsheet, click <strong>Extensions → Apps Script</strong>.</li>
+        <li>Delete existing code and paste the contents of <strong>apps-script.gs</strong> (included in the download package).</li>
+        <li>Click <strong>Deploy → New deployment → Web App</strong>.</li>
+        <li>Set <em>Execute as</em>: <strong>Me</strong>, and <em>Who has access</em>: <strong>Anyone</strong>.</li>
+        <li>Click <strong>Deploy</strong>, authorize the app, and copy the <strong>Web App URL</strong>.</li>
+        <li>Come back here, go to <strong>My Profile</strong>, and paste the URL in the <em>Google Sheet API URL</em> field.</li>
+      </ol>
+      <p style="margin-top:16px;padding:12px;background:rgba(240,165,0,0.1);border-radius:8px;border-left:3px solid var(--gold);font-size:12px;">💡 <strong>Tip:</strong> Until you set up the backend, all data is saved in your browser's localStorage. Your records won't be lost — they'll sync to the Sheet once you configure the URL.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-submit" onclick="document.getElementById('setup-modal').classList.remove('open')">Got It</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════════
+let API_URL = localStorage.getItem('bfp_api_url') || '';
+let currentUser = null;
+
+const SUBCLASS_MAP = {
+  'RESIDENTIAL': ['HOTELS & DORMITORIES','APARTMENT BUILDINGS','LODGING OR ROOMING HOUSES','SINGLE AND TWO-FAMILY DWELLINGS'],
+  'ASSEMBLY': ['THEATERS & CINEMAS','AUDITORIUMS','NIGHTCLUBS & BARS','RESTAURANTS & FOOD COURTS','CHURCHES & WORSHIP HALLS','SPORTS ARENAS'],
+  'EDUCATIONAL': ['SCHOOLS & UNIVERSITIES','LIBRARIES','TRAINING CENTERS'],
+  'HEALTH CARE': ['HOSPITALS','CLINICS','NURSING HOMES'],
+  'INDUSTRIAL': ['FACTORIES','WAREHOUSES','MANUFACTURING PLANTS','WORKSHOPS'],
+  'MERCANTILE': ['SUPERMARKETS','DEPARTMENT STORES','SHOPPING MALLS','RETAIL STORES'],
+  'BUSINESS': ['OFFICES','BANKS','GOVERNMENT BUILDINGS','BPO CENTERS'],
+  'STORAGE': ['STORAGE FACILITIES','PARKING STRUCTURES','COLD STORAGE'],
+  'SPECIAL STRUCTURE': ['GAS STATIONS','TOWERS','BRIDGES','TUNNELS'],
+  'DAY CARE': [],
+  'DETENTION & CORRECTIONAL': [],
+  'RESIDENTIAL BOARD & CARE': []
+};
+
+// ═══════════════════════════════════════════════════════
+//  STORAGE HELPERS (localStorage + optional Google Sheet)
+// ═══════════════════════════════════════════════════════
+function getUsers() { return JSON.parse(localStorage.getItem('bfp_users') || '[]'); }
+function saveUsers(u) { localStorage.setItem('bfp_users', JSON.stringify(u)); }
+function getRecords() { return JSON.parse(localStorage.getItem('bfp_records') || '[]'); }
+function saveRecords(r) { localStorage.setItem('bfp_records', JSON.stringify(r)); }
+
+async function apiPost(action, data) {
+  if (!API_URL) return null;
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, ...data })
+    });
+    return await resp.json();
+  } catch(e) { return null; }
+}
+
+async function apiGet(action, params = '') {
+  if (!API_URL) return null;
+  try {
+    const resp = await fetch(`${API_URL}?action=${action}&${params}`);
+    return await resp.json();
+  } catch(e) { return null; }
+}
+
+// ═══════════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════════
+function showRegister() {
+  document.getElementById('login-card').style.display = 'none';
+  document.getElementById('register-card').style.display = 'block';
+}
+function showLogin() {
+  document.getElementById('register-card').style.display = 'none';
+  document.getElementById('login-card').style.display = 'block';
+}
+
+function showMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = `msg ${type}`;
+}
+
+document.getElementById('btn-login').addEventListener('click', async function() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value.trim();
+  if (!username || !password) return showMsg('login-msg','Please fill in all fields.','error');
+
+  this.disabled = true; this.innerHTML = '<span class="spinner"></span>Signing in...';
+
+  // Try API first
+  if (API_URL) {
+    const res = await apiPost('login', { username, password });
+    if (res && res.success) {
+      loginSuccess(res.user);
+      this.disabled = false; this.textContent = 'Sign In';
+      return;
+    }
+  }
+
+  // Fallback: local
+  const users = getUsers();
+  const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
+  if (!user) {
+    showMsg('login-msg','Invalid username or password.','error');
+  } else {
+    loginSuccess(user);
+  }
+  this.disabled = false; this.textContent = 'Sign In';
+});
+
+document.getElementById('btn-register').addEventListener('click', async function() {
+  const fname = document.getElementById('reg-fname').value.trim();
+  const lname = document.getElementById('reg-lname').value.trim();
+  const rank = document.getElementById('reg-rank').value;
+  const station = document.getElementById('reg-station').value.trim();
+  const city = document.getElementById('reg-city').value.trim();
+  const province = document.getElementById('reg-province').value.trim();
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value.trim();
+
+  if (!fname||!lname||!rank||!station||!city||!username||!password)
+    return showMsg('reg-msg','Please fill in all required fields.','error');
+  if (password.length < 6)
+    return showMsg('reg-msg','Password must be at least 6 characters.','error');
+
+  const user = { id: Date.now().toString(), fname, lname, rank, station, city, province, username, password, created: new Date().toISOString() };
+
+  this.disabled = true; this.innerHTML = '<span class="spinner"></span>Creating account...';
+
+  // Try API
+  if (API_URL) {
+    const res = await apiPost('register', user);
+    if (res && res.error) { showMsg('reg-msg', res.error, 'error'); this.disabled=false; this.textContent='Create Account'; return; }
+  }
+
+  // Local
+  const users = getUsers();
+  if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+    showMsg('reg-msg','Username already exists. Please choose another.','error');
+    this.disabled=false; this.textContent='Create Account'; return;
+  }
+  users.push(user);
+  saveUsers(users);
+
+  showMsg('reg-msg','Account created! You can now sign in.','success');
+  this.disabled=false; this.textContent='Create Account';
+  setTimeout(showLogin, 1500);
+});
+
+function loginSuccess(user) {
+  currentUser = user;
+  sessionStorage.setItem('bfp_session', JSON.stringify(user));
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'flex';
+  initApp();
+}
+
+function logout() {
+  sessionStorage.removeItem('bfp_session');
+  currentUser = null;
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+}
+
+// ═══════════════════════════════════════════════════════
+//  APP INIT
+// ═══════════════════════════════════════════════════════
+function initApp() {
+  const fullName = `${currentUser.rank} ${currentUser.fname} ${currentUser.lname}`;
+  const initials = (currentUser.fname[0]||'') + (currentUser.lname[0]||'');
+  document.getElementById('user-avatar').textContent = initials.toUpperCase();
+  document.getElementById('user-display-name').textContent = fullName;
+  document.getElementById('tb-station').textContent = currentUser.station;
+  document.getElementById('f-inspector').value = fullName;
+
+  // Profile
+  document.getElementById('profile-avatar').textContent = initials.toUpperCase();
+  document.getElementById('profile-fullname').textContent = fullName;
+  document.getElementById('profile-rank-station').textContent = `${currentUser.station}`;
+  document.getElementById('pf-username').textContent = currentUser.username;
+  document.getElementById('pf-rank').textContent = currentUser.rank;
+  document.getElementById('pf-city').textContent = currentUser.city;
+  document.getElementById('pf-province').textContent = currentUser.province || '—';
+  document.getElementById('pf-station').textContent = currentUser.station;
+  document.getElementById('pf-created').textContent = new Date(currentUser.created).toLocaleDateString('en-PH', {year:'numeric',month:'long',day:'numeric'});
+
+  if (API_URL) document.getElementById('api-url-input').value = API_URL;
+  if (API_URL) document.getElementById('setup-banner').style.display = 'none';
+
+  loadRecords();
+}
+
+async function loadRecords() {
+  // Try syncing from Google Sheet
+  if (API_URL) {
+    const res = await apiGet('records');
+    if (res && res.records) {
+      const merged = mergeRecords(getRecords(), res.records);
+      saveRecords(merged);
+    }
+  }
+  updateStats(); renderTable(); renderRecentTable();
+}
+
+function mergeRecords(local, remote) {
+  const map = {};
+  [...local, ...remote].forEach(r => { if (r.id) map[r.id] = r; });
+  return Object.values(map);
+}
+
+// ═══════════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+  ['dashboard','inspections','profile'].forEach(t =>
+    document.getElementById(`tab-${t}`).style.display = t===tab ? 'block' : 'none');
+  if (tab === 'inspections') renderTable();
+  if (tab === 'dashboard') { updateStats(); renderRecentTable(); }
+}
+
+function openNewModal() {
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('new-modal').classList.add('open');
+  document.getElementById('f-datetime').value = new Date().toISOString().slice(0,16);
+  document.getElementById('f-province').value = currentUser.province || '';
+  document.getElementById('f-city').value = currentUser.city || '';
+  document.getElementById('modal-msg').className = 'msg';
+}
+function closeNewModal() { document.getElementById('new-modal').classList.remove('open'); }
+
+// ═══════════════════════════════════════════════════════
+//  SUBCLASS UPDATER
+// ═══════════════════════════════════════════════════════
+function updateSubclass() {
+  const occ = document.getElementById('f-occupancy').value;
+  const sel = document.getElementById('f-subclass');
+  sel.innerHTML = '<option value="">None / N/A</option>';
+  (SUBCLASS_MAP[occ] || []).forEach(s => { const o = document.createElement('option'); o.value = o.textContent = s; sel.appendChild(o); });
+}
+
+// ═══════════════════════════════════════════════════════
+//  SUBMIT RECORD
+// ═══════════════════════════════════════════════════════
+async function submitRecord() {
+  const estname = document.getElementById('f-estname').value.trim();
+  const datetime = document.getElementById('f-datetime').value;
+  const occupancy = document.getElementById('f-occupancy').value;
+  const hazard = document.getElementById('f-hazard').value;
+  if (!estname) return showModalMsg('Establishment name is required.','error');
+  if (!datetime) return showModalMsg('Date & time of inspection is required.','error');
+  if (!occupancy) return showModalMsg('Type of occupancy is required.','error');
+  if (!hazard) return showModalMsg('Hazard classification is required.','error');
+
+  const record = {
+    id: Date.now().toString(),
+    province: document.getElementById('f-province').value.trim(),
+    city: document.getElementById('f-city').value.trim(),
+    marshal: document.getElementById('f-marshal').value.trim(),
+    inspector: document.getElementById('f-inspector').value.trim(),
+    inspectorId: currentUser.id,
+    estname, address: document.getElementById('f-address').value.trim(),
+    datetime, fsicDate: document.getElementById('f-fsic-date').value,
+    contactPerson: document.getElementById('f-contact-person').value.trim(),
+    contactNumber: document.getElementById('f-contact-number').value.trim(),
+    occupancy, subclass: document.getElementById('f-subclass').value,
+    floorArea: document.getElementById('f-floorarea').value || 0,
+    height: document.getElementById('f-height').value || 0,
+    storeys: document.getElementById('f-storeys').value || 0,
+    basement: document.getElementById('f-basement').value || 0,
+    hazard, firstInspection: document.getElementById('f-first-insp').checked,
+    reinspections: document.getElementById('f-reinspect').value || 0,
+    createdAt: new Date().toISOString()
+  };
+
+  const btn = document.getElementById('btn-submit-record');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Saving...';
+
+  // Save locally first
+  const records = getRecords();
+  records.unshift(record);
+  saveRecords(records);
+
+  // Push to Google Sheet
+  if (API_URL) {
+    const res = await apiPost('addRecord', record);
+    if (res && res.success) showToast('Record saved to Google Sheet ✓','success');
+    else showToast('Saved locally (Sheet sync pending)','success');
+  } else {
+    showToast('Record saved locally','success');
+  }
+
+  btn.disabled = false; btn.textContent = 'Save Record';
+  closeNewModal();
+  updateStats(); renderTable(); renderRecentTable();
+
+  // Reset form
+  ['f-estname','f-address','f-contact-person','f-contact-number','f-fsic-date','f-marshal','f-floorarea','f-height','f-storeys','f-basement'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-occupancy').value = '';
+  document.getElementById('f-hazard').value = '';
+  document.getElementById('f-reinspect').value = '0';
+  document.getElementById('f-first-insp').checked = true;
+  document.getElementById('f-subclass').innerHTML = '<option value="">Select Occupancy first</option>';
+}
+
+function showModalMsg(text, type) {
+  const el = document.getElementById('modal-msg');
+  el.textContent = text; el.className = `msg ${type}`;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ═══════════════════════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════════════════════
+function updateStats() {
+  const records = getRecords();
+  document.getElementById('stat-total').textContent = records.length;
+  document.getElementById('stat-mine').textContent = records.filter(r => r.inspectorId === currentUser.id).length;
+  document.getElementById('stat-high').textContent = records.filter(r => r.hazard === 'HIGH').length;
+  document.getElementById('stat-fsic').textContent = records.filter(r => r.fsicDate).length;
+}
+
+// ═══════════════════════════════════════════════════════
+//  TABLE RENDER
+// ═══════════════════════════════════════════════════════
+function getHazardBadge(h) {
+  if (!h) return '';
+  const cls = h === 'LOW' ? 'badge-low' : h === 'MODERATE' ? 'badge-moderate' : 'badge-high';
+  return `<span class="badge ${cls}">${h}</span>`;
+}
+function fmtDate(d) {
+  if (!d) return '—';
+  try { return new Date(d).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'}); } catch(e) { return d; }
+}
+
+function renderRecentTable() {
+  const records = getRecords().slice(0,8);
+  const tbody = document.getElementById('recent-tbody');
+  if (!records.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">📋</div><p>No inspection records yet. Click "+ New Record" to add one.</p></div></td></tr>'; return; }
+  tbody.innerHTML = records.map(r => `
+    <tr>
+      <td class="td-name">${escHtml(r.estname)}</td>
+      <td>${escHtml(r.address)||'—'}</td>
+      <td><span class="badge badge-occ">${escHtml(r.occupancy)}</span></td>
+      <td>${getHazardBadge(r.hazard)}</td>
+      <td class="td-mono">${fmtDate(r.datetime)}</td>
+      <td>${escHtml(r.inspector)}</td>
+    </tr>`).join('');
+}
+
+function renderTable() {
+  const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const filterOcc = document.getElementById('filter-occupancy')?.value || '';
+  const filterHaz = document.getElementById('filter-hazard')?.value || '';
+
+  let records = getRecords();
+  if (search) records = records.filter(r => r.estname?.toLowerCase().includes(search) || r.address?.toLowerCase().includes(search));
+  if (filterOcc) records = records.filter(r => r.occupancy === filterOcc);
+  if (filterHaz) records = records.filter(r => r.hazard === filterHaz);
+
+  const tbody = document.getElementById('main-tbody');
+  if (!records.length) { tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state"><div class="icon">🔍</div><p>No records found.</p></div></td></tr>'; return; }
+  tbody.innerHTML = records.map((r,i) => `
+    <tr>
+      <td class="td-mono" style="color:var(--gray)">${i+1}</td>
+      <td class="td-name">${escHtml(r.estname)}</td>
+      <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(r.address)||'—'}</td>
+      <td>${escHtml(r.contactPerson)||'—'}</td>
+      <td class="td-mono">${escHtml(r.contactNumber)||'—'}</td>
+      <td><span class="badge badge-occ">${escHtml(r.occupancy)}</span></td>
+      <td style="color:var(--gray);font-size:11.5px;">${escHtml(r.subclass)||'—'}</td>
+      <td>${getHazardBadge(r.hazard)}</td>
+      <td class="td-mono">${r.floorArea||'—'}</td>
+      <td class="td-mono">${r.storeys||'—'}</td>
+      <td class="td-mono">${fmtDate(r.datetime)}</td>
+      <td class="td-mono">${r.fsicDate ? fmtDate(r.fsicDate) : '—'}</td>
+      <td style="text-align:center;">${r.firstInspection ? '✓' : '—'}</td>
+      <td class="td-mono" style="text-align:center;">${r.reinspections||0}</td>
+      <td style="font-size:11.5px;color:var(--gray)">${escHtml(r.inspector)}</td>
+    </tr>`).join('');
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════════════
+//  EXPORT CSV
+// ═══════════════════════════════════════════════════════
+function exportCSV() {
+  const records = getRecords();
+  if (!records.length) return showToast('No records to export','error');
+  const headers = ['Province','City','Fire Marshal','Inspector','Establishment','Address','Date & Time','Contact Person','Contact Number','FSIC Date','Occupancy','Sub-class','Floor Area (m²)','Height (m)','Storeys','Basement Levels','Hazard','1st Inspection','Re-inspections'];
+  const rows = records.map(r => [r.province,r.city,r.marshal,r.inspector,r.estname,r.address,r.datetime,r.contactPerson,r.contactNumber,r.fsicDate,r.occupancy,r.subclass,r.floorArea,r.height,r.storeys,r.basement,r.hazard,r.firstInspection?'✓':'',r.reinspections].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = `BFP_BWC_Inspections_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast('CSV exported successfully','success');
+}
+
+// ═══════════════════════════════════════════════════════
+//  SETTINGS
+// ═══════════════════════════════════════════════════════
+function saveApiUrl() {
+  const url = document.getElementById('api-url-input').value.trim();
+  API_URL = url;
+  localStorage.setItem('bfp_api_url', url);
+  document.getElementById('setup-banner').style.display = url ? 'none' : 'flex';
+  showToast(url ? 'API URL saved. Syncing data…' : 'API URL cleared','success');
+  if (url) loadRecords();
+}
+
+function showSetupGuide() {
+  document.getElementById('setup-modal').classList.add('open');
+  return false;
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
+function showToast(msg, type = 'success') {
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ═══════════════════════════════════════════════════════
+//  AUTO LOGIN FROM SESSION
+// ═══════════════════════════════════════════════════════
+(function() {
+  const sess = sessionStorage.getItem('bfp_session');
+  if (sess) { currentUser = JSON.parse(sess); loginSuccess(currentUser); }
+})();
+</script>
+</body>
+</html>
