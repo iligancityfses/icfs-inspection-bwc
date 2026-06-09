@@ -95,6 +95,13 @@
     border-color: var(--gold); box-shadow: 0 0 0 3px rgba(240,165,0,0.1);
   }
   .form-group select option { background: var(--navy-mid); color: var(--white); }
+  .fp-table-wrap { overflow-x: auto; margin-top: 4px; }
+  .fp-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .fp-table th { background: var(--navy-deep); color: var(--gold); font-weight: 500; padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--navy-light); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+  .fp-table td { padding: 7px 10px; border-bottom: 1px solid rgba(255,255,255,.05); vertical-align: middle; }
+  .fp-table tr:last-child td { border-bottom: none; }
+  .fp-table tr:hover td { background: rgba(255,255,255,.03); }
+  .fp-select { width: 100%; padding: 5px 8px; background: var(--navy-mid); color: var(--white); border: 1px solid var(--navy-light); border-radius: 5px; font-size: 12px; }
   .form-group input::placeholder { color: rgba(136,146,164,0.6); }
 
   .btn-primary {
@@ -472,10 +479,10 @@
 
     <div class="form-section">
       <div class="form-section-title">General Information</div>
+      <div style="background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.25);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--gray);">
+        <strong style="color:var(--gold);">Fixed fields:</strong>&nbsp; Province: <strong>Lanao del Norte</strong> &nbsp;|&nbsp; City: <strong>Iligan City</strong> &nbsp;|&nbsp; Station: <strong>Iligan City Fire Station</strong> &nbsp;|&nbsp; Fire Marshal: <strong>SUPT Jack M Bigwil</strong>
+      </div>
       <div class="form-grid-2">
-        <div class="form-group"><label>Province / District *</label><input type="text" id="f-province" placeholder="Lanao del Norte"></div>
-        <div class="form-group"><label>City / Municipality *</label><input type="text" id="f-city" placeholder="Iligan City"></div>
-        <div class="form-group"><label>Name of Fire Marshal</label><input type="text" id="f-marshal" placeholder="FSINSP Juan Dela Cruz"></div>
         <div class="form-group"><label>Name of Inspector *</label><input type="text" id="f-inspector" placeholder="FO2 Maria Santos" readonly></div>
       </div>
     </div>
@@ -524,7 +531,7 @@
     </div>
 
     <div class="form-section">
-      <div class="form-section-title">Hazard & Inspection Result</div>
+      <div class="form-section-title">Hazard &amp; Inspection Result</div>
       <div class="form-grid-2">
         <div class="form-group"><label>Hazard Classification *</label>
           <select id="f-hazard">
@@ -537,6 +544,76 @@
       <div class="checkbox-group">
         <input type="checkbox" id="f-first-insp" checked>
         <label for="f-first-insp">✓ 1st Inspection conducted</label>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Fire Protection Information</div>
+      <div style="font-size:11px;color:var(--gray);margin-bottom:10px;">Select the installation and operational status for each fire protection system.</div>
+      <div class="fp-table-wrap">
+        <table class="fp-table">
+          <thead>
+            <tr><th style="width:210px">System</th><th>Installation Status</th><th>Operational Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Automatic Fire Suppression System (AFSS)</strong></td>
+              <td><select id="f-afss-install" class="fp-select"><option value="">— Select —</option><option value="INSTALLED">Installed</option><option value="NOT INSTALLED">Not Installed</option><option value="NOT REQUIRED">Not Required</option></select></td>
+              <td><select id="f-afss-cond" class="fp-select"><option value="">— Select —</option><option value="OPERATIONAL">Operational</option><option value="NOT OPERATIONAL">Not Operational</option><option value="NOT APPLICABLE">Not Applicable</option></select></td>
+            </tr>
+            <tr>
+              <td><strong>Fire Detection &amp; Alarm System (FDAS)</strong></td>
+              <td><select id="f-fdas-install" class="fp-select"><option value="">— Select —</option><option value="INSTALLED">Installed</option><option value="NOT INSTALLED">Not Installed</option><option value="NOT REQUIRED">Not Required</option></select></td>
+              <td><select id="f-fdas-cond" class="fp-select"><option value="">— Select —</option><option value="OPERATIONAL">Operational</option><option value="NOT OPERATIONAL">Not Operational</option><option value="NOT APPLICABLE">Not Applicable</option></select></td>
+            </tr>
+            <tr>
+              <td><strong>Wet Standpipe System</strong></td>
+              <td><select id="f-wsp-install" class="fp-select"><option value="">— Select —</option><option value="INSTALLED">Installed</option><option value="NOT INSTALLED">Not Installed</option><option value="NOT REQUIRED">Not Required</option></select></td>
+              <td><select id="f-wsp-cond" class="fp-select"><option value="">— Select —</option><option value="OPERATIONAL">Operational</option><option value="NOT OPERATIONAL">Not Operational</option><option value="NOT APPLICABLE">Not Applicable</option></select></td>
+            </tr>
+            <tr>
+              <td><strong>Fire Exit</strong></td>
+              <td><select id="f-fexit-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td><select id="f-fexit-cond" class="fp-select"><option value="">— Select —</option><option value="ACCESSIBLE">Accessible</option><option value="NOT ACCESSIBLE">Not Accessible</option><option value="NOT APPLICABLE">Not Applicable</option></select></td>
+            </tr>
+            <tr>
+              <td><strong>Emergency Lights</strong></td>
+              <td><select id="f-elight-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td style="color:var(--gray);font-size:11.5px;font-style:italic;padding-left:10px;">Installation status only</td>
+            </tr>
+            <tr>
+              <td><strong>Directional Signs</strong></td>
+              <td><select id="f-dsign-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td style="color:var(--gray);font-size:11.5px;font-style:italic;padding-left:10px;">Installation status only</td>
+            </tr>
+            <tr>
+              <td><strong>Fire Exit Signs</strong></td>
+              <td><select id="f-fesign-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td style="color:var(--gray);font-size:11.5px;font-style:italic;padding-left:10px;">Installation status only</td>
+            </tr>
+            <tr>
+              <td><strong>Fire Extinguisher</strong></td>
+              <td><select id="f-fext-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td style="color:var(--gray);font-size:11.5px;font-style:italic;padding-left:10px;">Installation status only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Remarks</div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>Overall Compliance</label>
+          <select id="f-remarks-status" class="fp-select" style="width:100%;padding:8px 10px;font-size:13px;">
+            <option value="">— Select —</option>
+            <option value="COMPLIANT">Compliant</option>
+            <option value="NOT COMPLIANT">Not Compliant</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Additional Remarks</label>
+          <input type="text" id="f-remarks-notes" placeholder="Optional additional notes">
+        </div>
       </div>
     </div>
 
@@ -554,22 +631,22 @@
 // ═══════════════════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbxsetlR2xATxrfNKB2u36GLQfbkzXLbeLUL5RNN6paJ4LU-UHgRk_Tj-bTRAZmoYx1w/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwcVb8WqSSdm_lTcBhvteL4_9fJ88ug-VNRqXDMIbqpgdXoqwUOlD_FSbY_BY_3hhRh/exec';
 let currentUser = null;
 
 const SUBCLASS_MAP = {
-  'RESIDENTIAL': ['HOTELS & DORMITORIES','APARTMENT BUILDINGS','LODGING OR ROOMING HOUSES','SINGLE AND TWO-FAMILY DWELLINGS'],
-  'ASSEMBLY': ['THEATERS & CINEMAS','AUDITORIUMS','NIGHTCLUBS & BARS','RESTAURANTS & FOOD COURTS','CHURCHES & WORSHIP HALLS','SPORTS ARENAS'],
-  'EDUCATIONAL': ['SCHOOLS & UNIVERSITIES','LIBRARIES','TRAINING CENTERS'],
-  'HEALTH CARE': ['HOSPITALS','CLINICS','NURSING HOMES'],
-  'INDUSTRIAL': ['FACTORIES','WAREHOUSES','MANUFACTURING PLANTS','WORKSHOPS'],
-  'MERCANTILE': ['SUPERMARKETS','DEPARTMENT STORES','SHOPPING MALLS','RETAIL STORES'],
-  'BUSINESS': ['OFFICES','BANKS','GOVERNMENT BUILDINGS','BPO CENTERS'],
-  'STORAGE': ['STORAGE FACILITIES','PARKING STRUCTURES','COLD STORAGE'],
-  'SPECIAL STRUCTURE': ['GAS STATIONS','TOWERS','BRIDGES','TUNNELS'],
+  'ASSEMBLY': ['THEATERS & CINEMAS','AUDITORIUMS','NIGHTCLUBS & BARS','RESTAURANTS & FOOD COURTS','CHURCHES & WORSHIP HALLS','SPORTS ARENAS','CONVENTION HALLS','MUSEUMS & GALLERIES'],
+  'EDUCATIONAL': ['SCHOOLS & UNIVERSITIES','LIBRARIES','TRAINING CENTERS','DAYCARE CENTERS'],
   'DAY CARE': [],
+  'HEALTH CARE': ['HOSPITALS','CLINICS','NURSING HOMES','DIALYSIS CENTERS','DENTAL CLINICS'],
+  'RESIDENTIAL BOARD & CARE': [],
+  'RESIDENTIAL': ['HOTELS & DORMITORIES','APARTMENT BUILDINGS','LODGING OR ROOMING HOUSES','SINGLE AND TWO-FAMILY DWELLINGS'],
   'DETENTION & CORRECTIONAL': [],
-  'RESIDENTIAL BOARD & CARE': []
+  'MERCANTILE': ['SUPERMARKETS','DEPARTMENT STORES','SHOPPING MALLS','RETAIL STORES','PUBLIC MARKETS','CONVENIENCE STORES'],
+  'BUSINESS': ['OFFICES','BANKS','GOVERNMENT BUILDINGS','BPO CENTERS','PAWNSHOPS','MONEY CHANGERS'],
+  'INDUSTRIAL': ['FACTORIES','WAREHOUSES','MANUFACTURING PLANTS','WORKSHOPS','FUEL STATIONS'],
+  'STORAGE': ['STORAGE FACILITIES','PARKING STRUCTURES','COLD STORAGE','BONDED WAREHOUSES'],
+  'SPECIAL STRUCTURE': ['GAS STATIONS','TOWERS','BRIDGES','TUNNELS','CELL SITES','WATER TANKS']
 };
 
 // ═══════════════════════════════════════════════════════
@@ -762,8 +839,6 @@ function openNewModal() {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('new-modal').classList.add('open');
   document.getElementById('f-datetime').value = new Date().toISOString().slice(0,16);
-  document.getElementById('f-province').value = currentUser.province || '';
-  document.getElementById('f-city').value = currentUser.city || '';
   document.getElementById('modal-msg').className = 'msg';
 }
 function closeNewModal() { document.getElementById('new-modal').classList.remove('open'); }
@@ -791,24 +866,39 @@ async function submitRecord() {
   if (!occupancy) return showModalMsg('Type of occupancy is required.','error');
   if (!hazard) return showModalMsg('Hazard classification is required.','error');
 
+  const toUpper = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+
   const record = {
     id: Date.now().toString(),
-    province: document.getElementById('f-province').value.trim(),
-    city: document.getElementById('f-city').value.trim(),
-    marshal: document.getElementById('f-marshal').value.trim(),
-    inspector: document.getElementById('f-inspector').value.trim(),
+    province: 'LANAO DEL NORTE',
+    city: 'ILIGAN CITY',
+    station: 'ILIGAN CITY FIRE STATION',
+    marshal: 'SUPT JACK M BIGWIL',
+    inspector: document.getElementById('f-inspector').value.trim().toUpperCase(),
     inspectorId: currentUser.id,
-    estname, address: document.getElementById('f-address').value.trim(),
-    datetime, fsicDate: document.getElementById('f-fsic-date').value,
-    contactPerson: document.getElementById('f-contact-person').value.trim(),
-    contactNumber: document.getElementById('f-contact-number').value.trim(),
+    estname: toUpper('f-estname'),
+    address: toUpper('f-address'),
+    datetime, fsicDate: val('f-fsic-date'),
+    contactPerson: toUpper('f-contact-person'),
+    contactNumber: val('f-contact-number'),
     occupancy, subclass: document.getElementById('f-subclass').value,
-    floorArea: document.getElementById('f-floorarea').value || 0,
-    height: document.getElementById('f-height').value || 0,
-    storeys: document.getElementById('f-storeys').value || 0,
-    basement: document.getElementById('f-basement').value || 0,
+    floorArea: document.getElementById('f-floorarea').value !== '' ? Number(document.getElementById('f-floorarea').value) : 0,
+    height: document.getElementById('f-height').value !== '' ? Number(document.getElementById('f-height').value) : 0,
+    storeys: document.getElementById('f-storeys').value !== '' ? Number(document.getElementById('f-storeys').value) : 0,
+    basement: document.getElementById('f-basement').value !== '' ? Number(document.getElementById('f-basement').value) : 0,
     hazard, firstInspection: document.getElementById('f-first-insp').checked,
-    reinspections: document.getElementById('f-reinspect').value || 0,
+    reinspections: document.getElementById('f-reinspect').value !== '' ? Number(document.getElementById('f-reinspect').value) : 0,
+    afssInstall: val('f-afss-install'), afssCond: val('f-afss-cond'),
+    fdasInstall: val('f-fdas-install'), fdasCond: val('f-fdas-cond'),
+    wspInstall: val('f-wsp-install'), wspCond: val('f-wsp-cond'),
+    fexitInstall: val('f-fexit-install'), fexitCond: val('f-fexit-cond'),
+    elightInstall: val('f-elight-install'),
+    dsignInstall: val('f-dsign-install'),
+    fesignInstall: val('f-fesign-install'),
+    fextInstall: val('f-fext-install'),
+    remarksStatus: val('f-remarks-status'),
+    remarksNotes: toUpper('f-remarks-notes'),
     createdAt: new Date().toISOString()
   };
 
@@ -834,10 +924,17 @@ async function submitRecord() {
   updateStats(); renderTable(); renderRecentTable();
 
   // Reset form
-  ['f-estname','f-address','f-contact-person','f-contact-number','f-fsic-date','f-marshal','f-floorarea','f-height','f-storeys','f-basement'].forEach(id => document.getElementById(id).value = '');
+  ['f-estname','f-address','f-contact-person','f-contact-number','f-fsic-date','f-floorarea','f-height','f-storeys','f-basement','f-remarks-notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('f-occupancy').value = '';
   document.getElementById('f-hazard').value = '';
   document.getElementById('f-reinspect').value = '0';
+  document.getElementById('f-first-insp').checked = true;
+  document.getElementById('f-subclass').innerHTML = '<option value="">Select Occupancy first</option>';
+  ['f-afss-install','f-afss-cond','f-fdas-install','f-fdas-cond','f-wsp-install','f-wsp-cond',
+   'f-fexit-install','f-fexit-cond','f-elight-install','f-dsign-install',
+   'f-fesign-install','f-fext-install','f-remarks-status'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = '';
+  });
   document.getElementById('f-first-insp').checked = true;
   document.getElementById('f-subclass').innerHTML = '<option value="">Select Occupancy first</option>';
 }
@@ -930,8 +1027,8 @@ function escHtml(s) {
 function exportCSV() {
   const records = getRecords();
   if (!records.length) return showToast('No records to export','error');
-  const headers = ['Province','City','Fire Marshal','Inspector','Establishment','Address','Date & Time','Contact Person','Contact Number','FSIC Date','Occupancy','Sub-class','Floor Area (m²)','Height (m)','Storeys','Basement Levels','Hazard','1st Inspection','Re-inspections'];
-  const rows = records.map(r => [r.province,r.city,r.marshal,r.inspector,r.estname,r.address,r.datetime,r.contactPerson,r.contactNumber,r.fsicDate,r.occupancy,r.subclass,r.floorArea,r.height,r.storeys,r.basement,r.hazard,r.firstInspection?'✓':'',r.reinspections].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const headers = ['Province','City','Station','Fire Marshal','Inspector','Establishment','Address','Date & Time','Contact Person','Contact Number','FSIC Date','Occupancy','Sub-class','Floor Area (m²)','Height (m)','Storeys','Basement Levels','Hazard','1st Inspection','Re-inspections','AFSS Install','AFSS Condition','FDAS Install','FDAS Condition','Wet Standpipe Install','Wet Standpipe Condition','Fire Exit Install','Fire Exit Condition','Emergency Lights','Directional Signs','Fire Exit Signs','Fire Extinguisher','Remarks Status','Remarks Notes'];
+  const rows = records.map(r => [r.province,r.city,r.station||'ILIGAN CITY FIRE STATION',r.marshal,r.inspector,r.estname,r.address,r.datetime,r.contactPerson,r.contactNumber,r.fsicDate,r.occupancy,r.subclass,r.floorArea,r.height,r.storeys,r.basement,r.hazard,r.firstInspection?'TRUE':'FALSE',r.reinspections,r.afssInstall||'',r.afssCond||'',r.fdasInstall||'',r.fdasCond||'',r.wspInstall||'',r.wspCond||'',r.fexitInstall||'',r.fexitCond||'',r.elightInstall||'',r.dsignInstall||'',r.fesignInstall||'',r.fextInstall||'',r.remarksStatus||'',r.remarksNotes||''].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
   const csv = [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
