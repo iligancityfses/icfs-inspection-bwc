@@ -758,7 +758,7 @@ document.getElementById('btn-register').addEventListener('click', async function
     if (exists) { showMsg('reg-msg','Username already exists.','error'); this.disabled=false; this.textContent='Create Account'; return; }
 
     // Firebase Auth uses email — generate a unique internal email from username
-    const email = `${username}@bfp-iligan-system.com`;
+    const email = `${username}@bfp-iligan.internal`;
     const cred  = await createUserWithEmailAndPassword(auth, email, password);
     const uid   = cred.user.uid;
 
