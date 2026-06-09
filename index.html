@@ -627,11 +627,33 @@
 <!-- ─── TOAST CONTAINER ─── -->
 <div class="toast-wrap" id="toast-wrap"></div>
 
-<script>
+<script type="module">
 // ═══════════════════════════════════════════════════════
-//  CONFIG
+//  FIREBASE CONFIG  (BFP-Iligan)
 // ═══════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbwcVb8WqSSdm_lTcBhvteL4_9fJ88ug-VNRqXDMIbqpgdXoqwUOlD_FSbY_BY_3hhRh/exec';
+import { initializeApp }                              from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword,
+         signInWithEmailAndPassword, signOut,
+         onAuthStateChanged }                         from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, collection, doc, setDoc,
+         getDoc, getDocs, addDoc, query, orderBy,
+         enableIndexedDbPersistence }                 from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey:            "AIzaSyC7odTZEN28CjRhluP_1sDE557eKTCmCCc",
+  authDomain:        "bfp-iligan.firebaseapp.com",
+  projectId:         "bfp-iligan",
+  storageBucket:     "bfp-iligan.firebasestorage.app",
+  messagingSenderId: "728061725277",
+  appId:             "1:728061725277:web:686fe6a9d79a73e34ddbb4"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// Enable offline persistence so records save even without signal
+enableIndexedDbPersistence(db).catch(() => {});
 let currentUser = null;
 
 const SUBCLASS_MAP = {
@@ -650,33 +672,22 @@ const SUBCLASS_MAP = {
 };
 
 // ═══════════════════════════════════════════════════════
-//  STORAGE HELPERS (localStorage + optional Google Sheet)
+//  CACHE  (in-memory, refreshed on load)
 // ═══════════════════════════════════════════════════════
-function getUsers() { return JSON.parse(localStorage.getItem('bfp_users') || '[]'); }
-function saveUsers(u) { localStorage.setItem('bfp_users', JSON.stringify(u)); }
-function getRecords() { return JSON.parse(localStorage.getItem('bfp_records') || '[]'); }
-function saveRecords(r) { localStorage.setItem('bfp_records', JSON.stringify(r)); }
+let cachedRecords = [];
+
+async function fetchAllRecords() {
+  try {
+    const snap = await getDocs(query(collection(db, 'inspections'), orderBy('createdAt','desc')));
+    cachedRecords = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch(e) { /* offline — cachedRecords stays as-is */ }
+  return cachedRecords;
+}
 
 // All API calls use GET with a JSON-encoded "payload" parameter.
-// This is required because Google Apps Script does not support CORS
-// preflight (OPTIONS) requests, which are triggered by POST with
-// Content-Type: application/json. GET requests bypass this limitation.
-async function apiPost(action, data) {
-  if (!API_URL) return null;
-  try {
-    const payload = encodeURIComponent(JSON.stringify(data));
-    const resp = await fetch(`${API_URL}?action=${action}&payload=${payload}`);
-    return await resp.json();
-  } catch(e) { return null; }
-}
-
-async function apiGet(action, params = '') {
-  if (!API_URL) return null;
-  try {
-    const resp = await fetch(`${API_URL}?action=${action}&${params}`);
-    return await resp.json();
-  } catch(e) { return null; }
-}
+// Kept as no-ops so nothing breaks — Firebase calls replace them inline.
+async function apiPost() { return null; }
+async function apiGet()  { return null; }
 
 // ═══════════════════════════════════════════════════════
 //  AUTH
@@ -697,41 +708,40 @@ function showMsg(id, text, type) {
 }
 
 document.getElementById('btn-login').addEventListener('click', async function() {
-  const username = document.getElementById('login-username').value.trim();
+  const username = document.getElementById('login-username').value.trim().toLowerCase();
   const password = document.getElementById('login-password').value.trim();
   if (!username || !password) return showMsg('login-msg','Please fill in all fields.','error');
 
   this.disabled = true; this.innerHTML = '<span class="spinner"></span>Signing in...';
 
-  // Try API first
-  if (API_URL) {
-    const res = await apiPost('login', { username, password });
-    if (res && res.success) {
-      loginSuccess(res.user);
-      this.disabled = false; this.textContent = 'Sign In';
-      return;
-    }
+  try {
+    // Look up the user's email by username in Firestore
+    const snap = await getDocs(collection(db, 'users'));
+    const userDoc = snap.docs.find(d => d.data().username?.toLowerCase() === username);
+    if (!userDoc) throw new Error('User not found.');
+    const profile = userDoc.data();
+    // Sign in with Firebase Auth using stored email
+    await signInWithEmailAndPassword(auth, profile.email, password);
+    // onAuthStateChanged will handle the rest
+  } catch(e) {
+    let msg = 'Invalid username or password.';
+    if (e.code === 'auth/too-many-requests') msg = 'Too many attempts. Please try again later.';
+    showMsg('login-msg', msg, 'error');
+    this.disabled = false; this.textContent = 'Sign In';
   }
-
-  // Fallback: local
-  const users = getUsers();
-  const user = users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.password === password);
-  if (!user) {
-    showMsg('login-msg','Invalid username or password.','error');
-  } else {
-    loginSuccess(user);
-  }
-  this.disabled = false; this.textContent = 'Sign In';
 });
 
+
+
+
 document.getElementById('btn-register').addEventListener('click', async function() {
-  const fname = document.getElementById('reg-fname').value.trim();
-  const lname = document.getElementById('reg-lname').value.trim();
-  const rank = document.getElementById('reg-rank').value;
-  const station = document.getElementById('reg-station').value.trim();
-  const city = document.getElementById('reg-city').value.trim();
+  const fname    = document.getElementById('reg-fname').value.trim();
+  const lname    = document.getElementById('reg-lname').value.trim();
+  const rank     = document.getElementById('reg-rank').value;
+  const station  = document.getElementById('reg-station').value.trim();
+  const city     = document.getElementById('reg-city').value.trim();
   const province = document.getElementById('reg-province').value.trim();
-  const username = document.getElementById('reg-username').value.trim();
+  const username = document.getElementById('reg-username').value.trim().toLowerCase();
   const password = document.getElementById('reg-password').value.trim();
 
   if (!fname||!lname||!rank||!station||!city||!username||!password)
@@ -739,43 +749,62 @@ document.getElementById('btn-register').addEventListener('click', async function
   if (password.length < 6)
     return showMsg('reg-msg','Password must be at least 6 characters.','error');
 
-  const user = { id: Date.now().toString(), fname, lname, rank, station, city, province, username, password, created: new Date().toISOString() };
-
   this.disabled = true; this.innerHTML = '<span class="spinner"></span>Creating account...';
 
-  // Try API
-  if (API_URL) {
-    const res = await apiPost('register', user);
-    if (res && res.error) { showMsg('reg-msg', res.error, 'error'); this.disabled=false; this.textContent='Create Account'; return; }
-  }
+  try {
+    // Check username uniqueness in Firestore
+    const snap = await getDocs(collection(db, 'users'));
+    const exists = snap.docs.some(d => d.data().username?.toLowerCase() === username);
+    if (exists) { showMsg('reg-msg','Username already exists.','error'); this.disabled=false; this.textContent='Create Account'; return; }
 
-  // Local
-  const users = getUsers();
-  if (users.find(u => u.username.toLowerCase() === username.toLowerCase())) {
-    showMsg('reg-msg','Username already exists. Please choose another.','error');
-    this.disabled=false; this.textContent='Create Account'; return;
-  }
-  users.push(user);
-  saveUsers(users);
+    // Firebase Auth uses email — generate a unique internal email from username
+    const email = `${username}@bfp-iligan.internal`;
+    const cred  = await createUserWithEmailAndPassword(auth, email, password);
+    const uid   = cred.user.uid;
 
-  showMsg('reg-msg','Account created! You can now sign in.','success');
-  this.disabled=false; this.textContent='Create Account';
-  setTimeout(showLogin, 1500);
+    const profile = {
+      uid, fname, lname, rank, station, city, province, username, email,
+      created: new Date().toISOString()
+    };
+    await setDoc(doc(db, 'users', uid), profile);
+    showMsg('reg-msg','Account created! Signing you in...','success');
+    // onAuthStateChanged fires automatically — no manual loginSuccess needed
+  } catch(e) {
+    let msg = 'Registration failed. Please try again.';
+    if (e.code === 'auth/email-already-in-use') msg = 'Username already taken.';
+    showMsg('reg-msg', msg, 'error');
+    this.disabled=false; this.textContent='Create Account';
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+//  FIREBASE AUTH STATE — single source of truth
+// ═══════════════════════════════════════════════════════
+onAuthStateChanged(auth, async (firebaseUser) => {
+  if (firebaseUser) {
+    // Load profile from Firestore
+    const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
+    if (!snap.exists()) return;
+    currentUser = { uid: firebaseUser.uid, id: firebaseUser.uid, ...snap.data() };
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display  = 'flex';
+    // Reset login button state
+    const btn = document.getElementById('btn-login');
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+    initApp();
+  } else {
+    document.getElementById('app-screen').style.display  = 'none';
+    document.getElementById('auth-screen').style.display = 'flex';
+  }
 });
 
 function loginSuccess(user) {
-  currentUser = user;
-  sessionStorage.setItem('bfp_session', JSON.stringify(user));
-  document.getElementById('auth-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display = 'flex';
-  initApp();
+  // No-op — onAuthStateChanged handles everything now
 }
 
-function logout() {
-  sessionStorage.removeItem('bfp_session');
+async function logout() {
+  await signOut(auth);
   currentUser = null;
-  document.getElementById('app-screen').style.display = 'none';
-  document.getElementById('auth-screen').style.display = 'flex';
   document.getElementById('login-username').value = '';
   document.getElementById('login-password').value = '';
 }
@@ -806,14 +835,7 @@ function initApp() {
 }
 
 async function loadRecords() {
-  // Try syncing from Google Sheet
-  if (API_URL) {
-    const res = await apiGet('records');
-    if (res && res.records) {
-      const merged = mergeRecords(getRecords(), res.records);
-      saveRecords(merged);
-    }
-  }
+  await fetchAllRecords();
   updateStats(); renderTable(); renderRecentTable();
 }
 
@@ -905,18 +927,16 @@ async function submitRecord() {
   const btn = document.getElementById('btn-submit-record');
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Saving...';
 
-  // Save locally first
-  const records = getRecords();
-  records.unshift(record);
-  saveRecords(records);
-
-  // Push to Google Sheet
-  if (API_URL) {
-    const res = await apiPost('addRecord', record);
-    if (res && res.success) showToast('Record saved to Google Sheet ✓','success');
-    else showToast('Saved locally (Sheet sync pending)','success');
-  } else {
-    showToast('Record saved locally','success');
+  try {
+    // Write to Firestore (works offline — syncs when connection returns)
+    const docRef = doc(collection(db, 'inspections'));
+    await setDoc(docRef, { ...record, id: docRef.id });
+    // Update local cache immediately
+    cachedRecords.unshift({ ...record, id: docRef.id });
+    showToast('Record saved ✓', 'success');
+  } catch(e) {
+    showToast('Saved offline — will sync when connected', 'success');
+    cachedRecords.unshift(record);
   }
 
   btn.disabled = false; btn.textContent = 'Save Record';
@@ -949,9 +969,9 @@ function showModalMsg(text, type) {
 //  STATS
 // ═══════════════════════════════════════════════════════
 function updateStats() {
-  const records = getRecords();
+  const records = cachedRecords;
   document.getElementById('stat-total').textContent = records.length;
-  document.getElementById('stat-mine').textContent = records.filter(r => r.inspectorId === currentUser.id).length;
+  document.getElementById('stat-mine').textContent = records.filter(r => r.inspectorId === currentUser.id || r.inspectorId === currentUser.uid).length;
   document.getElementById('stat-high').textContent = records.filter(r => r.hazard === 'HIGH').length;
   document.getElementById('stat-fsic').textContent = records.filter(r => r.fsicDate).length;
 }
@@ -970,7 +990,7 @@ function fmtDate(d) {
 }
 
 function renderRecentTable() {
-  const records = getRecords().slice(0,8);
+  const records = cachedRecords.slice(0,8);
   const tbody = document.getElementById('recent-tbody');
   if (!records.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">📋</div><p>No inspection records yet. Click "+ New Record" to add one.</p></div></td></tr>'; return; }
   tbody.innerHTML = records.map(r => `
@@ -989,7 +1009,7 @@ function renderTable() {
   const filterOcc = document.getElementById('filter-occupancy')?.value || '';
   const filterHaz = document.getElementById('filter-hazard')?.value || '';
 
-  let records = getRecords();
+  let records = cachedRecords;
   if (search) records = records.filter(r => r.estname?.toLowerCase().includes(search) || r.address?.toLowerCase().includes(search));
   if (filterOcc) records = records.filter(r => r.occupancy === filterOcc);
   if (filterHaz) records = records.filter(r => r.hazard === filterHaz);
@@ -1025,7 +1045,7 @@ function escHtml(s) {
 //  EXPORT CSV
 // ═══════════════════════════════════════════════════════
 function exportCSV() {
-  const records = getRecords();
+  const records = cachedRecords;
   if (!records.length) return showToast('No records to export','error');
   const headers = ['Province','City','Station','Fire Marshal','Inspector','Establishment','Address','Date & Time','Contact Person','Contact Number','FSIC Date','Occupancy','Sub-class','Floor Area (m²)','Height (m)','Storeys','Basement Levels','Hazard','1st Inspection','Re-inspections','AFSS Install','AFSS Condition','FDAS Install','FDAS Condition','Wet Standpipe Install','Wet Standpipe Condition','Fire Exit Install','Fire Exit Condition','Emergency Lights','Directional Signs','Fire Exit Signs','Fire Extinguisher','Remarks Status','Remarks Notes'];
   const rows = records.map(r => [r.province,r.city,r.station||'ILIGAN CITY FIRE STATION',r.marshal,r.inspector,r.estname,r.address,r.datetime,r.contactPerson,r.contactNumber,r.fsicDate,r.occupancy,r.subclass,r.floorArea,r.height,r.storeys,r.basement,r.hazard,r.firstInspection?'TRUE':'FALSE',r.reinspections,r.afssInstall||'',r.afssCond||'',r.fdasInstall||'',r.fdasCond||'',r.wspInstall||'',r.wspCond||'',r.fexitInstall||'',r.fexitCond||'',r.elightInstall||'',r.dsignInstall||'',r.fesignInstall||'',r.fextInstall||'',r.remarksStatus||'',r.remarksNotes||''].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
@@ -1051,12 +1071,17 @@ function showToast(msg, type = 'success') {
 }
 
 // ═══════════════════════════════════════════════════════
-//  AUTO LOGIN FROM SESSION
+//  EXPOSE FUNCTIONS TO HTML onclick handlers
 // ═══════════════════════════════════════════════════════
-(function() {
-  const sess = sessionStorage.getItem('bfp_session');
-  if (sess) { currentUser = JSON.parse(sess); loginSuccess(currentUser); }
-})();
+window.showRegister    = showRegister;
+window.showLogin       = showLogin;
+window.logout          = logout;
+window.switchTab       = switchTab;
+window.openNewModal    = openNewModal;
+window.closeNewModal   = closeNewModal;
+window.updateSubclass  = updateSubclass;
+window.submitRecord    = submitRecord;
+window.exportCSV       = exportCSV;
 </script>
 </body>
 </html>
