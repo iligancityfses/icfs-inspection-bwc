@@ -102,6 +102,12 @@
   .fp-table tr:last-child td { border-bottom: none; }
   .fp-table tr:hover td { background: rgba(255,255,255,.03); }
   .fp-select { width: 100%; padding: 5px 8px; background: var(--navy-mid); color: var(--white); border: 1px solid var(--navy-light); border-radius: 5px; font-size: 12px; }
+  /* Show Password */
+  .pw-wrap { position: relative; display: flex; align-items: center; }
+  .pw-wrap input { flex: 1; padding-right: 40px; }
+  .pw-toggle { position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 16px; color: var(--gray); padding: 0; line-height: 1; transition: color .2s; }
+  .pw-toggle:hover { color: var(--white); }
+  .pw-toggle.active { color: var(--gold); }
   .form-group input::placeholder { color: rgba(136,146,164,0.6); }
 
   .btn-primary {
@@ -199,6 +205,9 @@
   .btn-new:hover { background: var(--red-bright); }
   .btn-export { background: rgba(240,165,0,0.15); border: 1px solid rgba(240,165,0,0.3) !important; color: var(--gold); }
   .btn-export:hover { background: rgba(240,165,0,0.25); }
+  .btn-mine { background: rgba(100,180,255,.1); color: #7ec8f7; border: 1px solid rgba(100,180,255,.25) !important; }
+  .btn-mine:hover { background: rgba(100,180,255,.2); }
+  .btn-mine.active { background: rgba(100,180,255,.25); color: #fff; border-color: rgba(100,180,255,.6) !important; box-shadow: 0 0 0 2px rgba(100,180,255,.15); }
   .btn-action.outline { background: transparent; border: 1px solid var(--border); color: var(--gray); }
   .btn-action.outline:hover { border-color: var(--gold); color: var(--gold); }
 
@@ -317,8 +326,14 @@
     <h2 class="auth-title">Inspector Login</h2>
     <p class="auth-subtitle">Sign in to access your inspection dashboard and manage BWC records.</p>
     <div class="msg" id="login-msg"></div>
-    <div class="form-group"><label>Employee ID / Username</label><input type="text" id="login-username" placeholder="e.g. FO1DELACRUZ" autocomplete="username"></div>
-    <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="Your password" autocomplete="current-password"></div>
+    <div class="form-group"><label>Employee ID / Username *</label><input type="text" id="login-username" placeholder="e.g. FO1DELACRUZ" autocomplete="username" required></div>
+    <div class="form-group">
+      <label>Password *</label>
+      <div class="pw-wrap">
+        <input type="password" id="login-password" placeholder="Your password" autocomplete="current-password" required>
+        <button type="button" class="pw-toggle" onclick="togglePw('login-password', this)" tabindex="-1">👁</button>
+      </div>
+    </div>
     <button class="btn-primary" id="btn-login">Sign In</button>
     <p class="auth-switch">No account yet? <a onclick="showRegister()">Create Inspector Account →</a></p>
   </div>
@@ -335,28 +350,34 @@
     <p class="auth-subtitle">Fill in your official BFP personnel information to register.</p>
     <div class="msg" id="reg-msg"></div>
     <div class="form-row">
-      <div class="form-group"><label>First Name</label><input type="text" id="reg-fname" placeholder="Juan"></div>
-      <div class="form-group"><label>Last Name</label><input type="text" id="reg-lname" placeholder="Dela Cruz"></div>
+      <div class="form-group"><label>First Name *</label><input type="text" id="reg-fname" placeholder="Juan" required></div>
+      <div class="form-group"><label>Last Name *</label><input type="text" id="reg-lname" placeholder="Dela Cruz" required></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Rank</label>
-        <select id="reg-rank">
+      <div class="form-group"><label>Rank *</label>
+        <select id="reg-rank" required>
           <option value="">Select Rank</option>
           <option>FO1</option><option>FO2</option><option>FO3</option>
           <option>SFO1</option><option>SFO2</option><option>SFO3</option>
           <option>FINSP</option><option>FSINSP</option><option>FCINSP</option>
-          <option>FSSUPT</option><option>FCHIEFS</option><option>FSCHIEF</option>
+          <option>FSSUPT</option><option>SUPT</option><option>FCHIEFS</option><option>FSCHIEF</option>
         </select>
       </div>
-      <div class="form-group"><label>Station / Unit</label><input type="text" id="reg-station" placeholder="Iligan City Fire Station"></div>
+      <div class="form-group"><label>Station / Unit *</label><input type="text" id="reg-station" placeholder="Iligan City Fire Station" required></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>City / Municipality</label><input type="text" id="reg-city" placeholder="Iligan City"></div>
+      <div class="form-group"><label>City / Municipality *</label><input type="text" id="reg-city" placeholder="Iligan City" required></div>
       <div class="form-group"><label>Province / Region</label><input type="text" id="reg-province" placeholder="Lanao del Norte"></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label>Employee ID / Username</label><input type="text" id="reg-username" placeholder="FO1DELACRUZ"></div>
-      <div class="form-group"><label>Password</label><input type="password" id="reg-password" placeholder="Min. 6 characters"></div>
+      <div class="form-group"><label>Employee ID / Username *</label><input type="text" id="reg-username" placeholder="FO1DELACRUZ" required></div>
+      <div class="form-group">
+        <label>Password * <span style="font-size:11px;color:var(--gray);">(min. 6 characters)</span></label>
+        <div class="pw-wrap">
+          <input type="password" id="reg-password" placeholder="Min. 6 characters" required minlength="6">
+          <button type="button" class="pw-toggle" onclick="togglePw('reg-password', this)" tabindex="-1">👁</button>
+        </div>
+      </div>
     </div>
     <button class="btn-primary" id="btn-register">Create Account</button>
     <p class="auth-switch">Already have an account? <a onclick="showLogin()">Sign In →</a></p>
@@ -416,6 +437,7 @@
         <div class="section-title">Inspection <span>Records</span></div>
         <div class="filter-bar">
           <input type="text" id="search-input" placeholder="Search establishment..." oninput="renderTable()" style="width:180px;">
+          <button class="btn-action btn-mine" id="btn-filter-mine" onclick="toggleMineFilter()" title="Show only my records">👤 My Records</button>
           <select id="filter-occupancy" onchange="renderTable()"><option value="">All Occupancy</option>
             <option>ASSEMBLY</option><option>EDUCATIONAL</option><option>DAY CARE</option>
             <option>HEALTH CARE</option><option>RESIDENTIAL</option><option>MERCANTILE</option>
@@ -513,7 +535,7 @@
           </select>
         </div>
         <div class="form-group"><label>Sub-Classification</label>
-          <select id="f-subclass">
+          <select id="f-subclass" disabled>
             <option value="">Select Occupancy first</option>
           </select>
         </div>
@@ -639,18 +661,18 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 
 const SUBCLASS_MAP = {
-  'ASSEMBLY': ['THEATERS & CINEMAS','AUDITORIUMS','NIGHTCLUBS & BARS','RESTAURANTS & FOOD COURTS','CHURCHES & WORSHIP HALLS','SPORTS ARENAS','CONVENTION HALLS','MUSEUMS & GALLERIES'],
-  'EDUCATIONAL': ['SCHOOLS & UNIVERSITIES','LIBRARIES','TRAINING CENTERS','DAYCARE CENTERS'],
-  'DAY CARE': [],
-  'HEALTH CARE': ['HOSPITALS','CLINICS','NURSING HOMES','DIALYSIS CENTERS','DENTAL CLINICS'],
-  'RESIDENTIAL BOARD & CARE': [],
-  'RESIDENTIAL': ['HOTELS & DORMITORIES','APARTMENT BUILDINGS','LODGING OR ROOMING HOUSES','SINGLE AND TWO-FAMILY DWELLINGS'],
-  'DETENTION & CORRECTIONAL': [],
-  'MERCANTILE': ['SUPERMARKETS','DEPARTMENT STORES','SHOPPING MALLS','RETAIL STORES','PUBLIC MARKETS','CONVENIENCE STORES'],
-  'BUSINESS': ['OFFICES','BANKS','GOVERNMENT BUILDINGS','BPO CENTERS','PAWNSHOPS','MONEY CHANGERS'],
-  'INDUSTRIAL': ['FACTORIES','WAREHOUSES','MANUFACTURING PLANTS','WORKSHOPS','FUEL STATIONS'],
-  'STORAGE': ['STORAGE FACILITIES','PARKING STRUCTURES','COLD STORAGE','BONDED WAREHOUSES'],
-  'SPECIAL STRUCTURE': ['GAS STATIONS','TOWERS','BRIDGES','TUNNELS','CELL SITES','WATER TANKS']
+  'ASSEMBLY': ['THEATERS & CINEMAS','AUDITORIUMS','NIGHTCLUBS & BARS','RESTAURANTS & FOOD COURTS','CHURCHES & WORSHIP HALLS','SPORTS ARENAS','CONVENTION HALLS','MUSEUMS & GALLERIES','OTHERS'],
+  'EDUCATIONAL': ['SCHOOLS & UNIVERSITIES','LIBRARIES','TRAINING CENTERS','DAYCARE CENTERS','OTHERS'],
+  'DAY CARE': ['DAYCARE CENTER','OTHERS'],
+  'HEALTH CARE': ['HOSPITALS','CLINICS','NURSING HOMES','DIALYSIS CENTERS','DENTAL CLINICS','OTHERS'],
+  'RESIDENTIAL BOARD & CARE': ['BOARDING HOUSES','CARE HOMES','REHABILITATION CENTERS','OTHERS'],
+  'RESIDENTIAL': ['HOTELS & DORMITORIES','APARTMENT BUILDINGS','LODGING OR ROOMING HOUSES','SINGLE AND TWO-FAMILY DWELLINGS','OTHERS'],
+  'DETENTION & CORRECTIONAL': ['JAILS','PRISONS','DETENTION CENTERS','OTHERS'],
+  'MERCANTILE': ['SUPERMARKETS','DEPARTMENT STORES','SHOPPING MALLS','RETAIL STORES','PUBLIC MARKETS','CONVENIENCE STORES','OTHERS'],
+  'BUSINESS': ['OFFICES','BANKS','GOVERNMENT BUILDINGS','BPO CENTERS','PAWNSHOPS','MONEY CHANGERS','OTHERS'],
+  'INDUSTRIAL': ['FACTORIES','WAREHOUSES','MANUFACTURING PLANTS','WORKSHOPS','FUEL STATIONS','OTHERS'],
+  'STORAGE': ['STORAGE FACILITIES','PARKING STRUCTURES','COLD STORAGE','BONDED WAREHOUSES','OTHERS'],
+  'SPECIAL STRUCTURE': ['GAS STATIONS','TOWERS','BRIDGES','TUNNELS','CELL SITES','WATER TANKS','OTHERS']
 };
 
 // ═══════════════════════════════════════════════════════
@@ -728,31 +750,43 @@ document.getElementById('btn-login').addEventListener('click', async function() 
   this.disabled = true; this.innerHTML = '<span class="spinner"></span>Signing in...';
 
   try {
-    // Find user profile by username to get their email
-    const { data: users, error: findErr } = await sb
-      .from('users')
-      .select('*')
-      .eq('username', username)
-      .limit(1);
+    const email = `${username}@bfp-iligan.app`;
 
-    if (findErr || !users || users.length === 0) {
-      showMsg('login-msg','Invalid username or password.','error');
-      this.disabled = false; this.textContent = 'Sign In'; return;
-    }
-
-    const profile = users[0];
-    const email   = `${username}@bfp-iligan.app`;
-
+    // Step 1 — Authenticate
     const { data: authData, error: authErr } = await sb.auth.signInWithPassword({ email, password });
     if (authErr) {
-      showMsg('login-msg','Invalid username or password.','error');
+      showMsg('login-msg', `Auth error: ${authErr.message}`, 'error');
       this.disabled = false; this.textContent = 'Sign In'; return;
     }
 
-    currentUser = { id: authData.user.id, ...profile };
+    // Step 2 — Wait for session to propagate, then load profile
+    // Use the authenticated client with the user's own session
+    const { data: profile, error: profileErr } = await sb
+      .from('users')
+      .select('*')
+      .eq('id', authData.user.id)
+      .single();
+
+    if (profileErr || !profile) {
+      // Fallback: try by username
+      const { data: byUsername, error: byUsernameErr } = await sb
+        .from('users')
+        .select('*')
+        .ilike('username', username)
+        .single();
+
+      if (byUsernameErr || !byUsername) {
+        showMsg('login-msg', `Profile error: ${profileErr?.message || byUsernameErr?.message}. Try re-registering.`, 'error');
+        this.disabled = false; this.textContent = 'Sign In'; return;
+      }
+      currentUser = { id: authData.user.id, ...byUsername };
+    } else {
+      currentUser = { id: authData.user.id, ...profile };
+    }
+
     loginSuccess(currentUser);
   } catch(e) {
-    showMsg('login-msg','Login failed. Please try again.','error');
+    showMsg('login-msg', 'Login failed: ' + (e.message || 'Unknown error'), 'error');
     this.disabled = false; this.textContent = 'Sign In';
   }
 });
@@ -778,22 +812,34 @@ document.getElementById('btn-register').addEventListener('click', async function
   this.disabled = true; this.innerHTML = '<span class="spinner"></span>Creating account...';
 
   try {
-    // Check username uniqueness
-    const { data: existing } = await sb.from('users').select('id').eq('username', username).limit(1);
+    // Check username uniqueness (case-insensitive)
+    const { data: existing } = await sb.from('users').select('id').ilike('username', username).limit(1);
     if (existing && existing.length > 0) {
       showMsg('reg-msg','Username already exists.','error');
       this.disabled = false; this.textContent = 'Create Account'; return;
     }
 
-    // Create auth user (email derived from username)
+    // Create auth user — email derived from lowercased username
     const email = `${username}@bfp-iligan.app`;
-    const { data: authData, error: authErr } = await sb.auth.signUp({ email, password });
+    const { data: authData, error: authErr } = await sb.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: null }   // suppress confirmation email
+    });
     if (authErr) throw authErr;
 
-    // Save profile to users table
+    // Supabase may return a fake user when email confirmation is on
+    // Check if we got a real user ID
+    if (!authData.user?.id) {
+      showMsg('reg-msg', 'Registration blocked by email confirmation. Please go to Supabase → Authentication → Providers → Email and turn OFF "Confirm email", then try again.', 'error');
+      this.disabled = false; this.textContent = 'Create Account'; return;
+    }
+
+    // Save profile to users table (username always stored lowercase)
     const { error: profileErr } = await sb.from('users').insert({
       id: authData.user.id,
-      fname, lname, rank, station, city, province, username
+      fname, lname, rank, station, city, province,
+      username: username.toLowerCase()
     });
     if (profileErr) throw profileErr;
 
@@ -891,22 +937,45 @@ function closeNewModal() { document.getElementById('new-modal').classList.remove
 function updateSubclass() {
   const occ = document.getElementById('f-occupancy').value;
   const sel = document.getElementById('f-subclass');
-  sel.innerHTML = '<option value="">None / N/A</option>';
-  (SUBCLASS_MAP[occ] || []).forEach(s => { const o = document.createElement('option'); o.value = o.textContent = s; sel.appendChild(o); });
+  const list = SUBCLASS_MAP[occ] || [];
+  if (!occ) {
+    sel.innerHTML = '<option value="">Select Occupancy first</option>';
+    sel.disabled = true;
+    return;
+  }
+  sel.disabled = false;
+  sel.innerHTML = `<option value="">— Select Sub-class *</option>`;
+  list.forEach(s => {
+    const o = document.createElement('option');
+    o.value = o.textContent = s;
+    sel.appendChild(o);
+  });
 }
 
 // ═══════════════════════════════════════════════════════
 //  SUBMIT RECORD
 // ═══════════════════════════════════════════════════════
 async function submitRecord() {
-  const estname = document.getElementById('f-estname').value.trim();
-  const datetime = document.getElementById('f-datetime').value;
+  const estname   = document.getElementById('f-estname').value.trim();
+  const address   = document.getElementById('f-address').value.trim();
+  const datetime  = document.getElementById('f-datetime').value;
   const occupancy = document.getElementById('f-occupancy').value;
-  const hazard = document.getElementById('f-hazard').value;
-  if (!estname) return showModalMsg('Establishment name is required.','error');
-  if (!datetime) return showModalMsg('Date & time of inspection is required.','error');
-  if (!occupancy) return showModalMsg('Type of occupancy is required.','error');
-  if (!hazard) return showModalMsg('Hazard classification is required.','error');
+  const hazard    = document.getElementById('f-hazard').value;
+  const contactPerson = document.getElementById('f-contact-person').value.trim();
+  const contactNumber = document.getElementById('f-contact-number').value.trim();
+  const fsicDate  = document.getElementById('f-fsic-date').value;
+
+  // Required field checks
+  if (!estname)       return showModalMsg('Establishment name is required.', 'error');
+  if (!address)       return showModalMsg('Address is required.', 'error');
+  if (!datetime)      return showModalMsg('Date & time of inspection is required.', 'error');
+  if (!fsicDate)      return showModalMsg('FSIC date is required.', 'error');
+  if (!contactPerson) return showModalMsg('Contact person is required.', 'error');
+  if (!contactNumber) return showModalMsg('Contact number is required.', 'error');
+  if (!occupancy)     return showModalMsg('Type of occupancy is required.', 'error');
+  if (!hazard)        return showModalMsg('Hazard classification is required.', 'error');
+  const subclass = document.getElementById('f-subclass').value;
+  if (!subclass)      return showModalMsg('Please select a sub-class for the occupancy type.', 'error');
 
   const toUpper = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
   const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
@@ -924,7 +993,7 @@ async function submitRecord() {
     datetime, fsicDate: val('f-fsic-date'),
     contactPerson: toUpper('f-contact-person'),
     contactNumber: val('f-contact-number'),
-    occupancy, subclass: document.getElementById('f-subclass').value,
+    occupancy, subclass,
     floorArea: document.getElementById('f-floorarea').value !== '' ? Number(document.getElementById('f-floorarea').value) : 0,
     height: document.getElementById('f-height').value !== '' ? Number(document.getElementById('f-height').value) : 0,
     storeys: document.getElementById('f-storeys').value !== '' ? Number(document.getElementById('f-storeys').value) : 0,
@@ -1002,14 +1071,14 @@ async function submitRecord() {
   document.getElementById('f-hazard').value = '';
   document.getElementById('f-reinspect').value = '0';
   document.getElementById('f-first-insp').checked = true;
-  document.getElementById('f-subclass').innerHTML = '<option value="">Select Occupancy first</option>';
+  const sc = document.getElementById('f-subclass');
+  sc.innerHTML = '<option value="">Select Occupancy first</option>';
+  sc.disabled = true;
   ['f-afss-install','f-afss-cond','f-fdas-install','f-fdas-cond','f-wsp-install','f-wsp-cond',
    'f-fexit-install','f-fexit-cond','f-elight-install','f-dsign-install',
    'f-fesign-install','f-fext-install','f-remarks-status'].forEach(id => {
     const el = document.getElementById(id); if(el) el.value = '';
   });
-  document.getElementById('f-first-insp').checked = true;
-  document.getElementById('f-subclass').innerHTML = '<option value="">Select Occupancy first</option>';
 }
 
 function showModalMsg(text, type) {
@@ -1019,8 +1088,32 @@ function showModalMsg(text, type) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  STATS
+//  SHOW / HIDE PASSWORD
 // ═══════════════════════════════════════════════════════
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+    btn.classList.add('active');
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
+    btn.classList.remove('active');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  MY RECORDS FILTER
+// ═══════════════════════════════════════════════════════
+let filterMine = false;
+function toggleMineFilter() {
+  filterMine = !filterMine;
+  const btn = document.getElementById('btn-filter-mine');
+  btn.classList.toggle('active', filterMine);
+  btn.textContent = filterMine ? '👤 My Records ✓' : '👤 My Records';
+  renderTable();
+}
 function updateStats() {
   const records = cachedRecords;
   document.getElementById('stat-total').textContent = records.length;
@@ -1058,14 +1151,15 @@ function renderRecentTable() {
 }
 
 function renderTable() {
-  const search = (document.getElementById('search-input')?.value || '').toLowerCase();
-  const filterOcc = document.getElementById('filter-occupancy')?.value || '';
-  const filterHaz = document.getElementById('filter-hazard')?.value || '';
+  const search     = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const filterOcc  = document.getElementById('filter-occupancy')?.value || '';
+  const filterHaz  = document.getElementById('filter-hazard')?.value || '';
 
   let records = cachedRecords;
-  if (search) records = records.filter(r => r.estname?.toLowerCase().includes(search) || r.address?.toLowerCase().includes(search));
-  if (filterOcc) records = records.filter(r => r.occupancy === filterOcc);
-  if (filterHaz) records = records.filter(r => r.hazard === filterHaz);
+  if (filterMine) records = records.filter(r => r.inspectorId === currentUser.id);
+  if (search)     records = records.filter(r => r.estname?.toLowerCase().includes(search) || r.address?.toLowerCase().includes(search));
+  if (filterOcc)  records = records.filter(r => r.occupancy === filterOcc);
+  if (filterHaz)  records = records.filter(r => r.hazard === filterHaz);
 
   const tbody = document.getElementById('main-tbody');
   if (!records.length) { tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state"><div class="icon">🔍</div><p>No records found.</p></div></td></tr>'; return; }
@@ -1137,15 +1231,17 @@ function showToast(msg, type = 'success') {
 // ═══════════════════════════════════════════════════════
 //  EXPOSE FUNCTIONS TO HTML onclick handlers
 // ═══════════════════════════════════════════════════════
-window.showRegister    = showRegister;
-window.showLogin       = showLogin;
-window.logout          = logout;
-window.switchTab       = switchTab;
-window.openNewModal    = openNewModal;
-window.closeNewModal   = closeNewModal;
-window.updateSubclass  = updateSubclass;
-window.submitRecord    = submitRecord;
-window.exportCSV       = exportCSV;
+window.showRegister      = showRegister;
+window.showLogin         = showLogin;
+window.logout            = logout;
+window.switchTab         = switchTab;
+window.openNewModal      = openNewModal;
+window.closeNewModal     = closeNewModal;
+window.updateSubclass    = updateSubclass;
+window.submitRecord      = submitRecord;
+window.exportCSV         = exportCSV;
+window.togglePw          = togglePw;
+window.toggleMineFilter  = toggleMineFilter;
 </script>
 </body>
 </html>
