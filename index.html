@@ -627,33 +627,15 @@
 <!-- ─── TOAST CONTAINER ─── -->
 <div class="toast-wrap" id="toast-wrap"></div>
 
-<script type="module">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+
 // ═══════════════════════════════════════════════════════
-//  FIREBASE CONFIG  (BFP-Iligan)
+//  SUPABASE CONFIG
 // ═══════════════════════════════════════════════════════
-import { initializeApp }                              from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword,
-         signInWithEmailAndPassword, signOut,
-         onAuthStateChanged }                         from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, collection, doc, setDoc,
-         getDoc, getDocs, addDoc, query, orderBy,
-         enableIndexedDbPersistence }                 from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-const firebaseConfig = {
-  apiKey:            "AIzaSyC7odTZEN28CjRhluP_1sDE557eKTCmCCc",
-  authDomain:        "bfp-iligan.firebaseapp.com",
-  projectId:         "bfp-iligan",
-  storageBucket:     "bfp-iligan.firebasestorage.app",
-  messagingSenderId: "728061725277",
-  appId:             "1:728061725277:web:686fe6a9d79a73e34ddbb4"
-};
-
-const app  = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db   = getFirestore(app);
-
-// Enable offline persistence so records save even without signal
-enableIndexedDbPersistence(db).catch(() => {});
+const SUPABASE_URL  = 'https://lbdkhslnhaajpncxyjfm.supabase.co';
+const SUPABASE_KEY  = 'sb_publishable_CyptnEzjgXFNeI0lJaSDgg_iClwD5yr';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentUser = null;
 
 const SUBCLASS_MAP = {
@@ -672,22 +654,53 @@ const SUBCLASS_MAP = {
 };
 
 // ═══════════════════════════════════════════════════════
-//  CACHE  (in-memory, refreshed on load)
+//  DATA HELPERS
 // ═══════════════════════════════════════════════════════
-let cachedRecords = [];
-
 async function fetchAllRecords() {
-  try {
-    const snap = await getDocs(query(collection(db, 'inspections'), orderBy('createdAt','desc')));
-    cachedRecords = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch(e) { /* offline — cachedRecords stays as-is */ }
+  const { data, error } = await sb
+    .from('inspections')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (!error && data) {
+    // Normalize snake_case → camelCase so the rest of the UI works unchanged
+    cachedRecords = data.map(r => ({
+      id:             r.id,
+      province:       r.province,
+      city:           r.city,
+      station:        r.station,
+      marshal:        r.marshal,
+      inspector:      r.inspector,
+      inspectorId:    r.inspector_id,
+      estname:        r.estname,
+      address:        r.address,
+      datetime:       r.datetime,
+      fsicDate:       r.fsic_date,
+      contactPerson:  r.contact_person,
+      contactNumber:  r.contact_number,
+      occupancy:      r.occupancy,
+      subclass:       r.subclass,
+      floorArea:      r.floor_area,
+      height:         r.height,
+      storeys:        r.storeys,
+      basement:       r.basement,
+      hazard:         r.hazard,
+      firstInspection: r.first_inspection,
+      reinspections:  r.reinspections,
+      afssInstall:    r.afss_install,  afssCond:    r.afss_cond,
+      fdasInstall:    r.fdas_install,  fdasCond:    r.fdas_cond,
+      wspInstall:     r.wsp_install,   wspCond:     r.wsp_cond,
+      fexitInstall:   r.fexit_install, fexitCond:   r.fexit_cond,
+      elightInstall:  r.elight_install,
+      dsignInstall:   r.dsign_install,
+      fesignInstall:  r.fesign_install,
+      fextInstall:    r.fext_install,
+      remarksStatus:  r.remarks_status,
+      remarksNotes:   r.remarks_notes,
+      createdAt:      r.created_at
+    }));
+  }
   return cachedRecords;
 }
-
-// All API calls use GET with a JSON-encoded "payload" parameter.
-// Kept as no-ops so nothing breaks — Firebase calls replace them inline.
-async function apiPost() { return null; }
-async function apiGet()  { return null; }
 
 // ═══════════════════════════════════════════════════════
 //  AUTH
@@ -715,18 +728,31 @@ document.getElementById('btn-login').addEventListener('click', async function() 
   this.disabled = true; this.innerHTML = '<span class="spinner"></span>Signing in...';
 
   try {
-    // Look up the user's email by username in Firestore
-    const snap = await getDocs(collection(db, 'users'));
-    const userDoc = snap.docs.find(d => d.data().username?.toLowerCase() === username);
-    if (!userDoc) throw new Error('User not found.');
-    const profile = userDoc.data();
-    // Sign in with Firebase Auth using stored email
-    await signInWithEmailAndPassword(auth, profile.email, password);
-    // onAuthStateChanged will handle the rest
+    // Find user profile by username to get their email
+    const { data: users, error: findErr } = await sb
+      .from('users')
+      .select('*')
+      .eq('username', username)
+      .limit(1);
+
+    if (findErr || !users || users.length === 0) {
+      showMsg('login-msg','Invalid username or password.','error');
+      this.disabled = false; this.textContent = 'Sign In'; return;
+    }
+
+    const profile = users[0];
+    const email   = `${username}@bfp-iligan.app`;
+
+    const { data: authData, error: authErr } = await sb.auth.signInWithPassword({ email, password });
+    if (authErr) {
+      showMsg('login-msg','Invalid username or password.','error');
+      this.disabled = false; this.textContent = 'Sign In'; return;
+    }
+
+    currentUser = { id: authData.user.id, ...profile };
+    loginSuccess(currentUser);
   } catch(e) {
-    let msg = 'Invalid username or password.';
-    if (e.code === 'auth/too-many-requests') msg = 'Too many attempts. Please try again later.';
-    showMsg('login-msg', msg, 'error');
+    showMsg('login-msg','Login failed. Please try again.','error');
     this.disabled = false; this.textContent = 'Sign In';
   }
 });
@@ -752,59 +778,53 @@ document.getElementById('btn-register').addEventListener('click', async function
   this.disabled = true; this.innerHTML = '<span class="spinner"></span>Creating account...';
 
   try {
-    // Check username uniqueness in Firestore
-    const snap = await getDocs(collection(db, 'users'));
-    const exists = snap.docs.some(d => d.data().username?.toLowerCase() === username);
-    if (exists) { showMsg('reg-msg','Username already exists.','error'); this.disabled=false; this.textContent='Create Account'; return; }
+    // Check username uniqueness
+    const { data: existing } = await sb.from('users').select('id').eq('username', username).limit(1);
+    if (existing && existing.length > 0) {
+      showMsg('reg-msg','Username already exists.','error');
+      this.disabled = false; this.textContent = 'Create Account'; return;
+    }
 
-    // Firebase Auth uses email — generate a unique internal email from username
-    const email = `${username}@bfp-iligan.internal`;
-    const cred  = await createUserWithEmailAndPassword(auth, email, password);
-    const uid   = cred.user.uid;
+    // Create auth user (email derived from username)
+    const email = `${username}@bfp-iligan.app`;
+    const { data: authData, error: authErr } = await sb.auth.signUp({ email, password });
+    if (authErr) throw authErr;
 
-    const profile = {
-      uid, fname, lname, rank, station, city, province, username, email,
-      created: new Date().toISOString()
-    };
-    await setDoc(doc(db, 'users', uid), profile);
-    showMsg('reg-msg','Account created! Signing you in...','success');
-    // onAuthStateChanged fires automatically — no manual loginSuccess needed
+    // Save profile to users table
+    const { error: profileErr } = await sb.from('users').insert({
+      id: authData.user.id,
+      fname, lname, rank, station, city, province, username
+    });
+    if (profileErr) throw profileErr;
+
+    showMsg('reg-msg','Account created! You can now sign in.','success');
+    this.disabled = false; this.textContent = 'Create Account';
+    setTimeout(showLogin, 1500);
   } catch(e) {
-    let msg = 'Registration failed. Please try again.';
-    if (e.code === 'auth/email-already-in-use') msg = 'Username already taken.';
-    showMsg('reg-msg', msg, 'error');
-    this.disabled=false; this.textContent='Create Account';
+    showMsg('reg-msg', e.message || 'Registration failed.', 'error');
+    this.disabled = false; this.textContent = 'Create Account';
   }
 });
 
 // ═══════════════════════════════════════════════════════
-//  FIREBASE AUTH STATE — single source of truth
+//  AUTH HELPERS
 // ═══════════════════════════════════════════════════════
-onAuthStateChanged(auth, async (firebaseUser) => {
-  if (firebaseUser) {
-    // Load profile from Firestore
-    const snap = await getDoc(doc(db, 'users', firebaseUser.uid));
-    if (!snap.exists()) return;
-    currentUser = { uid: firebaseUser.uid, id: firebaseUser.uid, ...snap.data() };
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display  = 'flex';
-    // Reset login button state
-    const btn = document.getElementById('btn-login');
-    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
-    initApp();
-  } else {
-    document.getElementById('app-screen').style.display  = 'none';
-    document.getElementById('auth-screen').style.display = 'flex';
-  }
-});
-
 function loginSuccess(user) {
-  // No-op — onAuthStateChanged handles everything now
+  currentUser = user;
+  sessionStorage.setItem('bfp_session', JSON.stringify(user));
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display  = 'flex';
+  const btn = document.getElementById('btn-login');
+  if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+  initApp();
 }
 
 async function logout() {
-  await signOut(auth);
+  await sb.auth.signOut();
   currentUser = null;
+  sessionStorage.removeItem('bfp_session');
+  document.getElementById('app-screen').style.display  = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
   document.getElementById('login-username').value = '';
   document.getElementById('login-password').value = '';
 }
@@ -928,15 +948,48 @@ async function submitRecord() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Saving...';
 
   try {
-    // Write to Firestore (works offline — syncs when connection returns)
-    const docRef = doc(collection(db, 'inspections'));
-    await setDoc(docRef, { ...record, id: docRef.id });
-    // Update local cache immediately
-    cachedRecords.unshift({ ...record, id: docRef.id });
+    // Map camelCase record → snake_case for Supabase
+    const row = {
+      province:        record.province,
+      city:            record.city,
+      station:         record.station,
+      marshal:         record.marshal,
+      inspector:       record.inspector,
+      inspector_id:    currentUser.id,
+      estname:         record.estname,
+      address:         record.address,
+      datetime:        record.datetime,
+      fsic_date:       record.fsicDate,
+      contact_person:  record.contactPerson,
+      contact_number:  record.contactNumber,
+      occupancy:       record.occupancy,
+      subclass:        record.subclass,
+      floor_area:      record.floorArea,
+      height:          record.height,
+      storeys:         record.storeys,
+      basement:        record.basement,
+      hazard:          record.hazard,
+      first_inspection: record.firstInspection,
+      reinspections:   record.reinspections,
+      afss_install:    record.afssInstall,   afss_cond:    record.afssCond,
+      fdas_install:    record.fdasInstall,   fdas_cond:    record.fdasCond,
+      wsp_install:     record.wspInstall,    wsp_cond:     record.wspCond,
+      fexit_install:   record.fexitInstall,  fexit_cond:   record.fexitCond,
+      elight_install:  record.elightInstall,
+      dsign_install:   record.dsignInstall,
+      fesign_install:  record.fesignInstall,
+      fext_install:    record.fextInstall,
+      remarks_status:  record.remarksStatus,
+      remarks_notes:   record.remarksNotes
+    };
+
+    const { data: saved, error } = await sb.from('inspections').insert(row).select().single();
+    if (error) throw error;
+    cachedRecords.unshift({ ...record, id: saved.id });
     showToast('Record saved ✓', 'success');
   } catch(e) {
-    showToast('Saved offline — will sync when connected', 'success');
-    cachedRecords.unshift(record);
+    showToast('Error saving record: ' + (e.message || 'Unknown error'), 'error');
+    btn.disabled = false; btn.textContent = 'Save Record'; return;
   }
 
   btn.disabled = false; btn.textContent = 'Save Record';
@@ -1069,6 +1122,17 @@ function showToast(msg, type = 'success') {
   wrap.appendChild(t);
   setTimeout(() => t.remove(), 3000);
 }
+
+// ═══════════════════════════════════════════════════════
+//  EXPOSE FUNCTIONS TO HTML onclick handlers
+// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+//  AUTO LOGIN FROM SESSION
+// ═══════════════════════════════════════════════════════
+(function() {
+  const sess = sessionStorage.getItem('bfp_session');
+  if (sess) { currentUser = JSON.parse(sess); loginSuccess(currentUser); }
+})();
 
 // ═══════════════════════════════════════════════════════
 //  EXPOSE FUNCTIONS TO HTML onclick handlers
