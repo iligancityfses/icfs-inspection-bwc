@@ -300,6 +300,54 @@
   .toast.error { border-left: 3px solid var(--error); }
   @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
+  /* ── Incomplete Alert ── */
+  .incomplete-alert { display:flex; align-items:center; justify-content:space-between; background:rgba(224,92,92,.1); border:1px solid rgba(224,92,92,.35); border-radius:10px; padding:14px 18px; margin-bottom:20px; transition:background .2s; }
+  .incomplete-alert:hover { background:rgba(224,92,92,.18); }
+  .incomplete-alert-left { display:flex; align-items:center; gap:14px; }
+  .incomplete-icon { font-size:24px; flex-shrink:0; }
+  .incomplete-title { font-size:14px; font-weight:600; color:var(--white); }
+  .incomplete-title span { color:#F87171; font-size:22px; font-weight:700; margin:0 2px; }
+  .incomplete-sub { font-size:12px; color:var(--gray); margin-top:3px; }
+  .incomplete-caret { font-size:24px; color:var(--gray); }
+  /* ── Side Panel ── */
+  .side-panel-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:900; display:none; }
+  .side-panel-overlay.open { display:block; }
+  .side-panel { position:fixed; top:0; right:-480px; width:460px; max-width:96vw; height:100vh; background:var(--navy-mid); border-left:1px solid var(--navy-light); z-index:901; transition:right .3s ease; overflow-y:auto; display:flex; flex-direction:column; }
+  .side-panel.open { right:0; }
+  .side-panel-head { display:flex; justify-content:space-between; align-items:flex-start; padding:20px; border-bottom:1px solid var(--navy-light); position:sticky; top:0; background:var(--navy-mid); z-index:1; }
+  .side-panel-title { font-size:15px; font-weight:600; color:var(--white); }
+  .side-panel-sub { font-size:12px; color:var(--gray); margin-top:3px; }
+  .incomplete-item { padding:14px 20px; border-bottom:1px solid rgba(255,255,255,.06); cursor:pointer; transition:background .15s; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .incomplete-item:hover { background:rgba(255,255,255,.06); }
+  .incomplete-item-info { flex:1; min-width:0; }
+  .incomplete-item-name { font-size:13px; font-weight:500; color:var(--white); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .incomplete-item-meta { font-size:11px; color:var(--gray); margin-top:3px; }
+  .incomplete-item-missing { font-size:11px; color:#F87171; margin-top:4px; }
+  .incomplete-item-edit { flex-shrink:0; font-size:11px; color:var(--gold); border:1px solid rgba(240,165,0,.3); border-radius:5px; padding:4px 10px; white-space:nowrap; }
+  .incomplete-empty { padding:40px 20px; text-align:center; color:var(--gray); font-size:13px; }
+  .analytics-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+  .analytics-title { font-size:16px; font-weight:600; color:var(--white); }
+  .analytics-filters { display:flex; gap:8px; }
+  .analytics-filters select { background:var(--navy-mid); color:var(--white); border:1px solid var(--navy-light); border-radius:6px; padding:6px 10px; font-size:12px; }
+  .an-kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:16px; }
+  .an-kpi { background:var(--navy-mid); border:1px solid var(--navy-light); border-radius:10px; padding:14px 12px; text-align:center; }
+  .an-kpi-val { font-size:26px; font-weight:700; color:var(--gold); line-height:1.1; }
+  .an-kpi-label { font-size:11px; color:var(--gray); margin-top:4px; }
+  .an-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  @media(max-width:700px){ .an-grid-2 { grid-template-columns:1fr; } }
+  .an-card { background:var(--navy-mid); border:1px solid var(--navy-light); border-radius:12px; padding:16px; }
+  .an-card-full { margin-bottom:14px; }
+  .an-card-title { font-size:13px; font-weight:600; color:var(--gold); margin-bottom:14px; letter-spacing:.02em; }
+  .an-chart-wrap { position:relative; height:220px; }
+  .an-table-wrap table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  .an-table-wrap th { color:var(--gold); font-weight:500; padding:7px 10px; text-align:left; border-bottom:1px solid var(--navy-light); font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+  .an-table-wrap td { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.05); color:var(--white); }
+  .an-table-wrap tr:last-child td { border-bottom:none; }
+  .an-rank { display:inline-block; width:22px; height:22px; border-radius:50%; background:var(--navy-light); text-align:center; line-height:22px; font-size:11px; font-weight:600; }
+  .an-rank.gold-rank { background:var(--gold); color:var(--navy-deep); }
+  .an-rank.silver-rank { background:#b0b0b0; color:#222; }
+  .an-rank.bronze-rank { background:#cd7f32; color:#fff; }
+
   @media (max-width: 640px) {
     .auth-card { padding: 28px 20px; }
     .form-row, .form-grid-3, .form-grid-4 { grid-template-columns: 1fr; }
@@ -405,6 +453,7 @@
 
   <div class="nav-tabs">
     <div class="nav-tab active" data-tab="dashboard" onclick="switchTab('dashboard')">📊 Dashboard</div>
+    <div class="nav-tab" data-tab="analytics" onclick="switchTab('analytics')">📈 Analytics</div>
     <div class="nav-tab" data-tab="inspections" onclick="switchTab('inspections')">📋 Inspections</div>
     <div class="nav-tab" data-tab="new" onclick="openNewModal()">➕ New Record</div>
     <div class="nav-tab" data-tab="profile" onclick="switchTab('profile')">👤 My Profile</div>
@@ -419,6 +468,19 @@
         <div class="stat-card red"><div class="stat-label">High Hazard</div><div class="stat-value" id="stat-high">0</div><div class="stat-sub">Require priority attention</div></div>
         <div class="stat-card green"><div class="stat-label">With FSIC</div><div class="stat-value" id="stat-fsic">0</div><div class="stat-sub">FSIC date recorded</div></div>
       </div>
+
+      <!-- Incomplete Records Alert -->
+      <div id="incomplete-alert" style="display:none;cursor:pointer;" onclick="openIncompletePanel()" class="incomplete-alert">
+        <div class="incomplete-alert-left">
+          <div class="incomplete-icon">⚠️</div>
+          <div>
+            <div class="incomplete-title">You have <span id="incomplete-count">0</span> incomplete inspection record(s)</div>
+            <div class="incomplete-sub">Some of your records are missing required information. Click here to review and complete them.</div>
+          </div>
+        </div>
+        <div class="incomplete-caret">›</div>
+      </div>
+
       <div class="section-header">
         <div class="section-title">Recent <span>Inspections</span></div>
       </div>
@@ -428,6 +490,72 @@
           <th>Hazard</th><th>Date Inspected</th><th>Inspector</th>
         </tr></thead>
         <tbody id="recent-tbody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ANALYTICS TAB -->
+    <div id="tab-analytics" style="display:none;">
+      <div class="analytics-toolbar">
+        <div class="analytics-title">📈 Inspection Analytics</div>
+        <div class="analytics-filters">
+          <select id="an-year" onchange="renderAnalytics()">
+            <option value="all">All Years</option>
+          </select>
+          <select id="an-month" onchange="renderAnalytics()">
+            <option value="all">All Months</option>
+            <option value="1">January</option><option value="2">February</option>
+            <option value="3">March</option><option value="4">April</option>
+            <option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8">August</option>
+            <option value="9">September</option><option value="10">October</option>
+            <option value="11">November</option><option value="12">December</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- KPI Row -->
+      <div class="an-kpi-row" id="an-kpis"></div>
+
+      <!-- Row 1: Inspector Bar + Occupancy Doughnut -->
+      <div class="an-grid-2">
+        <div class="an-card">
+          <div class="an-card-title">Inspections per Inspector</div>
+          <div class="an-chart-wrap"><canvas id="chart-inspector"></canvas></div>
+        </div>
+        <div class="an-card">
+          <div class="an-card-title">By Occupancy Type</div>
+          <div class="an-chart-wrap"><canvas id="chart-occupancy"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 2: Hazard Pie + Monthly Line -->
+      <div class="an-grid-2">
+        <div class="an-card">
+          <div class="an-card-title">Hazard Classification Breakdown</div>
+          <div class="an-chart-wrap"><canvas id="chart-hazard"></canvas></div>
+        </div>
+        <div class="an-card">
+          <div class="an-card-title">Inspections Over Time (Monthly)</div>
+          <div class="an-chart-wrap"><canvas id="chart-monthly"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 3: Fire Protection Systems + Compliance -->
+      <div class="an-grid-2">
+        <div class="an-card">
+          <div class="an-card-title">Fire Protection Systems Status</div>
+          <div class="an-chart-wrap"><canvas id="chart-fpsystems"></canvas></div>
+        </div>
+        <div class="an-card">
+          <div class="an-card-title">Overall Compliance Status</div>
+          <div class="an-chart-wrap"><canvas id="chart-compliance"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Row 4: Top Establishments Table -->
+      <div class="an-card an-card-full">
+        <div class="an-card-title">Inspector Leaderboard</div>
+        <div class="an-table-wrap" id="an-leaderboard"></div>
       </div>
     </div>
 
@@ -456,7 +584,7 @@
           <th>#</th><th>Establishment</th><th>Address</th><th>Contact Person</th>
           <th>Contact No.</th><th>Occupancy</th><th>Sub-class</th>
           <th>Hazard</th><th>Floor Area</th><th>Storeys</th>
-          <th>Date Inspected</th><th>FSIC Date</th><th>1st Insp.</th><th>Re-insp.</th><th>Inspector</th>
+          <th>Date Inspected</th><th>FSIC Date</th><th>1st Insp.</th><th>Re-insp.</th><th>Inspector</th><th>Action</th>
         </tr></thead>
         <tbody id="main-tbody"></tbody>
         </table>
@@ -487,6 +615,169 @@
 </div>
 
 <!-- ═══ NEW INSPECTION MODAL ═══ -->
+<!-- INCOMPLETE RECORDS PANEL -->
+<div class="side-panel-overlay" id="incomplete-panel-overlay" onclick="closeIncompletePanel()"></div>
+<div class="side-panel" id="incomplete-panel">
+  <div class="side-panel-head">
+    <div>
+      <div class="side-panel-title">⚠️ Incomplete Records</div>
+      <div class="side-panel-sub">Click any record to edit and complete it</div>
+    </div>
+    <button class="btn-close" onclick="closeIncompletePanel()">✕</button>
+  </div>
+  <div id="incomplete-list"></div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Edit <span>Inspection Record</span></div>
+        <div style="font-size:12px;color:var(--gray);margin-top:4px;">Update missing or incorrect information</div>
+      </div>
+      <button class="btn-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="msg" id="edit-modal-msg"></div>
+
+    <div class="form-section">
+      <div class="form-section-title">General Information</div>
+      <div style="background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.25);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--gray);">
+        <strong style="color:var(--gold);">Fixed fields:</strong>&nbsp; Province: <strong>Lanao del Norte</strong> &nbsp;|&nbsp; City: <strong>Iligan City</strong> &nbsp;|&nbsp; Station: <strong>Iligan City Fire Station</strong> &nbsp;|&nbsp; Fire Marshal: <strong>SUPT Jack M Bigwil</strong>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>Name of Inspector *</label><input type="text" id="e-inspector" readonly></div>
+        <div class="form-group">
+          <label>Partner Inspector <span style="font-size:11px;color:var(--gray);">(optional)</span></label>
+          <select id="e-partner-inspector"><option value="">— None / Solo Inspection —</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Establishment Details</div>
+      <div class="form-grid-2">
+        <div class="form-group" style="grid-column:1/-1"><label>Name of Establishment *</label><input type="text" id="e-estname"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Address *</label><input type="text" id="e-address"></div>
+        <div class="form-group"><label>Date &amp; Time of Inspection *</label><input type="datetime-local" id="e-datetime"></div>
+        <div class="form-group"><label>Date of FSIC Issued *</label><input type="date" id="e-fsic-date"></div>
+        <div class="form-group"><label>Contact Person *</label><input type="text" id="e-contact-person"></div>
+        <div class="form-group"><label>Contact Number *</label><input type="tel" id="e-contact-number"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Technical Information — Occupancy</div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>Type of Occupancy *</label>
+          <select id="e-occupancy" onchange="updateEditSubclass()">
+            <option value="">Select Occupancy Type</option>
+            <option>ASSEMBLY</option><option>EDUCATIONAL</option><option>DAY CARE</option>
+            <option>HEALTH CARE</option><option>RESIDENTIAL BOARD &amp; CARE</option>
+            <option>RESIDENTIAL</option><option>DETENTION &amp; CORRECTIONAL</option>
+            <option>MERCANTILE</option><option>BUSINESS</option>
+            <option>INDUSTRIAL</option><option>STORAGE</option><option>SPECIAL STRUCTURE</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Sub-Classification *</label>
+          <select id="e-subclass"><option value="">Select Occupancy first</option></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Building Details</div>
+      <div class="form-grid-4">
+        <div class="form-group"><label>Floor Area (m²) *</label><input type="number" id="e-floorarea" min="1"></div>
+        <div class="form-group"><label>Height (m) *</label><input type="number" id="e-height" min="1"></div>
+        <div class="form-group"><label>No. of Storeys *</label><input type="number" id="e-storeys" min="1"></div>
+        <div class="form-group"><label>Basement Level(s)</label><input type="number" id="e-basement" min="0"></div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Hazard &amp; Inspection Result</div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>Hazard Classification *</label>
+          <select id="e-hazard">
+            <option value="">Select Hazard Level</option>
+            <option>LOW</option><option>MODERATE</option><option>HIGH</option>
+          </select>
+        </div>
+        <div class="form-group"><label>No. of Re-inspections</label><input type="number" id="e-reinspect" min="0" value="0"></div>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="e-first-insp" checked>
+        <label for="e-first-insp">✓ 1st Inspection conducted</label>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Fire Protection Information</div>
+      <div class="fp-table-wrap">
+        <table class="fp-table">
+          <thead><tr><th style="width:210px">System</th><th>Installation Status</th><th>Operational Status</th></tr></thead>
+          <tbody>
+            <tr><td><strong>AFSS</strong></td>
+              <td><select id="e-afss-install" class="fp-select"><option value="">— Select —</option><option value="INSTALLED">Installed</option><option value="NOT INSTALLED">Not Installed</option><option value="NOT REQUIRED">Not Required</option></select></td>
+              <td><select id="e-afss-cond" class="fp-select"><option value="">— Select —</option><option value="OPERATIONAL">Operational</option><option value="NOT OPERATIONAL">Not Operational</option><option value="NOT APPLICABLE">Not Applicable</option></select></td>
+            </tr>
+            <tr><td><strong>FDAS</strong></td>
+              <td><select id="e-fdas-install" class="fp-select"><option value="">— Select —</option><option value="INSTALLED">Installed</option><option value="NOT INSTALLED">Not Installed</option><option value="NOT REQUIRED">Not Required</option></select></td>
+              <td><select id="e-fdas-cond" class="fp-select"><option value="">— Select —</option><option value="OPERATIONAL">Operational</option><option value="NOT OPERATIONAL">Not Operational</option><option value="NOT APPLICABLE">Not Applicable</option></select></td>
+            </tr>
+            <tr><td><strong>Wet Standpipe</strong></td>
+              <td><select id="e-wsp-install" class="fp-select"><option value="">— Select —</option><option value="INSTALLED">Installed</option><option value="NOT INSTALLED">Not Installed</option><option value="NOT REQUIRED">Not Required</option></select></td>
+              <td><select id="e-wsp-cond" class="fp-select"><option value="">— Select —</option><option value="OPERATIONAL">Operational</option><option value="NOT OPERATIONAL">Not Operational</option><option value="NOT APPLICABLE">Not Applicable</option></select></td>
+            </tr>
+            <tr><td><strong>Fire Exit</strong></td>
+              <td><select id="e-fexit-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td><select id="e-fexit-cond" class="fp-select"><option value="">— Select —</option><option value="ACCESSIBLE">Accessible</option><option value="NOT ACCESSIBLE">Not Accessible</option><option value="NOT APPLICABLE">Not Applicable</option></select></td>
+            </tr>
+            <tr><td><strong>Emergency Lights</strong></td>
+              <td><select id="e-elight-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td style="color:var(--gray);font-size:11.5px;font-style:italic;padding-left:10px;">Installation only</td>
+            </tr>
+            <tr><td><strong>Directional Signs</strong></td>
+              <td><select id="e-dsign-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td style="color:var(--gray);font-size:11.5px;font-style:italic;padding-left:10px;">Installation only</td>
+            </tr>
+            <tr><td><strong>Fire Exit Signs</strong></td>
+              <td><select id="e-fesign-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td style="color:var(--gray);font-size:11.5px;font-style:italic;padding-left:10px;">Installation only</td>
+            </tr>
+            <tr><td><strong>Fire Extinguisher</strong></td>
+              <td><select id="e-fext-install" class="fp-select"><option value="">— Select —</option><option value="PROVIDED">Provided</option><option value="NOT SUFFICIENT">Not Sufficient</option><option value="NOT PROVIDED">Not Provided</option></select></td>
+              <td style="color:var(--gray);font-size:11.5px;font-style:italic;padding-left:10px;">Installation only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section-title">Remarks</div>
+      <div class="form-grid-2">
+        <div class="form-group"><label>Overall Compliance</label>
+          <select id="e-remarks-status" class="fp-select" style="width:100%;padding:8px 10px;font-size:13px;">
+            <option value="">— Select —</option>
+            <option value="COMPLIANT">Compliant</option>
+            <option value="NOT COMPLIANT">Not Compliant</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Additional Remarks</label>
+          <input type="text" id="e-remarks-notes" placeholder="Optional additional notes">
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-submit" id="btn-update-record" onclick="updateRecord()">Update Record</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="new-modal">
   <div class="modal">
     <div class="modal-header">
@@ -506,6 +797,12 @@
       </div>
       <div class="form-grid-2">
         <div class="form-group"><label>Name of Inspector *</label><input type="text" id="f-inspector" placeholder="FO2 Maria Santos" readonly></div>
+        <div class="form-group">
+          <label>Partner Inspector <span style="font-size:11px;color:var(--gray);">(optional)</span></label>
+          <select id="f-partner-inspector">
+            <option value="">— None / Solo Inspection —</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -545,9 +842,9 @@
     <div class="form-section">
       <div class="form-section-title">Building Details</div>
       <div class="form-grid-4">
-        <div class="form-group"><label>Floor Area (m²)</label><input type="number" id="f-floorarea" placeholder="0" min="0"></div>
-        <div class="form-group"><label>Height (m)</label><input type="number" id="f-height" placeholder="0" min="0"></div>
-        <div class="form-group"><label>No. of Storeys</label><input type="number" id="f-storeys" placeholder="0" min="0"></div>
+        <div class="form-group"><label>Floor Area (m²) *</label><input type="number" id="f-floorarea" placeholder="0" min="1"></div>
+        <div class="form-group"><label>Height (m) *</label><input type="number" id="f-height" placeholder="0" min="1"></div>
+        <div class="form-group"><label>No. of Storeys *</label><input type="number" id="f-storeys" placeholder="0" min="1"></div>
         <div class="form-group"><label>Basement Level(s)</label><input type="number" id="f-basement" placeholder="0" min="0"></div>
       </div>
     </div>
@@ -649,6 +946,7 @@
 <!-- ─── TOAST CONTAINER ─── -->
 <div class="toast-wrap" id="toast-wrap"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 
@@ -678,6 +976,33 @@ const SUBCLASS_MAP = {
 // ═══════════════════════════════════════════════════════
 //  DATA HELPERS
 // ═══════════════════════════════════════════════════════
+let cachedRecords = [];
+let cachedUsers   = [];
+
+async function loadUsers() {
+  const { data, error } = await sb.from('users').select('id,rank,fname,lname,username').order('lname');
+  if (!error && data) {
+    cachedUsers = data;
+    populatePartnerDropdown();
+  }
+}
+
+function populatePartnerDropdown() {
+  const sel = document.getElementById('f-partner-inspector');
+  if (!sel) return;
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">— None / Solo Inspection —</option>';
+  cachedUsers
+    .filter(u => u.id !== currentUser.id)   // exclude self
+    .forEach(u => {
+      const opt = document.createElement('option');
+      opt.value = `${u.rank} ${u.fname} ${u.lname}`.toUpperCase();
+      opt.textContent = `${u.rank} ${u.fname} ${u.lname}`;
+      sel.appendChild(opt);
+    });
+  if (currentVal) sel.value = currentVal;
+}
+
 async function fetchAllRecords() {
   const { data, error } = await sb
     .from('inspections')
@@ -692,6 +1017,7 @@ async function fetchAllRecords() {
       station:        r.station,
       marshal:        r.marshal,
       inspector:      r.inspector,
+      partnerInspector: r.partner_inspector,
       inspectorId:    r.inspector_id,
       estname:        r.estname,
       address:        r.address,
@@ -898,6 +1224,7 @@ function initApp() {
   document.getElementById('pf-created').textContent = new Date(currentUser.created).toLocaleDateString('en-PH', {year:'numeric',month:'long',day:'numeric'});
 
   loadRecords();
+  loadUsers();
 }
 
 async function loadRecords() {
@@ -917,10 +1244,253 @@ function mergeRecords(local, remote) {
 function switchTab(tab) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
-  ['dashboard','inspections','profile'].forEach(t =>
+  ['dashboard','analytics','inspections','profile'].forEach(t =>
     document.getElementById(`tab-${t}`).style.display = t===tab ? 'block' : 'none');
   if (tab === 'inspections') renderTable();
   if (tab === 'dashboard') { updateStats(); renderRecentTable(); }
+  if (tab === 'analytics') { populateYearFilter(); renderAnalytics(); }
+}
+
+// ═══════════════════════════════════════════════════════
+//  INCOMPLETE RECORDS
+// ═══════════════════════════════════════════════════════
+const REQUIRED_FIELDS = ['estname','address','datetime','fsicDate','contactPerson','contactNumber',
+  'occupancy','subclass','hazard','floorArea','height','storeys'];
+const FIELD_LABELS = { estname:'Establishment', address:'Address', datetime:'Date & Time',
+  fsicDate:'FSIC Date', contactPerson:'Contact Person', contactNumber:'Contact Number',
+  occupancy:'Occupancy', subclass:'Sub-class', hazard:'Hazard',
+  floorArea:'Floor Area', height:'Height', storeys:'Storeys' };
+
+function getMissingFields(r) {
+  return REQUIRED_FIELDS.filter(f => {
+    const v = r[f];
+    if (v === null || v === undefined || v === '') return true;
+    if ((f === 'floorArea' || f === 'height' || f === 'storeys') && Number(v) <= 0) return true;
+    return false;
+  });
+}
+
+function isIncomplete(r) { return getMissingFields(r).length > 0; }
+
+function updateIncompleteAlert() {
+  const mine = cachedRecords.filter(r =>
+    (r.inspectorId === currentUser.id) && isIncomplete(r));
+  const alert = document.getElementById('incomplete-alert');
+  const count = document.getElementById('incomplete-count');
+  if (mine.length > 0) {
+    count.textContent = mine.length;
+    alert.style.display = 'flex';
+  } else {
+    alert.style.display = 'none';
+  }
+}
+
+function openIncompletePanel() {
+  const mine = cachedRecords.filter(r =>
+    (r.inspectorId === currentUser.id) && isIncomplete(r));
+  const list = document.getElementById('incomplete-list');
+  if (mine.length === 0) {
+    list.innerHTML = '<div class="incomplete-empty">✅ All your records are complete!</div>';
+  } else {
+    list.innerHTML = mine.map(r => {
+      const missing = getMissingFields(r).map(f => FIELD_LABELS[f]).join(', ');
+      return `<div class="incomplete-item" onclick="closeIncompletePanel();openEditModal('${r.id}')">
+        <div class="incomplete-item-info">
+          <div class="incomplete-item-name">${escHtml(r.estname || 'Unnamed Establishment')}</div>
+          <div class="incomplete-item-meta">${escHtml(r.occupancy||'—')} · ${r.datetime ? r.datetime.slice(0,10) : '—'}</div>
+          <div class="incomplete-item-missing">Missing: ${escHtml(missing)}</div>
+        </div>
+        <div class="incomplete-item-edit">Edit →</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('incomplete-panel').classList.add('open');
+  document.getElementById('incomplete-panel-overlay').classList.add('open');
+}
+
+function closeIncompletePanel() {
+  document.getElementById('incomplete-panel').classList.remove('open');
+  document.getElementById('incomplete-panel-overlay').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════
+//  EDIT MODAL
+// ═══════════════════════════════════════════════════════
+let editingRecordId = null;
+
+function openEditModal(recordId) {
+  const r = cachedRecords.find(x => x.id === recordId);
+  if (!r) return;
+  editingRecordId = recordId;
+
+  // Populate partner dropdown
+  const psel = document.getElementById('e-partner-inspector');
+  psel.innerHTML = '<option value="">— None / Solo Inspection —</option>';
+  cachedUsers.filter(u => u.id !== currentUser.id).forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = `${u.rank} ${u.fname} ${u.lname}`.toUpperCase();
+    opt.textContent = `${u.rank} ${u.fname} ${u.lname}`;
+    psel.appendChild(opt);
+  });
+
+  // Fill fields
+  document.getElementById('e-inspector').value        = r.inspector || '';
+  psel.value = r.partnerInspector || '';
+  document.getElementById('e-estname').value          = r.estname || '';
+  document.getElementById('e-address').value          = r.address || '';
+  document.getElementById('e-datetime').value         = r.datetime ? r.datetime.slice(0,16) : '';
+  document.getElementById('e-fsic-date').value        = r.fsicDate || '';
+  document.getElementById('e-contact-person').value   = r.contactPerson || '';
+  document.getElementById('e-contact-number').value   = r.contactNumber || '';
+  document.getElementById('e-floorarea').value        = r.floorArea || '';
+  document.getElementById('e-height').value           = r.height || '';
+  document.getElementById('e-storeys').value          = r.storeys || '';
+  document.getElementById('e-basement').value         = r.basement || 0;
+  document.getElementById('e-hazard').value           = r.hazard || '';
+  document.getElementById('e-reinspect').value        = r.reinspections || 0;
+  document.getElementById('e-first-insp').checked     = r.firstInspection !== false;
+  document.getElementById('e-afss-install').value     = r.afssInstall || '';
+  document.getElementById('e-afss-cond').value        = r.afssCond || '';
+  document.getElementById('e-fdas-install').value     = r.fdasInstall || '';
+  document.getElementById('e-fdas-cond').value        = r.fdasCond || '';
+  document.getElementById('e-wsp-install').value      = r.wspInstall || '';
+  document.getElementById('e-wsp-cond').value         = r.wspCond || '';
+  document.getElementById('e-fexit-install').value    = r.fexitInstall || '';
+  document.getElementById('e-fexit-cond').value       = r.fexitCond || '';
+  document.getElementById('e-elight-install').value   = r.elightInstall || '';
+  document.getElementById('e-dsign-install').value    = r.dsignInstall || '';
+  document.getElementById('e-fesign-install').value   = r.fesignInstall || '';
+  document.getElementById('e-fext-install').value     = r.fextInstall || '';
+  document.getElementById('e-remarks-status').value   = r.remarksStatus || '';
+  document.getElementById('e-remarks-notes').value    = r.remarksNotes || '';
+
+  // Occupancy → subclass
+  const occSel = document.getElementById('e-occupancy');
+  occSel.value = r.occupancy || '';
+  updateEditSubclass();
+  setTimeout(() => { document.getElementById('e-subclass').value = r.subclass || ''; }, 50);
+
+  document.getElementById('edit-modal-msg').className = 'msg';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  editingRecordId = null;
+}
+
+function updateEditSubclass() {
+  const occ = document.getElementById('e-occupancy').value;
+  const sel = document.getElementById('e-subclass');
+  if (!occ) { sel.innerHTML = '<option value="">Select Occupancy first</option>'; sel.disabled = true; return; }
+  sel.disabled = false;
+  sel.innerHTML = '<option value="">— Select Sub-class *</option>';
+  (SUBCLASS_MAP[occ] || []).forEach(s => {
+    const o = document.createElement('option'); o.value = o.textContent = s; sel.appendChild(o);
+  });
+}
+
+async function updateRecord() {
+  const toUpper = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
+  const val     = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+
+  const estname       = val('e-estname');
+  const address       = val('e-address');
+  const datetime      = val('e-datetime');
+  const fsicDate      = val('e-fsic-date');
+  const contactPerson = val('e-contact-person');
+  const contactNumber = val('e-contact-number');
+  const occupancy     = val('e-occupancy');
+  const subclass      = val('e-subclass');
+  const hazard        = val('e-hazard');
+  const floorArea     = document.getElementById('e-floorarea').value;
+  const height        = document.getElementById('e-height').value;
+  const storeys       = document.getElementById('e-storeys').value;
+
+  const showEditMsg = (msg, type) => {
+    const el = document.getElementById('edit-modal-msg');
+    el.textContent = msg; el.className = `msg ${type}`;
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
+  if (!estname)       return showEditMsg('Establishment name is required.','error');
+  if (!address)       return showEditMsg('Address is required.','error');
+  if (!datetime)      return showEditMsg('Date & time of inspection is required.','error');
+  if (!fsicDate)      return showEditMsg('FSIC date is required.','error');
+  if (!contactPerson) return showEditMsg('Contact person is required.','error');
+  if (!contactNumber) return showEditMsg('Contact number is required.','error');
+  if (!occupancy)     return showEditMsg('Type of occupancy is required.','error');
+  if (!subclass)      return showEditMsg('Please select a sub-class.','error');
+  if (!hazard)        return showEditMsg('Hazard classification is required.','error');
+  if (!floorArea || Number(floorArea) <= 0) return showEditMsg('Floor area must be greater than 0.','error');
+  if (!height    || Number(height)    <= 0) return showEditMsg('Height must be greater than 0.','error');
+  if (!storeys   || Number(storeys)   <= 0) return showEditMsg('Number of storeys must be at least 1.','error');
+
+  const btn = document.getElementById('btn-update-record');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Updating...';
+
+  const row = {
+    estname:          toUpper('e-estname'),
+    address:          toUpper('e-address'),
+    datetime,
+    fsic_date:        fsicDate,
+    contact_person:   toUpper('e-contact-person'),
+    contact_number:   contactNumber,
+    occupancy:        occupancy.toUpperCase(),
+    subclass:         subclass.toUpperCase(),
+    floor_area:       Number(floorArea),
+    height:           Number(height),
+    storeys:          Number(storeys),
+    basement:         Number(document.getElementById('e-basement').value || 0),
+    hazard:           hazard.toUpperCase(),
+    first_inspection: document.getElementById('e-first-insp').checked,
+    reinspections:    Number(document.getElementById('e-reinspect').value || 0),
+    partner_inspector: val('e-partner-inspector') || null,
+    afss_install:     val('e-afss-install'),  afss_cond:    val('e-afss-cond'),
+    fdas_install:     val('e-fdas-install'),  fdas_cond:    val('e-fdas-cond'),
+    wsp_install:      val('e-wsp-install'),   wsp_cond:     val('e-wsp-cond'),
+    fexit_install:    val('e-fexit-install'),  fexit_cond:  val('e-fexit-cond'),
+    elight_install:   val('e-elight-install'),
+    dsign_install:    val('e-dsign-install'),
+    fesign_install:   val('e-fesign-install'),
+    fext_install:     val('e-fext-install'),
+    remarks_status:   val('e-remarks-status').toUpperCase() || null,
+    remarks_notes:    toUpper('e-remarks-notes') || null,
+  };
+
+  try {
+    const { error } = await sb.from('inspections').update(row).eq('id', editingRecordId);
+    if (error) throw error;
+
+    // Update local cache
+    const idx = cachedRecords.findIndex(x => x.id === editingRecordId);
+    if (idx !== -1) {
+      cachedRecords[idx] = { ...cachedRecords[idx], ...{
+        estname: row.estname, address: row.address, datetime: row.datetime,
+        fsicDate: row.fsic_date, contactPerson: row.contact_person, contactNumber: row.contact_number,
+        occupancy: row.occupancy, subclass: row.subclass, floorArea: row.floor_area,
+        height: row.height, storeys: row.storeys, basement: row.basement,
+        hazard: row.hazard, firstInspection: row.first_inspection, reinspections: row.reinspections,
+        partnerInspector: row.partner_inspector,
+        afssInstall: row.afss_install, afssCond: row.afss_cond,
+        fdasInstall: row.fdas_install, fdasCond: row.fdas_cond,
+        wspInstall: row.wsp_install, wspCond: row.wsp_cond,
+        fexitInstall: row.fexit_install, fexitCond: row.fexit_cond,
+        elightInstall: row.elight_install, dsignInstall: row.dsign_install,
+        fesignInstall: row.fesign_install, fextInstall: row.fext_install,
+        remarksStatus: row.remarks_status, remarksNotes: row.remarks_notes,
+      }};
+    }
+
+    showToast('Record updated ✓', 'success');
+    btn.disabled = false; btn.textContent = 'Update Record';
+    closeEditModal();
+    updateStats(); renderTable(); renderRecentTable(); updateIncompleteAlert();
+
+  } catch(e) {
+    showEditMsg('Update failed: ' + (e.message || 'Unknown error'), 'error');
+    btn.disabled = false; btn.textContent = 'Update Record';
+  }
 }
 
 function openNewModal() {
@@ -966,6 +1536,10 @@ async function submitRecord() {
   const fsicDate  = document.getElementById('f-fsic-date').value;
 
   // Required field checks
+  const floorArea = document.getElementById('f-floorarea').value;
+  const height    = document.getElementById('f-height').value;
+  const storeys   = document.getElementById('f-storeys').value;
+
   if (!estname)       return showModalMsg('Establishment name is required.', 'error');
   if (!address)       return showModalMsg('Address is required.', 'error');
   if (!datetime)      return showModalMsg('Date & time of inspection is required.', 'error');
@@ -976,6 +1550,9 @@ async function submitRecord() {
   if (!hazard)        return showModalMsg('Hazard classification is required.', 'error');
   const subclass = document.getElementById('f-subclass').value;
   if (!subclass)      return showModalMsg('Please select a sub-class for the occupancy type.', 'error');
+  if (floorArea === '' || Number(floorArea) <= 0) return showModalMsg('Floor area is required and must be greater than 0.', 'error');
+  if (height === ''   || Number(height) <= 0)     return showModalMsg('Height is required and must be greater than 0.', 'error');
+  if (storeys === ''  || Number(storeys) <= 0)    return showModalMsg('Number of storeys is required and must be at least 1.', 'error');
 
   const toUpper = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
   const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
@@ -987,6 +1564,7 @@ async function submitRecord() {
     station: 'ILIGAN CITY FIRE STATION',
     marshal: 'SUPT JACK M BIGWIL',
     inspector: document.getElementById('f-inspector').value.trim().toUpperCase(),
+    partnerInspector: val('f-partner-inspector'),
     inspectorId: currentUser.id,
     estname: toUpper('f-estname'),
     address: toUpper('f-address'),
@@ -1024,6 +1602,7 @@ async function submitRecord() {
       station:         record.station,
       marshal:         record.marshal,
       inspector:       record.inspector,
+      partner_inspector: record.partnerInspector || null,
       inspector_id:    currentUser.id,
       estname:         record.estname,
       address:         record.address,
@@ -1067,6 +1646,7 @@ async function submitRecord() {
 
   // Reset form
   ['f-estname','f-address','f-contact-person','f-contact-number','f-fsic-date','f-floorarea','f-height','f-storeys','f-basement','f-remarks-notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('f-partner-inspector').value = '';
   document.getElementById('f-occupancy').value = '';
   document.getElementById('f-hazard').value = '';
   document.getElementById('f-reinspect').value = '0';
@@ -1120,6 +1700,7 @@ function updateStats() {
   document.getElementById('stat-mine').textContent = records.filter(r => r.inspectorId === currentUser.id || r.inspectorId === currentUser.uid).length;
   document.getElementById('stat-high').textContent = records.filter(r => r.hazard === 'HIGH').length;
   document.getElementById('stat-fsic').textContent = records.filter(r => r.fsicDate).length;
+  updateIncompleteAlert();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1162,11 +1743,14 @@ function renderTable() {
   if (filterHaz)  records = records.filter(r => r.hazard === filterHaz);
 
   const tbody = document.getElementById('main-tbody');
-  if (!records.length) { tbody.innerHTML = '<tr><td colspan="15"><div class="empty-state"><div class="icon">🔍</div><p>No records found.</p></div></td></tr>'; return; }
-  tbody.innerHTML = records.map((r,i) => `
-    <tr>
+  if (!records.length) { tbody.innerHTML = '<tr><td colspan="16"><div class="empty-state"><div class="icon">🔍</div><p>No records found.</p></div></td></tr>'; return; }
+  tbody.innerHTML = records.map((r,i) => {
+    const mine = r.inspectorId === currentUser.id;
+    const incomplete = isIncomplete(r) && mine;
+    const incBadge = incomplete ? ' <span style="color:#F87171;font-size:10px;">⚠</span>' : '';
+    return `<tr${incomplete ? ' style="background:rgba(248,113,113,.04)"' : ''}>
       <td class="td-mono" style="color:var(--gray)">${i+1}</td>
-      <td class="td-name">${escHtml(r.estname)}</td>
+      <td class="td-name">${escHtml(r.estname)}${incBadge}</td>
       <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(r.address)||'—'}</td>
       <td>${escHtml(r.contactPerson)||'—'}</td>
       <td class="td-mono">${escHtml(r.contactNumber)||'—'}</td>
@@ -1180,7 +1764,9 @@ function renderTable() {
       <td style="text-align:center;">${r.firstInspection ? '✓' : '—'}</td>
       <td class="td-mono" style="text-align:center;">${r.reinspections||0}</td>
       <td style="font-size:11.5px;color:var(--gray)">${escHtml(r.inspector)}</td>
-    </tr>`).join('');
+      <td>${mine ? `<button onclick="openEditModal('${r.id}')" style="font-size:11px;padding:4px 10px;background:rgba(240,165,0,.12);color:var(--gold);border:1px solid rgba(240,165,0,.3);border-radius:5px;cursor:pointer;white-space:nowrap;">✏ Edit</button>` : ''}</td>
+    </tr>`;
+  }).join('');
 }
 
 function escHtml(s) {
@@ -1221,8 +1807,225 @@ function showToast(msg, type = 'success') {
 //  EXPOSE FUNCTIONS TO HTML onclick handlers
 // ═══════════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════════
-//  AUTO LOGIN FROM SESSION
+//  ANALYTICS ENGINE
 // ═══════════════════════════════════════════════════════
+const CHART_PALETTE = [
+  '#F0A500','#E05C5C','#4CAF82','#5B9CF6','#A78BFA',
+  '#F472B6','#34D399','#FBBF24','#60A5FA','#F87171',
+  '#818CF8','#2DD4BF','#FB923C','#A3E635','#E879F9'
+];
+
+const CHART_DEFAULTS = {
+  animation: { duration: 500 },
+  plugins: { legend: { labels: { color: '#b0b8c8', font: { size: 11 } } } },
+  scales: {}
+};
+
+let _charts = {};
+
+function destroyChart(id) {
+  if (_charts[id]) { _charts[id].destroy(); delete _charts[id]; }
+}
+
+function populateYearFilter() {
+  const sel = document.getElementById('an-year');
+  const years = [...new Set(cachedRecords
+    .map(r => r.createdAt ? new Date(r.createdAt).getFullYear() : null)
+    .filter(Boolean)
+  )].sort((a,b) => b-a);
+  const existing = new Set([...sel.options].map(o => o.value));
+  years.forEach(y => {
+    if (!existing.has(String(y))) {
+      const o = document.createElement('option');
+      o.value = y; o.textContent = y; sel.appendChild(o);
+    }
+  });
+}
+
+function getFilteredRecords() {
+  const yr = document.getElementById('an-year')?.value;
+  const mo = document.getElementById('an-month')?.value;
+  return cachedRecords.filter(r => {
+    if (!r.createdAt) return true;
+    const d = new Date(r.createdAt);
+    if (yr !== 'all' && d.getFullYear() !== Number(yr)) return false;
+    if (mo !== 'all' && (d.getMonth()+1) !== Number(mo)) return false;
+    return true;
+  });
+}
+
+function renderAnalytics() {
+  const records = getFilteredRecords();
+
+  // ── KPIs ────────────────────────────────────────────
+  const myCount     = records.filter(r => r.inspectorId === currentUser.id).length;
+  const highCount   = records.filter(r => r.hazard === 'HIGH').length;
+  const compliant   = records.filter(r => r.remarksStatus === 'COMPLIANT').length;
+  const withFsic    = records.filter(r => r.fsicDate).length;
+  const occupancies = [...new Set(records.map(r => r.occupancy).filter(Boolean))].length;
+
+  document.getElementById('an-kpis').innerHTML = `
+    <div class="an-kpi"><div class="an-kpi-val">${records.length}</div><div class="an-kpi-label">Total Inspections</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#5B9CF6">${myCount}</div><div class="an-kpi-label">My Inspections</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#E05C5C">${highCount}</div><div class="an-kpi-label">High Hazard</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#4CAF82">${compliant}</div><div class="an-kpi-label">Compliant</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#A78BFA">${withFsic}</div><div class="an-kpi-label">With FSIC Date</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#FB923C">${occupancies}</div><div class="an-kpi-label">Occupancy Types</div></div>
+  `;
+
+  // ── 1. Inspections per Inspector (horizontal bar) ───
+  const inspMap = {};
+  records.forEach(r => {
+    const name = r.inspector || 'Unknown';
+    inspMap[name] = (inspMap[name] || 0) + 1;
+  });
+  const inspSorted = Object.entries(inspMap).sort((a,b) => b[1]-a[1]).slice(0,10);
+  destroyChart('inspector');
+  _charts['inspector'] = new Chart(document.getElementById('chart-inspector'), {
+    type: 'bar',
+    data: {
+      labels: inspSorted.map(e => e[0]),
+      datasets: [{ label: 'Inspections', data: inspSorted.map(e => e[1]),
+        backgroundColor: CHART_PALETTE.slice(0, inspSorted.length),
+        borderRadius: 5, borderSkipped: false }]
+    },
+    options: { ...CHART_DEFAULTS, indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color:'#b0b8c8', font:{size:10} }, grid: { color:'rgba(255,255,255,.05)' } },
+        y: { ticks: { color:'#b0b8c8', font:{size:10} }, grid: { display:false } }
+      }
+    }
+  });
+
+  // ── 2. By Occupancy Type (doughnut) ────────────────
+  const occMap = {};
+  records.forEach(r => { if (r.occupancy) occMap[r.occupancy] = (occMap[r.occupancy]||0)+1; });
+  const occEntries = Object.entries(occMap).sort((a,b) => b[1]-a[1]);
+  destroyChart('occupancy');
+  _charts['occupancy'] = new Chart(document.getElementById('chart-occupancy'), {
+    type: 'doughnut',
+    data: {
+      labels: occEntries.map(e => e[0]),
+      datasets: [{ data: occEntries.map(e => e[1]),
+        backgroundColor: CHART_PALETTE.slice(0, occEntries.length),
+        borderColor: '#1a2540', borderWidth: 2 }]
+    },
+    options: { ...CHART_DEFAULTS, responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position:'right', labels:{ color:'#b0b8c8', font:{size:10}, boxWidth:12 } } },
+      cutout: '62%'
+    }
+  });
+
+  // ── 3. Hazard Classification (pie) ─────────────────
+  const hazMap = { LOW:0, MODERATE:0, HIGH:0 };
+  records.forEach(r => { if (r.hazard && hazMap[r.hazard] !== undefined) hazMap[r.hazard]++; });
+  destroyChart('hazard');
+  _charts['hazard'] = new Chart(document.getElementById('chart-hazard'), {
+    type: 'pie',
+    data: {
+      labels: ['Low Hazard','Moderate Hazard','High Hazard'],
+      datasets: [{ data: [hazMap.LOW, hazMap.MODERATE, hazMap.HIGH],
+        backgroundColor: ['#4CAF82','#F0A500','#E05C5C'],
+        borderColor: '#1a2540', borderWidth: 2 }]
+    },
+    options: { ...CHART_DEFAULTS, responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position:'bottom', labels:{ color:'#b0b8c8', font:{size:11}, boxWidth:12 } } }
+    }
+  });
+
+  // ── 4. Monthly Trend (line) ─────────────────────────
+  const monthLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthCount  = new Array(12).fill(0);
+  records.forEach(r => {
+    if (r.createdAt) monthCount[new Date(r.createdAt).getMonth()]++;
+  });
+  destroyChart('monthly');
+  _charts['monthly'] = new Chart(document.getElementById('chart-monthly'), {
+    type: 'line',
+    data: {
+      labels: monthLabels,
+      datasets: [{ label: 'Inspections', data: monthCount,
+        borderColor: '#F0A500', backgroundColor: 'rgba(240,165,0,.12)',
+        tension: 0.4, fill: true, pointRadius: 4, pointBackgroundColor: '#F0A500' }]
+    },
+    options: { ...CHART_DEFAULTS, responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks:{ color:'#b0b8c8', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' } },
+        y: { ticks:{ color:'#b0b8c8', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' }, beginAtZero:true }
+      }
+    }
+  });
+
+  // ── 5. Fire Protection Systems (grouped bar) ────────
+  const systems = ['AFSS','FDAS','Wet Standpipe','Fire Exit','Emergency Lights','Directional Signs','Fire Exit Signs','Fire Extinguisher'];
+  const sysKeys = ['afssInstall','fdasInstall','wspInstall','fexitInstall','elightInstall','dsignInstall','fesignInstall','fextInstall'];
+  const provided   = sysKeys.map(k => records.filter(r => r[k] === 'PROVIDED' || r[k] === 'INSTALLED').length);
+  const notProvided= sysKeys.map(k => records.filter(r => r[k] === 'NOT PROVIDED' || r[k] === 'NOT INSTALLED').length);
+  const notSuff    = sysKeys.map(k => records.filter(r => r[k] === 'NOT SUFFICIENT').length);
+  destroyChart('fpsystems');
+  _charts['fpsystems'] = new Chart(document.getElementById('chart-fpsystems'), {
+    type: 'bar',
+    data: {
+      labels: systems,
+      datasets: [
+        { label: 'Provided/Installed', data: provided,    backgroundColor: '#4CAF82', borderRadius: 3 },
+        { label: 'Not Sufficient',     data: notSuff,     backgroundColor: '#F0A500', borderRadius: 3 },
+        { label: 'Not Provided',       data: notProvided, backgroundColor: '#E05C5C', borderRadius: 3 }
+      ]
+    },
+    options: { ...CHART_DEFAULTS, responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position:'bottom', labels:{ color:'#b0b8c8', font:{size:10}, boxWidth:12 } } },
+      scales: {
+        x: { stacked:true, ticks:{ color:'#b0b8c8', font:{size:9}, maxRotation:30 }, grid:{ display:false } },
+        y: { stacked:true, ticks:{ color:'#b0b8c8', font:{size:10} }, grid:{ color:'rgba(255,255,255,.05)' }, beginAtZero:true }
+      }
+    }
+  });
+
+  // ── 6. Compliance (doughnut) ────────────────────────
+  const compMap = { COMPLIANT: compliant, 'NOT COMPLIANT': records.filter(r => r.remarksStatus === 'NOT COMPLIANT').length, 'N/A': records.filter(r => !r.remarksStatus).length };
+  destroyChart('compliance');
+  _charts['compliance'] = new Chart(document.getElementById('chart-compliance'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Compliant','Not Compliant','No Remarks'],
+      datasets: [{ data: [compMap.COMPLIANT, compMap['NOT COMPLIANT'], compMap['N/A']],
+        backgroundColor: ['#4CAF82','#E05C5C','#4a5568'],
+        borderColor: '#1a2540', borderWidth: 2 }]
+    },
+    options: { ...CHART_DEFAULTS, responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position:'bottom', labels:{ color:'#b0b8c8', font:{size:11}, boxWidth:12 } } },
+      cutout: '62%'
+    }
+  });
+
+  // ── 7. Inspector Leaderboard Table ──────────────────
+  const lbData = Object.entries(inspMap).sort((a,b) => b[1]-a[1]);
+  const maxCount = lbData[0]?.[1] || 1;
+  const rankClass = i => i===0?'gold-rank':i===1?'silver-rank':i===2?'bronze-rank':'';
+  const lbHtml = `
+    <table>
+      <thead><tr>
+        <th style="width:36px">Rank</th>
+        <th>Inspector</th>
+        <th style="width:80px;text-align:right">Count</th>
+        <th>Progress</th>
+        <th style="width:80px;text-align:right">% of Total</th>
+      </tr></thead>
+      <tbody>
+        ${lbData.map((e,i) => `<tr>
+          <td><span class="an-rank ${rankClass(i)}">${i+1}</span></td>
+          <td>${escHtml(e[0])}</td>
+          <td style="text-align:right;font-weight:600;color:var(--gold)">${e[1]}</td>
+          <td><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;"><div style="height:100%;width:${Math.round(e[1]/maxCount*100)}%;background:var(--gold);border-radius:3px;opacity:.8;"></div></div></td>
+          <td style="text-align:right;color:var(--gray)">${records.length ? Math.round(e[1]/records.length*100) : 0}%</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  document.getElementById('an-leaderboard').innerHTML = lbHtml;
+}
 (function() {
   const sess = sessionStorage.getItem('bfp_session');
   if (sess) { currentUser = JSON.parse(sess); loginSuccess(currentUser); }
@@ -1231,17 +2034,25 @@ function showToast(msg, type = 'success') {
 // ═══════════════════════════════════════════════════════
 //  EXPOSE FUNCTIONS TO HTML onclick handlers
 // ═══════════════════════════════════════════════════════
-window.showRegister      = showRegister;
-window.showLogin         = showLogin;
-window.logout            = logout;
-window.switchTab         = switchTab;
-window.openNewModal      = openNewModal;
-window.closeNewModal     = closeNewModal;
-window.updateSubclass    = updateSubclass;
-window.submitRecord      = submitRecord;
-window.exportCSV         = exportCSV;
-window.togglePw          = togglePw;
-window.toggleMineFilter  = toggleMineFilter;
+window.showRegister         = showRegister;
+window.showLogin            = showLogin;
+window.logout               = logout;
+window.switchTab            = switchTab;
+window.openNewModal         = openNewModal;
+window.closeNewModal        = closeNewModal;
+window.updateSubclass       = updateSubclass;
+window.submitRecord         = submitRecord;
+window.exportCSV            = exportCSV;
+window.togglePw             = togglePw;
+window.toggleMineFilter     = toggleMineFilter;
+window.renderAnalytics      = renderAnalytics;
+window.populatePartnerDropdown = populatePartnerDropdown;
+window.openIncompletePanel  = openIncompletePanel;
+window.closeIncompletePanel = closeIncompletePanel;
+window.openEditModal        = openEditModal;
+window.closeEditModal       = closeEditModal;
+window.updateRecord         = updateRecord;
+window.updateEditSubclass   = updateEditSubclass;
 </script>
 </body>
 </html>
