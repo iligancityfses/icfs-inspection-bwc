@@ -328,7 +328,7 @@
   .analytics-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
   .analytics-title { font-size:16px; font-weight:600; color:var(--white); }
   .analytics-filters { display:flex; gap:8px; }
-  .analytics-filters select { background:var(--navy-mid); color:var(--white); border:1px solid var(--navy-light); border-radius:6px; padding:6px 10px; font-size:12px; }
+  .analytics-filters select, .analytics-filters input { background:var(--navy-mid); color:var(--white); border:1px solid var(--navy-light); border-radius:6px; padding:6px 10px; font-size:12px; }
   .an-kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:16px; }
   .an-kpi { background:var(--navy-mid); border:1px solid var(--navy-light); border-radius:10px; padding:14px 12px; text-align:center; }
   .an-kpi-val { font-size:26px; font-weight:700; color:var(--gold); line-height:1.1; }
@@ -462,6 +462,16 @@
   <div class="main-content">
     <!-- DASHBOARD TAB -->
     <div id="tab-dashboard">
+      <div class="section-header">
+        <div class="section-title">Dashboard <span>Overview</span></div>
+        <div class="filter-bar">
+          <label style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;">Start</label>
+          <input type="date" id="dashboard-start-date" onchange="applyDashboardDateFilter()">
+          <label style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;">End</label>
+          <input type="date" id="dashboard-end-date" onchange="applyDashboardDateFilter()">
+          <button class="btn-action outline" onclick="clearDashboardDateFilter()">Clear</button>
+        </div>
+      </div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-label">Total Inspections</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">All records in the system</div></div>
         <div class="stat-card gold"><div class="stat-label">My Inspections</div><div class="stat-value" id="stat-mine">0</div><div class="stat-sub">Recorded by you</div></div>
@@ -498,6 +508,8 @@
       <div class="analytics-toolbar">
         <div class="analytics-title">📈 Inspection Analytics</div>
         <div class="analytics-filters">
+          <input type="date" id="an-start-date" onchange="syncAnalyticsDateToDashboard(); renderAnalytics();">
+          <input type="date" id="an-end-date" onchange="syncAnalyticsDateToDashboard(); renderAnalytics();">
           <select id="an-year" onchange="renderAnalytics()">
             <option value="all">All Years</option>
           </select>
@@ -1694,8 +1706,82 @@ function toggleMineFilter() {
   btn.textContent = filterMine ? '👤 My Records ✓' : '👤 My Records';
   renderTable();
 }
+function getRecordDate(r) {
+  // Use the actual inspection date first; fall back to createdAt for older records.
+  return r.datetime || r.dateInspected || r.createdAt || null;
+}
+
+function getDashboardDateRange() {
+  const start = document.getElementById('dashboard-start-date')?.value || '';
+  const end   = document.getElementById('dashboard-end-date')?.value || '';
+  return { start, end };
+}
+
+function isWithinDateRange(r, start, end) {
+  const raw = getRecordDate(r);
+  if (!raw) return !start && !end;
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return !start && !end;
+
+  if (start) {
+    const s = new Date(`${start}T00:00:00`);
+    if (d < s) return false;
+  }
+  if (end) {
+    const e = new Date(`${end}T23:59:59`);
+    if (d > e) return false;
+  }
+  return true;
+}
+
+function getDashboardFilteredRecords() {
+  const { start, end } = getDashboardDateRange();
+  return cachedRecords.filter(r => isWithinDateRange(r, start, end));
+}
+
+function applyDashboardDateFilter() {
+  const start = document.getElementById('dashboard-start-date')?.value || '';
+  const end   = document.getElementById('dashboard-end-date')?.value || '';
+
+  if (start && end && start > end) {
+    showToast('Start date cannot be later than end date', 'error');
+    return;
+  }
+
+  // Keep Analytics using the same selected date range.
+  const anStart = document.getElementById('an-start-date');
+  const anEnd   = document.getElementById('an-end-date');
+  if (anStart) anStart.value = start;
+  if (anEnd) anEnd.value = end;
+
+  updateStats();
+  renderRecentTable();
+  renderAnalytics();
+}
+
+function clearDashboardDateFilter() {
+  const ids = ['dashboard-start-date','dashboard-end-date','an-start-date','an-end-date'];
+  ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  updateStats();
+  renderRecentTable();
+  renderAnalytics();
+}
+
+function syncAnalyticsDateToDashboard() {
+  const start = document.getElementById('an-start-date')?.value || '';
+  const end   = document.getElementById('an-end-date')?.value || '';
+
+  const dashStart = document.getElementById('dashboard-start-date');
+  const dashEnd   = document.getElementById('dashboard-end-date');
+  if (dashStart) dashStart.value = start;
+  if (dashEnd) dashEnd.value = end;
+
+  updateStats();
+  renderRecentTable();
+}
+
 function updateStats() {
-  const records = cachedRecords;
+  const records = getDashboardFilteredRecords();
   document.getElementById('stat-total').textContent = records.length;
   document.getElementById('stat-mine').textContent = records.filter(r => r.inspectorId === currentUser.id || r.inspectorId === currentUser.uid).length;
   document.getElementById('stat-high').textContent = records.filter(r => r.hazard === 'HIGH').length;
@@ -1717,7 +1803,7 @@ function fmtDate(d) {
 }
 
 function renderRecentTable() {
-  const records = cachedRecords.slice(0,8);
+  const records = getDashboardFilteredRecords().slice(0,8);
   const tbody = document.getElementById('recent-tbody');
   if (!records.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">📋</div><p>No inspection records yet. Click "+ New Record" to add one.</p></div></td></tr>'; return; }
   tbody.innerHTML = records.map(r => `
@@ -1843,11 +1929,18 @@ function populateYearFilter() {
 }
 
 function getFilteredRecords() {
-  const yr = document.getElementById('an-year')?.value;
-  const mo = document.getElementById('an-month')?.value;
+  const yr = document.getElementById('an-year')?.value || 'all';
+  const mo = document.getElementById('an-month')?.value || 'all';
+  const start = document.getElementById('an-start-date')?.value || document.getElementById('dashboard-start-date')?.value || '';
+  const end   = document.getElementById('an-end-date')?.value || document.getElementById('dashboard-end-date')?.value || '';
+
   return cachedRecords.filter(r => {
-    if (!r.createdAt) return true;
-    const d = new Date(r.createdAt);
+    const raw = getRecordDate(r);
+    if (!raw) return !start && !end && yr === 'all' && mo === 'all';
+    const d = new Date(raw);
+    if (Number.isNaN(d.getTime())) return false;
+
+    if (!isWithinDateRange(r, start, end)) return false;
     if (yr !== 'all' && d.getFullYear() !== Number(yr)) return false;
     if (mo !== 'all' && (d.getMonth()+1) !== Number(mo)) return false;
     return true;
@@ -2046,6 +2139,9 @@ window.exportCSV            = exportCSV;
 window.togglePw             = togglePw;
 window.toggleMineFilter     = toggleMineFilter;
 window.renderAnalytics      = renderAnalytics;
+window.applyDashboardDateFilter = applyDashboardDateFilter;
+window.clearDashboardDateFilter = clearDashboardDateFilter;
+window.syncAnalyticsDateToDashboard = syncAnalyticsDateToDashboard;
 window.populatePartnerDropdown = populatePartnerDropdown;
 window.openIncompletePanel  = openIncompletePanel;
 window.closeIncompletePanel = closeIncompletePanel;
