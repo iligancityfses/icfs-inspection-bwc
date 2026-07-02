@@ -496,7 +496,7 @@
       </div>
       <div class="table-wrap" id="recent-table-wrap">
         <table><thead><tr>
-          <th>Establishment</th><th>Address</th><th>Occupancy</th>
+          <th>IO No.</th><th>Establishment</th><th>Address</th><th>Occupancy</th>
           <th>Hazard</th><th>Date Inspected</th><th>Inspector</th>
         </tr></thead>
         <tbody id="recent-tbody"></tbody></table>
@@ -593,7 +593,7 @@
       </div>
       <div class="table-wrap">
         <table><thead><tr>
-          <th>#</th><th>Establishment</th><th>Address</th><th>Contact Person</th>
+          <th>#</th><th>IO No.</th><th>Establishment</th><th>Address</th><th>Contact Person</th>
           <th>Contact No.</th><th>Occupancy</th><th>Sub-class</th>
           <th>Hazard</th><th>Floor Area</th><th>Storeys</th>
           <th>Date Inspected</th><th>FSIC Date</th><th>1st Insp.</th><th>Re-insp.</th><th>Inspector</th><th>Action</th>
@@ -669,9 +669,10 @@
     <div class="form-section">
       <div class="form-section-title">Establishment Details</div>
       <div class="form-grid-2">
+        <div class="form-group"><label>Inspection Order No. / IO Number *</label><input type="text" id="e-io-number" style="text-transform:uppercase;"></div>
+        <div class="form-group"><label>Date &amp; Time of Inspection *</label><input type="datetime-local" id="e-datetime"></div>
         <div class="form-group" style="grid-column:1/-1"><label>Name of Establishment *</label><input type="text" id="e-estname"></div>
         <div class="form-group" style="grid-column:1/-1"><label>Address *</label><input type="text" id="e-address"></div>
-        <div class="form-group"><label>Date &amp; Time of Inspection *</label><input type="datetime-local" id="e-datetime"></div>
         <div class="form-group"><label>Date of FSIC Issued *</label><input type="date" id="e-fsic-date"></div>
         <div class="form-group"><label>Contact Person *</label><input type="text" id="e-contact-person"></div>
         <div class="form-group"><label>Contact Number *</label><input type="tel" id="e-contact-number"></div>
@@ -821,9 +822,10 @@
     <div class="form-section">
       <div class="form-section-title">Establishment Details</div>
       <div class="form-grid-2">
+        <div class="form-group"><label>Inspection Order No. / IO Number *</label><input type="text" id="f-io-number" placeholder="e.g. IO-2026-0001" style="text-transform:uppercase;"></div>
+        <div class="form-group"><label>Date & Time of Inspection *</label><input type="datetime-local" id="f-datetime"></div>
         <div class="form-group" style="grid-column:1/-1"><label>Name of Establishment *</label><input type="text" id="f-estname" placeholder="ABC Commercial Building"></div>
         <div class="form-group" style="grid-column:1/-1"><label>Address</label><input type="text" id="f-address" placeholder="Purok X, Barangay Y, Iligan City"></div>
-        <div class="form-group"><label>Date & Time of Inspection *</label><input type="datetime-local" id="f-datetime"></div>
         <div class="form-group"><label>Date of FSIC Issued</label><input type="date" id="f-fsic-date"></div>
         <div class="form-group"><label>Contact Person (Client)</label><input type="text" id="f-contact-person" placeholder="Juan Dela Cruz"></div>
         <div class="form-group"><label>Contact Number</label><input type="tel" id="f-contact-number" placeholder="09XX-XXX-XXXX"></div>
@@ -1015,50 +1017,98 @@ function populatePartnerDropdown() {
   if (currentVal) sel.value = currentVal;
 }
 
-async function fetchAllRecords() {
-  const { data, error } = await sb
+const SUPABASE_PAGE_SIZE = 1000;
+
+function mapInspectionRow(r) {
+  return {
+    id:              r.id,
+    ioNumber:        r.io_number,
+    province:        r.province,
+    city:            r.city,
+    station:         r.station,
+    marshal:         r.marshal,
+    inspector:       r.inspector,
+    partnerInspector: r.partner_inspector,
+    inspectorId:     r.inspector_id,
+    estname:         r.estname,
+    address:         r.address,
+    datetime:        r.datetime,
+    fsicDate:        r.fsic_date,
+    contactPerson:   r.contact_person,
+    contactNumber:   r.contact_number,
+    occupancy:       r.occupancy,
+    subclass:        r.subclass,
+    floorArea:       r.floor_area,
+    height:          r.height,
+    storeys:         r.storeys,
+    basement:        r.basement,
+    hazard:          r.hazard,
+    firstInspection: r.first_inspection,
+    reinspections:   r.reinspections,
+    afssInstall:     r.afss_install,  afssCond:    r.afss_cond,
+    fdasInstall:     r.fdas_install,  fdasCond:    r.fdas_cond,
+    wspInstall:      r.wsp_install,   wspCond:     r.wsp_cond,
+    fexitInstall:    r.fexit_install, fexitCond:   r.fexit_cond,
+    elightInstall:   r.elight_install,
+    dsignInstall:    r.dsign_install,
+    fesignInstall:   r.fesign_install,
+    fextInstall:     r.fext_install,
+    remarksStatus:   r.remarks_status,
+    remarksNotes:    r.remarks_notes,
+    createdAt:       r.created_at
+  };
+}
+
+function normalizeIoNumber(value) {
+  return String(value || '').trim().toUpperCase().replace(/\s+/g, '');
+}
+
+async function findDuplicateIoNumber(ioNumber, excludeRecordId = null) {
+  const normalized = normalizeIoNumber(ioNumber);
+  if (!normalized) return null;
+
+  const localDuplicate = cachedRecords.find(r =>
+    normalizeIoNumber(r.ioNumber) === normalized &&
+    String(r.id) !== String(excludeRecordId || '')
+  );
+  if (localDuplicate) return localDuplicate;
+
+  let query = sb
     .from('inspections')
-    .select('*')
-    .order('created_at', { ascending: false });
-  if (!error && data) {
-    // Normalize snake_case → camelCase so the rest of the UI works unchanged
-    cachedRecords = data.map(r => ({
-      id:             r.id,
-      province:       r.province,
-      city:           r.city,
-      station:        r.station,
-      marshal:        r.marshal,
-      inspector:      r.inspector,
-      partnerInspector: r.partner_inspector,
-      inspectorId:    r.inspector_id,
-      estname:        r.estname,
-      address:        r.address,
-      datetime:       r.datetime,
-      fsicDate:       r.fsic_date,
-      contactPerson:  r.contact_person,
-      contactNumber:  r.contact_number,
-      occupancy:      r.occupancy,
-      subclass:       r.subclass,
-      floorArea:      r.floor_area,
-      height:         r.height,
-      storeys:        r.storeys,
-      basement:       r.basement,
-      hazard:         r.hazard,
-      firstInspection: r.first_inspection,
-      reinspections:  r.reinspections,
-      afssInstall:    r.afss_install,  afssCond:    r.afss_cond,
-      fdasInstall:    r.fdas_install,  fdasCond:    r.fdas_cond,
-      wspInstall:     r.wsp_install,   wspCond:     r.wsp_cond,
-      fexitInstall:   r.fexit_install, fexitCond:   r.fexit_cond,
-      elightInstall:  r.elight_install,
-      dsignInstall:   r.dsign_install,
-      fesignInstall:  r.fesign_install,
-      fextInstall:    r.fext_install,
-      remarksStatus:  r.remarks_status,
-      remarksNotes:   r.remarks_notes,
-      createdAt:      r.created_at
-    }));
+    .select('id,io_number,estname')
+    .eq('io_number', normalized)
+    .limit(1);
+
+  if (excludeRecordId) query = query.neq('id', excludeRecordId);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data && data.length ? data[0] : null;
+}
+
+async function fetchAllRecords() {
+  const allRows = [];
+  let from = 0;
+
+  while (true) {
+    const to = from + SUPABASE_PAGE_SIZE - 1;
+    const { data, error } = await sb
+      .from('inspections')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) {
+      showToast('Error loading records: ' + (error.message || 'Unknown error'), 'error');
+      throw error;
+    }
+
+    allRows.push(...(data || []));
+    if (!data || data.length < SUPABASE_PAGE_SIZE) break;
+    from += SUPABASE_PAGE_SIZE;
   }
+
+  cachedRecords = allRows.map(mapInspectionRow);
   return cachedRecords;
 }
 
@@ -1266,9 +1316,9 @@ function switchTab(tab) {
 // ═══════════════════════════════════════════════════════
 //  INCOMPLETE RECORDS
 // ═══════════════════════════════════════════════════════
-const REQUIRED_FIELDS = ['estname','address','datetime','fsicDate','contactPerson','contactNumber',
+const REQUIRED_FIELDS = ['ioNumber','estname','address','datetime','fsicDate','contactPerson','contactNumber',
   'occupancy','subclass','hazard','floorArea','height','storeys'];
-const FIELD_LABELS = { estname:'Establishment', address:'Address', datetime:'Date & Time',
+const FIELD_LABELS = { ioNumber:'IO Number', estname:'Establishment', address:'Address', datetime:'Date & Time',
   fsicDate:'FSIC Date', contactPerson:'Contact Person', contactNumber:'Contact Number',
   occupancy:'Occupancy', subclass:'Sub-class', hazard:'Hazard',
   floorArea:'Floor Area', height:'Height', storeys:'Storeys' };
@@ -1348,6 +1398,7 @@ function openEditModal(recordId) {
   // Fill fields
   document.getElementById('e-inspector').value        = r.inspector || '';
   psel.value = r.partnerInspector || '';
+  document.getElementById('e-io-number').value        = r.ioNumber || '';
   document.getElementById('e-estname').value          = r.estname || '';
   document.getElementById('e-address').value          = r.address || '';
   document.getElementById('e-datetime').value         = r.datetime ? r.datetime.slice(0,16) : '';
@@ -1406,6 +1457,7 @@ async function updateRecord() {
   const toUpper = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
   const val     = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
 
+  const ioNumber      = normalizeIoNumber(val('e-io-number'));
   const estname       = val('e-estname');
   const address       = val('e-address');
   const datetime      = val('e-datetime');
@@ -1425,6 +1477,7 @@ async function updateRecord() {
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
 
+  if (!ioNumber)      return showEditMsg('Inspection Order Number / IO Number is required.','error');
   if (!estname)       return showEditMsg('Establishment name is required.','error');
   if (!address)       return showEditMsg('Address is required.','error');
   if (!datetime)      return showEditMsg('Date & time of inspection is required.','error');
@@ -1442,6 +1495,7 @@ async function updateRecord() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Updating...';
 
   const row = {
+    io_number:        ioNumber,
     estname:          toUpper('e-estname'),
     address:          toUpper('e-address'),
     datetime,
@@ -1471,6 +1525,12 @@ async function updateRecord() {
   };
 
   try {
+    const duplicate = await findDuplicateIoNumber(ioNumber, editingRecordId);
+    if (duplicate) {
+      showEditMsg(`Duplicate IO Number detected. This IO is already used by ${duplicate.estname || 'another record'}.`, 'error');
+      btn.disabled = false; btn.textContent = 'Update Record'; return;
+    }
+
     const { error } = await sb.from('inspections').update(row).eq('id', editingRecordId);
     if (error) throw error;
 
@@ -1478,6 +1538,7 @@ async function updateRecord() {
     const idx = cachedRecords.findIndex(x => x.id === editingRecordId);
     if (idx !== -1) {
       cachedRecords[idx] = { ...cachedRecords[idx], ...{
+        ioNumber: row.io_number,
         estname: row.estname, address: row.address, datetime: row.datetime,
         fsicDate: row.fsic_date, contactPerson: row.contact_person, contactNumber: row.contact_number,
         occupancy: row.occupancy, subclass: row.subclass, floorArea: row.floor_area,
@@ -1538,6 +1599,7 @@ function updateSubclass() {
 //  SUBMIT RECORD
 // ═══════════════════════════════════════════════════════
 async function submitRecord() {
+  const ioNumber  = normalizeIoNumber(document.getElementById('f-io-number').value);
   const estname   = document.getElementById('f-estname').value.trim();
   const address   = document.getElementById('f-address').value.trim();
   const datetime  = document.getElementById('f-datetime').value;
@@ -1552,6 +1614,7 @@ async function submitRecord() {
   const height    = document.getElementById('f-height').value;
   const storeys   = document.getElementById('f-storeys').value;
 
+  if (!ioNumber)      return showModalMsg('Inspection Order Number / IO Number is required.', 'error');
   if (!estname)       return showModalMsg('Establishment name is required.', 'error');
   if (!address)       return showModalMsg('Address is required.', 'error');
   if (!datetime)      return showModalMsg('Date & time of inspection is required.', 'error');
@@ -1571,6 +1634,7 @@ async function submitRecord() {
 
   const record = {
     id: Date.now().toString(),
+    ioNumber,
     province: 'LANAO DEL NORTE',
     city: 'ILIGAN CITY',
     station: 'ILIGAN CITY FIRE STATION',
@@ -1607,8 +1671,15 @@ async function submitRecord() {
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Saving...';
 
   try {
+    const duplicate = await findDuplicateIoNumber(ioNumber);
+    if (duplicate) {
+      showModalMsg(`Duplicate IO Number detected. This IO is already used by ${duplicate.estname || 'another record'}.`, 'error');
+      btn.disabled = false; btn.textContent = 'Save Record'; return;
+    }
+
     // Map camelCase record → snake_case for Supabase
     const row = {
+      io_number:       record.ioNumber,
       province:        record.province,
       city:            record.city,
       station:         record.station,
@@ -1657,7 +1728,7 @@ async function submitRecord() {
   updateStats(); renderTable(); renderRecentTable();
 
   // Reset form
-  ['f-estname','f-address','f-contact-person','f-contact-number','f-fsic-date','f-floorarea','f-height','f-storeys','f-basement','f-remarks-notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['f-io-number','f-estname','f-address','f-contact-person','f-contact-number','f-fsic-date','f-floorarea','f-height','f-storeys','f-basement','f-remarks-notes'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('f-partner-inspector').value = '';
   document.getElementById('f-occupancy').value = '';
   document.getElementById('f-hazard').value = '';
@@ -1805,9 +1876,10 @@ function fmtDate(d) {
 function renderRecentTable() {
   const records = getDashboardFilteredRecords().slice(0,8);
   const tbody = document.getElementById('recent-tbody');
-  if (!records.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="icon">📋</div><p>No inspection records yet. Click "+ New Record" to add one.</p></div></td></tr>'; return; }
+  if (!records.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">📋</div><p>No inspection records yet. Click "+ New Record" to add one.</p></div></td></tr>'; return; }
   tbody.innerHTML = records.map(r => `
     <tr>
+      <td class="td-mono">${escHtml(r.ioNumber)||'—'}</td>
       <td class="td-name">${escHtml(r.estname)}</td>
       <td>${escHtml(r.address)||'—'}</td>
       <td><span class="badge badge-occ">${escHtml(r.occupancy)}</span></td>
@@ -1824,18 +1896,23 @@ function renderTable() {
 
   let records = cachedRecords;
   if (filterMine) records = records.filter(r => r.inspectorId === currentUser.id);
-  if (search)     records = records.filter(r => r.estname?.toLowerCase().includes(search) || r.address?.toLowerCase().includes(search));
+  if (search)     records = records.filter(r =>
+    r.estname?.toLowerCase().includes(search) ||
+    r.address?.toLowerCase().includes(search) ||
+    r.ioNumber?.toLowerCase().includes(search)
+  );
   if (filterOcc)  records = records.filter(r => r.occupancy === filterOcc);
   if (filterHaz)  records = records.filter(r => r.hazard === filterHaz);
 
   const tbody = document.getElementById('main-tbody');
-  if (!records.length) { tbody.innerHTML = '<tr><td colspan="16"><div class="empty-state"><div class="icon">🔍</div><p>No records found.</p></div></td></tr>'; return; }
+  if (!records.length) { tbody.innerHTML = '<tr><td colspan="17"><div class="empty-state"><div class="icon">🔍</div><p>No records found.</p></div></td></tr>'; return; }
   tbody.innerHTML = records.map((r,i) => {
     const mine = r.inspectorId === currentUser.id;
     const incomplete = isIncomplete(r) && mine;
     const incBadge = incomplete ? ' <span style="color:#F87171;font-size:10px;">⚠</span>' : '';
     return `<tr${incomplete ? ' style="background:rgba(248,113,113,.04)"' : ''}>
       <td class="td-mono" style="color:var(--gray)">${i+1}</td>
+      <td class="td-mono">${escHtml(r.ioNumber)||'—'}</td>
       <td class="td-name">${escHtml(r.estname)}${incBadge}</td>
       <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(r.address)||'—'}</td>
       <td>${escHtml(r.contactPerson)||'—'}</td>
@@ -1866,8 +1943,8 @@ function escHtml(s) {
 function exportCSV() {
   const records = cachedRecords;
   if (!records.length) return showToast('No records to export','error');
-  const headers = ['Province','City','Station','Fire Marshal','Inspector','Establishment','Address','Date & Time','Contact Person','Contact Number','FSIC Date','Occupancy','Sub-class','Floor Area (m²)','Height (m)','Storeys','Basement Levels','Hazard','1st Inspection','Re-inspections','AFSS Install','AFSS Condition','FDAS Install','FDAS Condition','Wet Standpipe Install','Wet Standpipe Condition','Fire Exit Install','Fire Exit Condition','Emergency Lights','Directional Signs','Fire Exit Signs','Fire Extinguisher','Remarks Status','Remarks Notes'];
-  const rows = records.map(r => [r.province,r.city,r.station||'ILIGAN CITY FIRE STATION',r.marshal,r.inspector,r.estname,r.address,r.datetime,r.contactPerson,r.contactNumber,r.fsicDate,r.occupancy,r.subclass,r.floorArea,r.height,r.storeys,r.basement,r.hazard,r.firstInspection?'TRUE':'FALSE',r.reinspections,r.afssInstall||'',r.afssCond||'',r.fdasInstall||'',r.fdasCond||'',r.wspInstall||'',r.wspCond||'',r.fexitInstall||'',r.fexitCond||'',r.elightInstall||'',r.dsignInstall||'',r.fesignInstall||'',r.fextInstall||'',r.remarksStatus||'',r.remarksNotes||''].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const headers = ['Province','City','Station','Fire Marshal','Inspector','IO Number','Establishment','Address','Date & Time','Contact Person','Contact Number','FSIC Date','Occupancy','Sub-class','Floor Area (m²)','Height (m)','Storeys','Basement Levels','Hazard','1st Inspection','Re-inspections','AFSS Install','AFSS Condition','FDAS Install','FDAS Condition','Wet Standpipe Install','Wet Standpipe Condition','Fire Exit Install','Fire Exit Condition','Emergency Lights','Directional Signs','Fire Exit Signs','Fire Extinguisher','Remarks Status','Remarks Notes'];
+  const rows = records.map(r => [r.province,r.city,r.station||'ILIGAN CITY FIRE STATION',r.marshal,r.inspector,r.ioNumber,r.estname,r.address,r.datetime,r.contactPerson,r.contactNumber,r.fsicDate,r.occupancy,r.subclass,r.floorArea,r.height,r.storeys,r.basement,r.hazard,r.firstInspection?'TRUE':'FALSE',r.reinspections,r.afssInstall||'',r.afssCond||'',r.fdasInstall||'',r.fdasCond||'',r.wspInstall||'',r.wspCond||'',r.fexitInstall||'',r.fexitCond||'',r.elightInstall||'',r.dsignInstall||'',r.fesignInstall||'',r.fextInstall||'',r.remarksStatus||'',r.remarksNotes||''].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
   const csv = [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
