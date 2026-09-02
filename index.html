@@ -348,6 +348,68 @@
   .an-rank.silver-rank { background:#b0b0b0; color:#222; }
   .an-rank.bronze-rank { background:#cd7f32; color:#fff; }
 
+  /* ── Inspector Targets ── */
+  .target-toolbar { display:flex; align-items:end; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .target-toolbar-left { display:flex; gap:8px; flex-wrap:wrap; align-items:end; }
+  .target-field { display:flex; flex-direction:column; gap:5px; }
+  .target-field label { font-size:9.5px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:var(--gray); }
+  .target-field select, .target-field input { min-width:120px; background:var(--input-bg); color:var(--white); border:1px solid var(--navy-light); border-radius:6px; padding:7px 9px; font-size:12px; font-family:'Sora',sans-serif; }
+  .target-field input { width:95px; min-width:95px; }
+  .target-period-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border-radius:20px; background:rgba(240,165,0,.10); border:1px solid rgba(240,165,0,.25); color:var(--gold); font-size:11px; font-weight:600; }
+  .target-progress-track { width:100%; min-width:110px; height:7px; border-radius:5px; background:rgba(255,255,255,.08); overflow:hidden; }
+  .target-progress-fill { height:100%; border-radius:5px; background:var(--gold); }
+  .target-progress-fill.done { background:#4CAF82; }
+  .target-remaining.done { color:#4CAF82 !important; font-weight:600; }
+  .target-editor-table input { width:100%; min-width:80px; background:var(--input-bg); color:var(--white); border:1px solid var(--navy-light); border-radius:5px; padding:6px 8px; font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:right; }
+  .target-editor-table input:focus { outline:none; border-color:var(--gold); box-shadow:0 0 0 2px rgba(240,165,0,.1); }
+  .target-note { font-size:11.5px; line-height:1.55; color:var(--gray); margin:8px 0 14px; padding:9px 12px; border-radius:7px; background:rgba(255,255,255,.03); border:1px solid var(--border); }
+  .target-note strong { color:var(--gold); }
+  .target-storage-warning { color:#F0A500; }
+
+  /* ── Productivity & Progress Enhancements ── */
+  .sync-cluster { display:flex; align-items:center; gap:8px; }
+  .sync-status { font-size:10.5px; color:var(--gray); white-space:nowrap; }
+  .sync-status.syncing { color:var(--gold); }
+  .btn-refresh { background:rgba(255,255,255,.04); border:1px solid var(--border); color:var(--gray); padding:6px 10px; border-radius:6px; font-size:11px; font-family:'Sora',sans-serif; cursor:pointer; }
+  .btn-refresh:hover { color:var(--white); border-color:rgba(255,255,255,.2); background:rgba(255,255,255,.07); }
+  .btn-refresh:disabled { opacity:.5; cursor:wait; }
+  .quick-presets { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
+  .quick-presets .btn-action { padding:7px 10px; font-size:10.5px; }
+  .my-target-panel { background:linear-gradient(135deg,rgba(240,165,0,.09),rgba(91,156,246,.05)); border:1px solid rgba(240,165,0,.22); border-radius:12px; padding:18px 20px; margin-bottom:22px; }
+  .my-target-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
+  .my-target-title { font-size:14px; font-weight:700; color:var(--white); }
+  .my-target-sub { font-size:11px; color:var(--gray); margin-top:3px; }
+  .my-target-grid { display:grid; grid-template-columns:repeat(5,minmax(115px,1fr)); gap:10px; }
+  .my-target-metric { background:rgba(10,22,40,.55); border:1px solid var(--border); border-radius:9px; padding:12px 13px; }
+  .my-target-metric .v { font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:700; color:var(--white); }
+  .my-target-metric .l { font-size:9.5px; color:var(--gray); text-transform:uppercase; letter-spacing:.6px; margin-top:4px; }
+  .my-target-progress { display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; margin-top:13px; }
+  .my-target-progress .target-progress-track { height:9px; }
+  .status-chip { display:inline-flex; align-items:center; gap:5px; border-radius:20px; padding:3px 8px; font-size:10px; font-weight:700; white-space:nowrap; }
+  .status-chip.complete { color:#6EE7A5; background:rgba(76,175,130,.13); border:1px solid rgba(76,175,130,.28); }
+  .status-chip.track { color:#7EC8F7; background:rgba(91,156,246,.12); border:1px solid rgba(91,156,246,.28); }
+  .status-chip.attention { color:#FDBA74; background:rgba(251,146,60,.12); border:1px solid rgba(251,146,60,.3); }
+  .status-chip.none { color:var(--gray); background:rgba(255,255,255,.04); border:1px solid var(--border); }
+  .target-controls-row { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; margin:2px 0 12px; }
+  .target-controls-left,.target-controls-right { display:flex; gap:7px; flex-wrap:wrap; align-items:center; }
+  .target-controls-row input,.target-controls-row select { background:var(--input-bg); color:var(--white); border:1px solid var(--navy-light); border-radius:6px; padding:7px 9px; font-size:11.5px; font-family:'Sora',sans-serif; }
+  .target-controls-row input { width:190px; }
+  .target-bulk-tools { display:flex; align-items:end; gap:8px; flex-wrap:wrap; padding:10px 12px; margin-bottom:12px; border:1px solid var(--border); background:rgba(255,255,255,.025); border-radius:8px; }
+  .target-bulk-tools .target-field input { width:120px; }
+  .inspection-footer { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; padding:12px 2px 2px; color:var(--gray); font-size:11px; }
+  .pagination-controls { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .pagination-controls button { min-width:34px; padding:6px 9px; border-radius:6px; border:1px solid var(--border); background:var(--navy-mid); color:var(--gray); cursor:pointer; font-family:'Sora',sans-serif; font-size:11px; }
+  .pagination-controls button:hover:not(:disabled) { border-color:var(--gold); color:var(--gold); }
+  .pagination-controls button:disabled { opacity:.4; cursor:not-allowed; }
+  .pagination-controls select { background:var(--input-bg); color:var(--white); border:1px solid var(--navy-light); border-radius:6px; padding:6px 8px; font-size:11px; }
+  .table-wrap table thead th { position:sticky; top:0; z-index:3; }
+  .muted-hint { color:var(--gray); font-size:10.5px; }
+
+  @media (max-width: 900px) {
+    .my-target-grid { grid-template-columns:repeat(2,minmax(120px,1fr)); }
+    .sync-status { display:none; }
+  }
+
   @media (max-width: 640px) {
     .auth-card { padding: 28px 20px; }
     .form-row, .form-grid-3, .form-grid-4 { grid-template-columns: 1fr; }
@@ -356,6 +418,14 @@
     .modal { padding: 20px 16px; }
     .topbar { padding: 0 14px; }
     .nav-tabs { padding: 0 12px; overflow-x: auto; }
+    .topbar-right { gap:8px; }
+    .user-badge span { display:none; }
+    .my-target-grid { grid-template-columns:1fr 1fr; }
+    .my-target-panel { padding:14px; }
+    .target-controls-left,.target-controls-right { width:100%; }
+    .target-controls-row input,.target-controls-row select { flex:1; min-width:0; }
+    .filter-bar { width:100%; }
+    .filter-bar input,.filter-bar select { flex:1; min-width:135px; }
   }
 </style>
 </head>
@@ -383,6 +453,7 @@
       </div>
     </div>
     <button class="btn-primary" id="btn-login">Sign In</button>
+    <p class="auth-switch" style="margin-top:14px;"><a onclick="showForgotPassword()">Forgot password?</a></p>
     <p class="auth-switch">No account yet? <a onclick="showRegister()">Create Inspector Account →</a></p>
   </div>
 
@@ -417,6 +488,9 @@
       <div class="form-group"><label>City / Municipality *</label><input type="text" id="reg-city" placeholder="Iligan City" required></div>
       <div class="form-group"><label>Province / Region</label><input type="text" id="reg-province" placeholder="Lanao del Norte"></div>
     </div>
+    <div class="form-row single">
+      <div class="form-group"><label>Recovery Email *</label><input type="email" id="reg-email" placeholder="name@example.com" autocomplete="email" required><div style="font-size:10.5px;color:var(--gray);margin-top:5px;line-height:1.4;">Used only for account recovery and password reset.</div></div>
+    </div>
     <div class="form-row">
       <div class="form-group"><label>Employee ID / Username *</label><input type="text" id="reg-username" placeholder="FO1DELACRUZ" required></div>
       <div class="form-group">
@@ -429,6 +503,32 @@
     </div>
     <button class="btn-primary" id="btn-register">Create Account</button>
     <p class="auth-switch">Already have an account? <a onclick="showLogin()">Sign In →</a></p>
+  </div>
+
+  <div class="auth-card" id="forgot-card" style="display:none;">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🔐</div>
+      <div class="auth-logo-text"><h1>BFP INSPECTION SYSTEM</h1><p>Password Recovery</p></div>
+    </div>
+    <h2 class="auth-title">Forgot Password</h2>
+    <p class="auth-subtitle">Enter your Employee ID / Username. A secure reset link will be sent to the recovery email registered to your account.</p>
+    <div class="msg" id="forgot-msg"></div>
+    <div class="form-group"><label>Employee ID / Username *</label><input type="text" id="forgot-username" placeholder="e.g. FO1DELACRUZ" autocomplete="username"></div>
+    <button class="btn-primary" id="btn-forgot-password">Send Reset Link</button>
+    <p class="auth-switch"><a onclick="showLogin()">← Back to Sign In</a></p>
+  </div>
+
+  <div class="auth-card" id="reset-card" style="display:none;">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">🔑</div>
+      <div class="auth-logo-text"><h1>BFP INSPECTION SYSTEM</h1><p>Set New Password</p></div>
+    </div>
+    <h2 class="auth-title">Create New Password</h2>
+    <p class="auth-subtitle">Enter a new password for your inspector account.</p>
+    <div class="msg" id="reset-msg"></div>
+    <div class="form-group"><label>New Password *</label><div class="pw-wrap"><input type="password" id="reset-password" minlength="6" autocomplete="new-password"><button type="button" class="pw-toggle" onclick="togglePw('reset-password', this)" tabindex="-1">👁</button></div></div>
+    <div class="form-group"><label>Confirm New Password *</label><div class="pw-wrap"><input type="password" id="reset-password-confirm" minlength="6" autocomplete="new-password"><button type="button" class="pw-toggle" onclick="togglePw('reset-password-confirm', this)" tabindex="-1">👁</button></div></div>
+    <button class="btn-primary" id="btn-reset-password">Update Password</button>
   </div>
 </div>
 
@@ -443,6 +543,10 @@
       </div>
     </div>
     <div class="topbar-right">
+      <div class="sync-cluster">
+        <span class="sync-status" id="sync-status">Ready</span>
+        <button class="btn-refresh" id="btn-refresh" onclick="refreshAppData()" title="Refresh records, users and targets">↻ Refresh</button>
+      </div>
       <div class="user-badge">
         <div class="user-avatar" id="user-avatar"></div>
         <span id="user-display-name" style="font-size:12px;"></span>
@@ -470,13 +574,38 @@
           <label style="font-size:11px;color:var(--gold);font-weight:600;text-transform:uppercase;">End</label>
           <input type="date" id="dashboard-end-date" onchange="applyDashboardDateFilter()">
           <button class="btn-action outline" onclick="clearDashboardDateFilter()">Clear</button>
+          <div class="quick-presets">
+            <button class="btn-action outline" onclick="setDashboardPreset('month')">This Month</button>
+            <button class="btn-action outline" onclick="setDashboardPreset('quarter')">This Quarter</button>
+            <button class="btn-action outline" onclick="setDashboardPreset('semester')">This Semester</button>
+          </div>
         </div>
       </div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-label">Total Inspections</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">All records in the system</div></div>
-        <div class="stat-card gold"><div class="stat-label">My Inspections</div><div class="stat-value" id="stat-mine">0</div><div class="stat-sub">Recorded by you</div></div>
+        <div class="stat-card gold"><div class="stat-label">My Inspections</div><div class="stat-value" id="stat-mine">0</div><div class="stat-sub">Primary + buddy inspections</div></div>
         <div class="stat-card red"><div class="stat-label">High Hazard</div><div class="stat-value" id="stat-high">0</div><div class="stat-sub">Require priority attention</div></div>
         <div class="stat-card green"><div class="stat-label">With FSIC</div><div class="stat-value" id="stat-fsic">0</div><div class="stat-sub">FSIC date recorded</div></div>
+      </div>
+
+      <!-- Personal Target Snapshot -->
+      <div class="my-target-panel" id="my-target-panel">
+        <div class="my-target-head">
+          <div><div class="my-target-title">🎯 My Target & Accomplishment</div><div class="my-target-sub" id="my-target-period-label">Current semester</div></div>
+          <span class="status-chip none" id="my-target-status">No target</span>
+        </div>
+        <div class="my-target-grid">
+          <div class="my-target-metric"><div class="v" id="my-target-value">—</div><div class="l">Target</div></div>
+          <div class="my-target-metric"><div class="v" id="my-target-accomplished">0</div><div class="l">Accomplished</div></div>
+          <div class="my-target-metric"><div class="v" id="my-target-remaining">—</div><div class="l">Remaining</div></div>
+          <div class="my-target-metric"><div class="v" id="my-target-primary">0</div><div class="l">Primary</div></div>
+          <div class="my-target-metric"><div class="v" id="my-target-buddy">0</div><div class="l">Buddy</div></div>
+        </div>
+        <div class="my-target-progress">
+          <div class="target-progress-track"><div class="target-progress-fill" id="my-target-progress-fill" style="width:0%"></div></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold);min-width:48px;text-align:right" id="my-target-pct">—</div>
+        </div>
+        <div class="muted-hint" id="my-target-pace" style="margin-top:8px;"></div>
       </div>
 
       <!-- Incomplete Records Alert -->
@@ -497,7 +626,7 @@
       <div class="table-wrap" id="recent-table-wrap">
         <table><thead><tr>
           <th>IO No.</th><th>Establishment</th><th>Address</th><th>Occupancy</th>
-          <th>Hazard</th><th>Date Inspected</th><th>Inspector</th>
+          <th>Hazard</th><th>Date Inspected</th><th>Inspector</th><th>Partner / Buddy</th>
         </tr></thead>
         <tbody id="recent-tbody"></tbody></table>
       </div>
@@ -531,7 +660,7 @@
       <!-- Row 1: Inspector Bar + Occupancy Doughnut -->
       <div class="an-grid-2">
         <div class="an-card">
-          <div class="an-card-title">Inspections per Inspector</div>
+          <div class="an-card-title">Inspector Accomplishments (Primary + Buddy)</div>
           <div class="an-chart-wrap"><canvas id="chart-inspector"></canvas></div>
         </div>
         <div class="an-card">
@@ -564,9 +693,65 @@
         </div>
       </div>
 
-      <!-- Row 4: Top Establishments Table -->
+      <!-- Inspector Target Progress -->
       <div class="an-card an-card-full">
-        <div class="an-card-title">Inspector Leaderboard</div>
+        <div class="target-toolbar">
+          <div>
+            <div class="an-card-title" style="margin-bottom:5px;">Inspector Target Progress</div>
+            <span class="target-period-badge" id="target-period-badge">2nd Semester 2026</span>
+          </div>
+          <div class="target-toolbar-left">
+            <div class="target-field">
+              <label>Target Basis</label>
+              <select id="target-period-type" onchange="updateTargetPeriodOptions(); renderTargetProgress();">
+                <option value="semester">Semester</option>
+                <option value="quarter">Quarter</option>
+                <option value="month">Monthly</option>
+              </select>
+            </div>
+            <div class="target-field">
+              <label>Year</label>
+              <input type="number" id="target-year" min="2020" max="2100" value="2026" onchange="renderTargetProgress()">
+            </div>
+            <div class="target-field">
+              <label>Period</label>
+              <select id="target-period-index" onchange="renderTargetProgress()">
+                <option value="1">1st Semester</option>
+                <option value="2" selected>2nd Semester</option>
+              </select>
+            </div>
+            <button class="btn-action outline" onclick="setTargetPeriodToCurrent()">◎ Current Period</button>
+            <button class="btn-action btn-export" onclick="openTargetModal()">⚙ Set Inspector Targets</button>
+          </div>
+        </div>
+        <div class="an-kpi-row" id="target-kpis"></div>
+        <div class="target-controls-row">
+          <div class="target-controls-left">
+            <input type="text" id="target-search" placeholder="Search inspector..." oninput="renderTargetProgress()">
+            <select id="target-status-filter" onchange="renderTargetProgress()">
+              <option value="all">All Status</option>
+              <option value="attention">Needs Attention</option>
+              <option value="track">On Track</option>
+              <option value="complete">Completed</option>
+              <option value="none">No Target</option>
+            </select>
+            <select id="target-sort" onchange="renderTargetProgress()">
+              <option value="reference">Reference Order</option>
+              <option value="completion">Completion %</option>
+              <option value="remaining">Remaining</option>
+              <option value="accomplishment">Accomplishment</option>
+            </select>
+          </div>
+          <div class="target-controls-right">
+            <button class="btn-action outline" onclick="exportTargetCSV()">⬇ Target CSV</button>
+          </div>
+        </div>
+        <div class="an-table-wrap" id="target-progress-table"></div>
+      </div>
+
+      <!-- Inspector Leaderboard -->
+      <div class="an-card an-card-full">
+        <div class="an-card-title">Inspector Accomplishment Leaderboard</div>
         <div class="an-table-wrap" id="an-leaderboard"></div>
       </div>
     </div>
@@ -576,17 +761,20 @@
       <div class="section-header">
         <div class="section-title">Inspection <span>Records</span></div>
         <div class="filter-bar">
-          <input type="text" id="search-input" placeholder="Search establishment..." oninput="renderTable()" style="width:180px;">
+          <input type="text" id="search-input" placeholder="Search establishment, IO, inspector..." oninput="resetInspectionPageAndRender()" style="width:225px;">
           <button class="btn-action btn-mine" id="btn-filter-mine" onclick="toggleMineFilter()" title="Show only my records">👤 My Records</button>
-          <select id="filter-occupancy" onchange="renderTable()"><option value="">All Occupancy</option>
+          <select id="filter-occupancy" onchange="resetInspectionPageAndRender()"><option value="">All Occupancy</option>
             <option>ASSEMBLY</option><option>EDUCATIONAL</option><option>DAY CARE</option>
             <option>HEALTH CARE</option><option>RESIDENTIAL</option><option>MERCANTILE</option>
             <option>BUSINESS</option><option>INDUSTRIAL</option><option>STORAGE</option>
             <option>SPECIAL STRUCTURE</option><option>DETENTION & CORRECTIONAL</option>
           </select>
-          <select id="filter-hazard" onchange="renderTable()"><option value="">All Hazard</option>
+          <select id="filter-hazard" onchange="resetInspectionPageAndRender()"><option value="">All Hazard</option>
             <option>LOW</option><option>MODERATE</option><option>HIGH</option>
           </select>
+          <input type="date" id="inspection-start-date" title="Inspection start date" onchange="resetInspectionPageAndRender()">
+          <input type="date" id="inspection-end-date" title="Inspection end date" onchange="resetInspectionPageAndRender()">
+          <button class="btn-action outline" onclick="clearInspectionFilters()">Clear Filters</button>
           <button class="btn-action btn-export" onclick="exportCSV()">⬇ Export CSV</button>
           <button class="btn-action btn-new" onclick="openNewModal()">+ New Record</button>
         </div>
@@ -596,10 +784,20 @@
           <th>#</th><th>IO No.</th><th>Establishment</th><th>Address</th><th>Contact Person</th>
           <th>Contact No.</th><th>Occupancy</th><th>Sub-class</th>
           <th>Hazard</th><th>Floor Area</th><th>Storeys</th>
-          <th>Date Inspected</th><th>FSIC Date</th><th>1st Insp.</th><th>Re-insp.</th><th>Inspector</th><th>Action</th>
+          <th>Date Inspected</th><th>FSIC Date</th><th>1st Insp.</th><th>Re-insp.</th><th>Inspector</th><th>Partner / Buddy</th><th>Action</th>
         </tr></thead>
         <tbody id="main-tbody"></tbody>
         </table>
+      </div>
+      <div class="inspection-footer" id="inspection-pagination">
+        <div id="inspection-count">0 records</div>
+        <div class="pagination-controls">
+          <span>Rows</span>
+          <select id="inspection-page-size" onchange="changeInspectionPageSize()"><option>25</option><option selected>50</option><option>100</option><option>200</option></select>
+          <button id="inspection-prev" onclick="changeInspectionPage(-1)">‹ Prev</button>
+          <span id="inspection-page-label">Page 1 of 1</span>
+          <button id="inspection-next" onclick="changeInspectionPage(1)">Next ›</button>
+        </div>
       </div>
     </div>
 
@@ -957,6 +1155,42 @@
   </div>
 </div>
 
+<!-- INSPECTOR TARGETS MODAL -->
+<div class="modal-overlay" id="target-modal">
+  <div class="modal" style="max-width:820px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Set <span>Inspector Targets</span></div>
+        <div style="font-size:12px;color:var(--gray);margin-top:4px;" id="target-modal-period-label">2nd Semester 2026</div>
+      </div>
+      <button class="btn-close" onclick="closeTargetModal()">✕</button>
+    </div>
+    <div class="target-note">
+      Enter the official target for each inspector for the selected period. <strong>Accomplishment counts include both primary and buddy/partner inspections.</strong> A target of 0 is treated as not assigned.
+      <span id="target-storage-note"></span>
+    </div>
+    <div class="target-bulk-tools">
+      <div class="target-field"><label>Set Same Target</label><input type="number" min="0" step="1" id="bulk-target-value" placeholder="e.g. 500"></div>
+      <button class="btn-action outline" onclick="applyBulkTarget(false)">Apply to All</button>
+      <button class="btn-action outline" onclick="applyBulkTarget(true)">Fill Empty Only</button>
+      <button class="btn-action outline" onclick="copyPreviousTargetsToEditor()">↶ Copy Previous Period</button>
+      <button class="btn-action outline" onclick="clearTargetEditor()">Clear All</button>
+    </div>
+    <div class="table-wrap" style="max-height:58vh;overflow:auto;">
+      <table class="target-editor-table">
+        <thead style="position:sticky;top:0;z-index:2;"><tr>
+          <th style="width:55px">#</th><th>Inspector</th><th style="width:130px;text-align:right">Target</th>
+        </tr></thead>
+        <tbody id="target-editor-body"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeTargetModal()">Cancel</button>
+      <button class="btn-submit" id="btn-save-targets" onclick="saveTargets()">Save Targets</button>
+    </div>
+  </div>
+</div>
+
 <!-- ─── TOAST CONTAINER ─── -->
 <div class="toast-wrap" id="toast-wrap"></div>
 
@@ -992,6 +1226,36 @@ const SUBCLASS_MAP = {
 // ═══════════════════════════════════════════════════════
 let cachedRecords = [];
 let cachedUsers   = [];
+let cachedTargets = [];
+let targetStorageAvailable = true;
+let inspectionPage = 1;
+let inspectionPageSize = 50;
+let lastSyncAt = null;
+
+// Initial official 2nd Semester 2026 targets supplied by the user.
+const DEFAULT_TARGETS_2026_SEM2 = [
+  ['FO1 ASHLEY DABLEO',658],
+  ['FO1 MICHAEL JAN CORTES',655],
+  ['FO1 DAN ISRAEL MEJOS',641],
+  ['FO1 JHERVESTER TARE',624],
+  ['FO3 JEFFREY MACAREG',250],
+  ['FO3 VAN WILFRED ABAD',623],
+  ['FO1 WAREN ECHAVEZ',621],
+  ['FO2 RICHARD JUN BACULIO',618],
+  ['FO1 SAMERODIN BENITO',618],
+  ['FO1 EDELWIN HANGCAN',599],
+  ['FO1 MARJUN RABANAL',594],
+  ['FO1 ROGER GIMELGA',584],
+  ['SFO2 RENNIE BOY MAGLANGIT',578],
+  ['SFO1 VINCENT JED PISCOS',250],
+  ['FO1 RAY JAN ENCALLADO',561],
+  ['FO3 ROWALD SUNOGAN',556],
+  ['SFO2 MARK ANTHONY OMOCOC',556],
+  ['FO3 DONEL TULOG',540],
+  ['FO3 ABDULMOHAIMEN SOLAIMAN',491],
+  ['SFO1 ARIANE SALIWA',472]
+].map((e,i) => ({ inspectorName:e[0], periodType:'semester', year:2026, periodIndex:2, target:e[1], referenceRank:i+1, source:'default' }));
+
 
 async function loadUsers() {
   const { data, error } = await sb.from('users').select('id,rank,fname,lname,username').order('lname');
@@ -999,6 +1263,28 @@ async function loadUsers() {
     cachedUsers = data;
     populatePartnerDropdown();
   }
+}
+
+async function loadTargets() {
+  targetStorageAvailable = true;
+  try {
+    const { data, error } = await sb
+      .from('inspector_targets')
+      .select('id,inspector_name,period_type,year,period_index,target,updated_at')
+      .order('inspector_name');
+    if (error) throw error;
+    cachedTargets = (data || []).map(r => ({
+      id:r.id, inspectorName:r.inspector_name, periodType:r.period_type,
+      year:Number(r.year), periodIndex:Number(r.period_index), target:Number(r.target)||0,
+      updatedAt:r.updated_at, source:'supabase'
+    }));
+  } catch (e) {
+    targetStorageAvailable = false;
+    try { cachedTargets = JSON.parse(localStorage.getItem('bfp_inspector_targets') || '[]'); }
+    catch (_) { cachedTargets = []; }
+  }
+  if (document.getElementById('target-progress-table')) renderTargetProgress();
+  renderMyTargetCard();
 }
 
 function populatePartnerDropdown() {
@@ -1115,14 +1401,20 @@ async function fetchAllRecords() {
 // ═══════════════════════════════════════════════════════
 //  AUTH
 // ═══════════════════════════════════════════════════════
-function showRegister() {
-  document.getElementById('login-card').style.display = 'none';
-  document.getElementById('register-card').style.display = 'block';
+function showAuthCard(cardId) {
+  ['login-card','register-card','forgot-card','reset-card'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === cardId ? 'block' : 'none';
+  });
 }
-function showLogin() {
-  document.getElementById('register-card').style.display = 'none';
-  document.getElementById('login-card').style.display = 'block';
+function showRegister() { showAuthCard('register-card'); }
+function showLogin() { showAuthCard('login-card'); }
+function showForgotPassword() {
+  const u = document.getElementById('login-username')?.value || '';
+  if (document.getElementById('forgot-username')) document.getElementById('forgot-username').value = u;
+  showAuthCard('forgot-card');
 }
+function showResetPassword() { showAuthCard('reset-card'); }
 
 function showMsg(id, text, type) {
   const el = document.getElementById(id);
@@ -1138,7 +1430,13 @@ document.getElementById('btn-login').addEventListener('click', async function() 
   this.disabled = true; this.innerHTML = '<span class="spinner"></span>Signing in...';
 
   try {
-    const email = `${username}@bfp-iligan.app`;
+    // New accounts use their real recovery email for Supabase Auth.
+    // Existing legacy accounts continue to use username@bfp-iligan.app.
+    let email = `${username}@bfp-iligan.app`;
+    try {
+      const { data: loginProfile } = await sb.from('users').select('email').ilike('username', username).maybeSingle();
+      if (loginProfile?.email) email = loginProfile.email.trim().toLowerCase();
+    } catch (_) { /* legacy schema without users.email */ }
 
     // Step 1 — Authenticate
     const { data: authData, error: authErr } = await sb.auth.signInWithPassword({ email, password });
@@ -1189,10 +1487,11 @@ document.getElementById('btn-register').addEventListener('click', async function
   const station  = document.getElementById('reg-station').value.trim();
   const city     = document.getElementById('reg-city').value.trim();
   const province = document.getElementById('reg-province').value.trim();
+  const email    = document.getElementById('reg-email').value.trim().toLowerCase();
   const username = document.getElementById('reg-username').value.trim().toLowerCase();
   const password = document.getElementById('reg-password').value.trim();
 
-  if (!fname||!lname||!rank||!station||!city||!username||!password)
+  if (!fname||!lname||!rank||!station||!city||!email||!username||!password)
     return showMsg('reg-msg','Please fill in all required fields.','error');
   if (password.length < 6)
     return showMsg('reg-msg','Password must be at least 6 characters.','error');
@@ -1207,8 +1506,7 @@ document.getElementById('btn-register').addEventListener('click', async function
       this.disabled = false; this.textContent = 'Create Account'; return;
     }
 
-    // Create auth user — email derived from lowercased username
-    const email = `${username}@bfp-iligan.app`;
+    // Create auth user with the inspector's real recovery email.
     const { data: authData, error: authErr } = await sb.auth.signUp({
       email,
       password,
@@ -1227,9 +1525,17 @@ document.getElementById('btn-register').addEventListener('click', async function
     const { error: profileErr } = await sb.from('users').insert({
       id: authData.user.id,
       fname, lname, rank, station, city, province,
-      username: username.toLowerCase()
+      username: username.toLowerCase(), email
     });
-    if (profileErr) throw profileErr;
+    if (profileErr) {
+      // Backward-compatible fallback for deployments where the users.email migration has not run yet.
+      if (/email/i.test(profileErr.message || '')) {
+        const { error: retryErr } = await sb.from('users').insert({
+          id: authData.user.id, fname, lname, rank, station, city, province, username: username.toLowerCase()
+        });
+        if (retryErr) throw retryErr;
+      } else throw profileErr;
+    }
 
     showMsg('reg-msg','Account created! You can now sign in.','success');
     this.disabled = false; this.textContent = 'Create Account';
@@ -1237,6 +1543,58 @@ document.getElementById('btn-register').addEventListener('click', async function
   } catch(e) {
     showMsg('reg-msg', e.message || 'Registration failed.', 'error');
     this.disabled = false; this.textContent = 'Create Account';
+  }
+});
+
+// ── Password recovery ─────────────────────────────────
+document.getElementById('btn-forgot-password').addEventListener('click', async function() {
+  const username = document.getElementById('forgot-username').value.trim().toLowerCase();
+  if (!username) return showMsg('forgot-msg','Please enter your Employee ID / Username.','error');
+  this.disabled = true; this.innerHTML = '<span class="spinner"></span>Sending reset link...';
+  try {
+    const { data: profile, error: profileErr } = await sb
+      .from('users').select('email').ilike('username', username).maybeSingle();
+    if (profileErr) throw profileErr;
+    if (!profile?.email) {
+      showMsg('forgot-msg','No recovery email is registered for this account. Please contact the system administrator to add one.','error');
+      return;
+    }
+    const redirectTo = window.location.href.split('#')[0].split('?')[0];
+    const { error } = await sb.auth.resetPasswordForEmail(profile.email.trim().toLowerCase(), { redirectTo });
+    if (error) throw error;
+    showMsg('forgot-msg','Password reset link sent. Check your recovery email, including the spam/junk folder.','success');
+  } catch(e) {
+    showMsg('forgot-msg', e.message || 'Unable to send password reset link.','error');
+  } finally {
+    this.disabled = false; this.textContent = 'Send Reset Link';
+  }
+});
+
+document.getElementById('btn-reset-password').addEventListener('click', async function() {
+  const p1 = document.getElementById('reset-password').value;
+  const p2 = document.getElementById('reset-password-confirm').value;
+  if (p1.length < 6) return showMsg('reset-msg','Password must be at least 6 characters.','error');
+  if (p1 !== p2) return showMsg('reset-msg','Passwords do not match.','error');
+  this.disabled = true; this.innerHTML = '<span class="spinner"></span>Updating password...';
+  try {
+    const { error } = await sb.auth.updateUser({ password: p1 });
+    if (error) throw error;
+    showMsg('reset-msg','Password updated successfully. You can now sign in with your new password.','success');
+    await sb.auth.signOut();
+    setTimeout(showLogin, 1200);
+  } catch(e) {
+    showMsg('reset-msg', e.message || 'Unable to update password.','error');
+  } finally {
+    this.disabled = false; this.textContent = 'Update Password';
+  }
+});
+
+sb.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    sessionStorage.removeItem('bfp_session');
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'flex';
+    showResetPassword();
   }
 });
 
@@ -1287,11 +1645,14 @@ function initApp() {
 
   loadRecords();
   loadUsers();
+  loadTargets();
+  lastSyncAt = new Date();
+  setSyncStatus(`Loaded ${lastSyncAt.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'})}`);
 }
 
 async function loadRecords() {
   await fetchAllRecords();
-  updateStats(); renderTable(); renderRecentTable();
+  updateStats(); renderTable(); renderRecentTable(); renderTargetProgress(); renderMyTargetCard();
 }
 
 function mergeRecords(local, remote) {
@@ -1309,8 +1670,8 @@ function switchTab(tab) {
   ['dashboard','analytics','inspections','profile'].forEach(t =>
     document.getElementById(`tab-${t}`).style.display = t===tab ? 'block' : 'none');
   if (tab === 'inspections') renderTable();
-  if (tab === 'dashboard') { updateStats(); renderRecentTable(); }
-  if (tab === 'analytics') { populateYearFilter(); renderAnalytics(); }
+  if (tab === 'dashboard') { updateStats(); renderRecentTable(); renderMyTargetCard(); }
+  if (tab === 'analytics') { populateYearFilter(); renderAnalytics(); renderTargetProgress(); }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1772,6 +2133,7 @@ function togglePw(inputId, btn) {
 let filterMine = false;
 function toggleMineFilter() {
   filterMine = !filterMine;
+  inspectionPage = 1;
   const btn = document.getElementById('btn-filter-mine');
   btn.classList.toggle('active', filterMine);
   btn.textContent = filterMine ? '👤 My Records ✓' : '👤 My Records';
@@ -1851,10 +2213,431 @@ function syncAnalyticsDateToDashboard() {
   renderRecentTable();
 }
 
+function normalizeInspectorName(name) {
+  return String(name || '').trim().replace(/\s+/g,' ').toUpperCase();
+}
+function getCurrentInspectorName() {
+  return normalizeInspectorName(`${currentUser?.rank || ''} ${currentUser?.fname || ''} ${currentUser?.lname || ''}`);
+}
+function inspectorParticipated(r, inspectorName) {
+  const target = normalizeInspectorName(inspectorName);
+  return normalizeInspectorName(r.inspector) === target || normalizeInspectorName(r.partnerInspector) === target;
+}
+function buildInspectorAccomplishmentMap(records) {
+  const map = {};
+  const add = (name, role) => {
+    const clean = String(name || '').trim();
+    if (!clean) return;
+    const key = normalizeInspectorName(clean);
+    if (!map[key]) map[key] = { name: clean, primary: 0, buddy: 0, total: 0 };
+    map[key][role] += 1;
+    map[key].total += 1;
+  };
+  records.forEach(r => {
+    add(r.inspector, 'primary');
+    if (r.partnerInspector && normalizeInspectorName(r.partnerInspector) !== normalizeInspectorName(r.inspector)) add(r.partnerInspector, 'buddy');
+  });
+  return map;
+}
+
+
+// ═══════════════════════════════════════════════════════
+//  INSPECTOR TARGETS — semester / quarter / monthly
+// ═══════════════════════════════════════════════════════
+function getSelectedTargetPeriod() {
+  return {
+    periodType: document.getElementById('target-period-type')?.value || 'semester',
+    year: Number(document.getElementById('target-year')?.value || 2026),
+    periodIndex: Number(document.getElementById('target-period-index')?.value || 2)
+  };
+}
+
+function getTargetPeriodLabel(periodType, year, periodIndex) {
+  if (periodType === 'semester') return `${periodIndex === 1 ? '1st' : '2nd'} Semester ${year}`;
+  if (periodType === 'quarter') return `Q${periodIndex} ${year}`;
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return `${months[Math.max(0, Math.min(11, periodIndex-1))]} ${year}`;
+}
+
+function updateTargetPeriodOptions() {
+  const type = document.getElementById('target-period-type')?.value || 'semester';
+  const sel = document.getElementById('target-period-index');
+  if (!sel) return;
+  const previous = Number(sel.value || 1);
+  if (type === 'semester') {
+    sel.innerHTML = '<option value="1">1st Semester</option><option value="2">2nd Semester</option>';
+    sel.value = String(previous <= 2 ? previous : 1);
+  } else if (type === 'quarter') {
+    sel.innerHTML = [1,2,3,4].map(q => `<option value="${q}">Quarter ${q}</option>`).join('');
+    sel.value = String(previous <= 4 ? previous : 1);
+  } else {
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    sel.innerHTML = months.map((m,i) => `<option value="${i+1}">${m}</option>`).join('');
+    sel.value = String(previous <= 12 ? previous : 1);
+  }
+}
+
+function getTargetDateRange(periodType, year, periodIndex) {
+  let startMonth = 1, endMonth = 12;
+  if (periodType === 'semester') {
+    startMonth = periodIndex === 1 ? 1 : 7;
+    endMonth   = periodIndex === 1 ? 6 : 12;
+  } else if (periodType === 'quarter') {
+    startMonth = (periodIndex - 1) * 3 + 1;
+    endMonth = startMonth + 2;
+  } else {
+    startMonth = periodIndex;
+    endMonth = periodIndex;
+  }
+  const lastDay = new Date(year, endMonth, 0).getDate();
+  const mm = n => String(n).padStart(2,'0');
+  return { start:`${year}-${mm(startMonth)}-01`, end:`${year}-${mm(endMonth)}-${mm(lastDay)}` };
+}
+
+function getTargetPeriodRecords(periodType, year, periodIndex) {
+  const range = getTargetDateRange(periodType, year, periodIndex);
+  return cachedRecords.filter(r => isWithinDateRange(r, range.start, range.end));
+}
+
+function getTargetOverride(name, periodType, year, periodIndex) {
+  const key = normalizeInspectorName(name);
+  const matches = cachedTargets.filter(t =>
+    normalizeInspectorName(t.inspectorName) === key && t.periodType === periodType &&
+    Number(t.year) === Number(year) && Number(t.periodIndex) === Number(periodIndex)
+  );
+  return matches.length ? matches[matches.length-1] : null;
+}
+
+function getInspectorTarget(name, periodType, year, periodIndex) {
+  const saved = getTargetOverride(name, periodType, year, periodIndex);
+  if (saved) return Number(saved.target) || 0;
+  const builtIn = DEFAULT_TARGETS_2026_SEM2.find(t =>
+    normalizeInspectorName(t.inspectorName) === normalizeInspectorName(name) &&
+    t.periodType === periodType && t.year === Number(year) && t.periodIndex === Number(periodIndex)
+  );
+  return builtIn ? builtIn.target : 0;
+}
+
+function getTargetInspectorRoster(periodType, year, periodIndex) {
+  const map = new Map();
+  const add = (name, order=9999) => {
+    const clean = String(name || '').trim();
+    if (!clean) return;
+    const key = normalizeInspectorName(clean);
+    if (!map.has(key)) map.set(key, { name:clean, order });
+    else map.get(key).order = Math.min(map.get(key).order, order);
+  };
+  DEFAULT_TARGETS_2026_SEM2.forEach(t => {
+    if (t.periodType === periodType && t.year === Number(year) && t.periodIndex === Number(periodIndex)) add(t.inspectorName, t.referenceRank || 9999);
+  });
+  cachedUsers.forEach(u => add(`${u.rank} ${u.fname} ${u.lname}`));
+  cachedRecords.forEach(r => { add(r.inspector); add(r.partnerInspector); });
+  cachedTargets.forEach(t => {
+    if (t.periodType === periodType && Number(t.year) === Number(year) && Number(t.periodIndex) === Number(periodIndex)) add(t.inspectorName);
+  });
+  return [...map.values()].sort((a,b) => a.order-b.order || a.name.localeCompare(b.name));
+}
+
+function getTargetTiming(periodType, year, periodIndex) {
+  const range = getTargetDateRange(periodType, year, periodIndex);
+  const start = new Date(`${range.start}T00:00:00`);
+  const end = new Date(`${range.end}T23:59:59`);
+  const now = new Date();
+  const dayMs = 86400000;
+  const totalDays = Math.max(1, Math.ceil((end - start) / dayMs));
+  let elapsedDays = 0;
+  if (now >= end) elapsedDays = totalDays;
+  else if (now > start) elapsedDays = Math.max(0, Math.ceil((now - start) / dayMs));
+  const remainingDays = now > end ? 0 : Math.max(0, Math.ceil((end - Math.max(now,start)) / dayMs));
+  const expectedPct = Math.min(100, Math.max(0, Math.round(elapsedDays / totalDays * 100)));
+  return { ...range, startDate:start, endDate:end, totalDays, elapsedDays, remainingDays, expectedPct };
+}
+
+function getTargetStatus(target, total, pct, expectedPct) {
+  if (!target) return { key:'none', label:'No Target' };
+  if (total >= target) return { key:'complete', label:'Completed' };
+  if ((pct || 0) + 5 >= expectedPct) return { key:'track', label:'On Track' };
+  return { key:'attention', label:'Needs Attention' };
+}
+
+function setTargetPeriodToCurrent() {
+  const type = document.getElementById('target-period-type')?.value || 'semester';
+  const now = new Date();
+  const year = now.getFullYear();
+  let index = 1;
+  if (type === 'semester') index = now.getMonth() < 6 ? 1 : 2;
+  else if (type === 'quarter') index = Math.floor(now.getMonth()/3)+1;
+  else index = now.getMonth()+1;
+  const y = document.getElementById('target-year');
+  const p = document.getElementById('target-period-index');
+  if (y) y.value = String(year);
+  updateTargetPeriodOptions();
+  if (p) p.value = String(index);
+  renderTargetProgress();
+}
+
+function renderMyTargetCard() {
+  if (!currentUser || !document.getElementById('my-target-panel')) return;
+  const now = new Date();
+  const periodType = 'semester';
+  const year = now.getFullYear();
+  const periodIndex = now.getMonth() < 6 ? 1 : 2;
+  const name = getCurrentInspectorName();
+  const target = getInspectorTarget(name, periodType, year, periodIndex);
+  const accomplishments = buildInspectorAccomplishmentMap(getTargetPeriodRecords(periodType, year, periodIndex));
+  const a = accomplishments[normalizeInspectorName(name)] || {primary:0,buddy:0,total:0};
+  const remaining = target ? Math.max(target-a.total,0) : null;
+  const pct = target ? Math.round(a.total/target*100) : null;
+  const timing = getTargetTiming(periodType,year,periodIndex);
+  const status = getTargetStatus(target,a.total,pct,timing.expectedPct);
+  const neededWeek = target && remaining > 0 && timing.remainingDays > 0 ? (remaining / timing.remainingDays * 7) : 0;
+  const set = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  set('my-target-period-label', `${getTargetPeriodLabel(periodType,year,periodIndex)} · Expected progress today: ${timing.expectedPct}%`);
+  set('my-target-value', target ? target.toLocaleString() : '—');
+  set('my-target-accomplished', a.total.toLocaleString());
+  set('my-target-remaining', remaining===null ? '—' : remaining.toLocaleString());
+  set('my-target-primary', a.primary.toLocaleString());
+  set('my-target-buddy', a.buddy.toLocaleString());
+  set('my-target-pct', pct===null ? '—' : `${pct}%`);
+  const chip=document.getElementById('my-target-status');
+  if(chip){ chip.className=`status-chip ${status.key}`; chip.textContent=status.label; }
+  const fill=document.getElementById('my-target-progress-fill');
+  if(fill){ fill.style.width=`${Math.min(100,pct||0)}%`; fill.classList.toggle('done',status.key==='complete'); }
+  const pace=document.getElementById('my-target-pace');
+  if(pace){
+    if (!target) pace.textContent='No target is assigned for your current semester. Targets can be set from Analytics.';
+    else if (status.key==='complete') pace.textContent=`Target achieved with ${Math.max(a.total-target,0)} accomplishment(s) above target.`;
+    else pace.textContent=`${timing.remainingDays} day(s) left · approximately ${neededWeek.toFixed(1)} accomplishment(s) per week needed to reach target.`;
+  }
+}
+
+function renderTargetProgress() {
+  const host = document.getElementById('target-progress-table');
+  const kpis = document.getElementById('target-kpis');
+  if (!host || !kpis) return;
+  const { periodType, year, periodIndex } = getSelectedTargetPeriod();
+  const label = getTargetPeriodLabel(periodType, year, periodIndex);
+  const badge = document.getElementById('target-period-badge');
+  if (badge) badge.textContent = label;
+
+  const periodRecords = getTargetPeriodRecords(periodType, year, periodIndex);
+  const accomplishments = buildInspectorAccomplishmentMap(periodRecords);
+  const roster = getTargetInspectorRoster(periodType, year, periodIndex);
+  const timing = getTargetTiming(periodType,year,periodIndex);
+  let rows = roster.map((r,idx) => {
+    const a = accomplishments[normalizeInspectorName(r.name)] || { primary:0, buddy:0, total:0 };
+    const target = getInspectorTarget(r.name, periodType, year, periodIndex);
+    const remaining = target > 0 ? Math.max(target - a.total, 0) : null;
+    const pct = target > 0 ? Math.round((a.total / target) * 100) : null;
+    const status = getTargetStatus(target,a.total,pct,timing.expectedPct);
+    const neededWeek = target > 0 && remaining > 0 && timing.remainingDays > 0 ? remaining/timing.remainingDays*7 : 0;
+    return { rank:idx+1, name:r.name, target, ...a, remaining, pct, status, neededWeek };
+  });
+
+  const assigned = rows.filter(r => r.target > 0);
+  const totalTarget = assigned.reduce((sum,r) => sum+r.target, 0);
+  const creditedAccomplishment = assigned.reduce((sum,r) => sum+r.total, 0);
+  const remaining = Math.max(totalTarget - creditedAccomplishment, 0);
+  const pctOverall = totalTarget ? Math.round(creditedAccomplishment / totalTarget * 100) : 0;
+  const attentionCount = assigned.filter(r => r.status.key==='attention').length;
+
+  kpis.innerHTML = `
+    <div class="an-kpi"><div class="an-kpi-val">${totalTarget.toLocaleString()}</div><div class="an-kpi-label">Combined Target</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#4CAF82">${creditedAccomplishment.toLocaleString()}</div><div class="an-kpi-label">Credited Accomplishment</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#FB923C">${remaining.toLocaleString()}</div><div class="an-kpi-label">Remaining</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#5B9CF6">${pctOverall}%</div><div class="an-kpi-label">Overall Completion</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:${attentionCount?'#FB923C':'#4CAF82'}">${attentionCount}</div><div class="an-kpi-label">Need Attention</div></div>`;
+
+  const q = (document.getElementById('target-search')?.value || '').trim().toLowerCase();
+  const sf = document.getElementById('target-status-filter')?.value || 'all';
+  const sort = document.getElementById('target-sort')?.value || 'reference';
+  if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q));
+  if (sf !== 'all') rows = rows.filter(r => r.status.key === sf);
+  if (sort === 'completion') rows.sort((a,b)=>(b.pct??-1)-(a.pct??-1) || b.total-a.total);
+  else if (sort === 'remaining') rows.sort((a,b)=>(b.remaining??-1)-(a.remaining??-1));
+  else if (sort === 'accomplishment') rows.sort((a,b)=>b.total-a.total);
+  else rows.sort((a,b)=>a.rank-b.rank);
+
+  if (!rows.length) {
+    host.innerHTML = '<div class="empty-state"><div class="icon">🎯</div><p>No inspectors match the selected filters.</p></div>';
+    return;
+  }
+  host.innerHTML = `
+    <table>
+      <thead><tr>
+        <th style="width:44px">#</th><th>Inspector</th><th>Status</th><th style="width:90px;text-align:right">Target</th>
+        <th style="width:75px;text-align:right">Primary</th><th style="width:75px;text-align:right">Buddy</th>
+        <th style="width:105px;text-align:right">Accomplished</th><th style="width:95px;text-align:right">Remaining</th>
+        <th style="width:85px;text-align:right">Need/Week</th><th style="min-width:175px">Completion</th>
+      </tr></thead>
+      <tbody>${rows.map(r => {
+        const capped = r.pct === null ? 0 : Math.min(r.pct,100);
+        const done = r.status.key==='complete';
+        return `<tr>
+          <td>${r.rank}</td><td style="font-weight:600">${escHtml(r.name)}</td>
+          <td><span class="status-chip ${r.status.key}">${r.status.label}</span></td>
+          <td style="text-align:right;font-family:'IBM Plex Mono',monospace;color:var(--gold)">${r.target > 0 ? r.target.toLocaleString() : '—'}</td>
+          <td style="text-align:right;color:#7ec8f7">${r.primary}</td><td style="text-align:right;color:#A78BFA">${r.buddy}</td>
+          <td style="text-align:right;font-weight:700">${r.total}</td>
+          <td class="target-remaining ${done?'done':''}" style="text-align:right;color:${r.remaining===null?'var(--gray)':'#FB923C'}">${r.remaining===null?'—':r.remaining.toLocaleString()}</td>
+          <td style="text-align:right;color:var(--gray)">${r.target && !done && timing.remainingDays ? r.neededWeek.toFixed(1) : '—'}</td>
+          <td><div style="display:flex;align-items:center;gap:8px;"><div class="target-progress-track"><div class="target-progress-fill ${done?'done':''}" style="width:${capped}%"></div></div><span style="width:48px;text-align:right;font-size:11px;color:${done?'#4CAF82':'var(--gray)'}">${r.pct===null?'—':r.pct+'%'}</span></div><div style="font-size:9.5px;color:var(--gray);margin-top:3px">Expected ${timing.expectedPct}%</div></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+}
+
+function exportTargetCSV() {
+  const {periodType,year,periodIndex}=getSelectedTargetPeriod();
+  const timing=getTargetTiming(periodType,year,periodIndex);
+  const acc=buildInspectorAccomplishmentMap(getTargetPeriodRecords(periodType,year,periodIndex));
+  const rows=getTargetInspectorRoster(periodType,year,periodIndex).map((r,i)=>{
+    const a=acc[normalizeInspectorName(r.name)]||{primary:0,buddy:0,total:0};
+    const target=getInspectorTarget(r.name,periodType,year,periodIndex);
+    const rem=target?Math.max(target-a.total,0):'';
+    const pct=target?Math.round(a.total/target*100):'';
+    const status=getTargetStatus(target,a.total,pct,timing.expectedPct).label;
+    return [i+1,r.name,target||'',a.primary,a.buddy,a.total,rem,pct===''?'':`${pct}%`,status];
+  });
+  const headers=['Rank','Inspector','Target','Primary','Buddy','Accomplished','Remaining','Completion','Status'];
+  const csv=[headers,...rows].map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`BFP_Inspector_Targets_${getTargetPeriodLabel(periodType,year,periodIndex).replace(/\s+/g,'_')}.csv`; a.click(); URL.revokeObjectURL(url);
+  showToast('Target progress CSV exported.','success');
+}
+
+function openTargetModal() {
+  const { periodType, year, periodIndex } = getSelectedTargetPeriod();
+  document.getElementById('target-modal-period-label').textContent = getTargetPeriodLabel(periodType, year, periodIndex);
+  const storageNote = document.getElementById('target-storage-note');
+  if (storageNote) storageNote.innerHTML = targetStorageAvailable ? '' : ' <span class="target-storage-warning">Supabase target table is not installed yet; saves will be browser-local until you run the supplied migration SQL.</span>';
+  const periodRecords = getTargetPeriodRecords(periodType, year, periodIndex);
+  const accomplishments = buildInspectorAccomplishmentMap(periodRecords);
+  const roster = getTargetInspectorRoster(periodType, year, periodIndex);
+  document.getElementById('target-editor-body').innerHTML = roster.map((r,i) => {
+    const val = getInspectorTarget(r.name, periodType, year, periodIndex);
+    const a = accomplishments[normalizeInspectorName(r.name)] || { total:0 };
+    return `<tr><td>${i+1}</td><td><div style="font-weight:600">${escHtml(r.name)}</div><div style="font-size:10.5px;color:var(--gray);margin-top:2px">Current accomplishment: ${a.total}</div></td><td><input type="number" min="0" step="1" data-target-name="${escHtml(r.name)}" value="${val || 0}" aria-label="Target for ${escHtml(r.name)}"></td></tr>`;
+  }).join('');
+  document.getElementById('target-modal').classList.add('open');
+}
+
+function closeTargetModal() { document.getElementById('target-modal')?.classList.remove('open'); }
+
+function applyBulkTarget(emptyOnly=false) {
+  const value=Math.max(0,Math.round(Number(document.getElementById('bulk-target-value')?.value)||0));
+  document.querySelectorAll('#target-editor-body input[data-target-name]').forEach(inp=>{
+    if (!emptyOnly || Number(inp.value||0)===0) inp.value=String(value);
+  });
+}
+
+function clearTargetEditor() {
+  document.querySelectorAll('#target-editor-body input[data-target-name]').forEach(inp=>inp.value='0');
+}
+
+function getPreviousTargetPeriod(periodType,year,periodIndex) {
+  let y=year, i=periodIndex;
+  const max=periodType==='semester'?2:periodType==='quarter'?4:12;
+  i--;
+  if(i<1){i=max;y--;}
+  return {periodType,year:y,periodIndex:i};
+}
+
+function copyPreviousTargetsToEditor() {
+  const cur=getSelectedTargetPeriod();
+  const prev=getPreviousTargetPeriod(cur.periodType,cur.year,cur.periodIndex);
+  let copied=0;
+  document.querySelectorAll('#target-editor-body input[data-target-name]').forEach(inp=>{
+    const val=getInspectorTarget(inp.dataset.targetName,prev.periodType,prev.year,prev.periodIndex);
+    if(val>0){inp.value=String(val);copied++;}
+  });
+  showToast(copied ? `Copied ${copied} target(s) from ${getTargetPeriodLabel(prev.periodType,prev.year,prev.periodIndex)}.` : 'No previous-period targets found to copy.', copied?'success':'error');
+}
+
+async function saveTargets() {
+  const btn = document.getElementById('btn-save-targets');
+  const { periodType, year, periodIndex } = getSelectedTargetPeriod();
+  const inputs = [...document.querySelectorAll('#target-editor-body input[data-target-name]')];
+  const rows = inputs.map(inp => ({
+    inspector_name: normalizeInspectorName(inp.dataset.targetName), period_type:periodType, year,
+    period_index:periodIndex, target:Math.max(0, Math.round(Number(inp.value) || 0)),
+    updated_by:currentUser?.id || null, updated_at:new Date().toISOString()
+  }));
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Saving...';
+  try {
+    if (targetStorageAvailable) {
+      const { error } = await sb.from('inspector_targets').upsert(rows, { onConflict:'inspector_name,period_type,year,period_index' });
+      if (error) throw error;
+      await loadTargets();
+      showToast(`Targets saved for ${getTargetPeriodLabel(periodType,year,periodIndex)}.`, 'success');
+    } else {
+      const other = cachedTargets.filter(t => !(t.periodType===periodType && Number(t.year)===year && Number(t.periodIndex)===periodIndex));
+      const saved = rows.map(r => ({ inspectorName:r.inspector_name, periodType:r.period_type, year:r.year, periodIndex:r.period_index, target:r.target, updatedAt:r.updated_at, source:'local' }));
+      cachedTargets = [...other, ...saved];
+      localStorage.setItem('bfp_inspector_targets', JSON.stringify(cachedTargets));
+      showToast('Targets saved in this browser. Install the Supabase target migration for shared persistence.', 'success');
+    }
+    closeTargetModal(); renderTargetProgress();
+  } catch (e) {
+    showToast('Unable to save targets: ' + (e.message || 'Unknown error'), 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Targets';
+  }
+}
+
+function setDashboardPreset(type) {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth();
+  let start, end;
+  if (type === 'month') {
+    start = new Date(y,m,1); end = new Date(y,m+1,0);
+  } else if (type === 'quarter') {
+    const qStart = Math.floor(m/3)*3;
+    start = new Date(y,qStart,1); end = new Date(y,qStart+3,0);
+  } else if (type === 'semester') {
+    const s = m < 6 ? 0 : 6;
+    start = new Date(y,s,1); end = new Date(y,s+6,0);
+  } else {
+    return clearDashboardDateFilter();
+  }
+  const fmt = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  document.getElementById('dashboard-start-date').value = fmt(start);
+  document.getElementById('dashboard-end-date').value = fmt(end);
+  applyDashboardDateFilter();
+}
+
+function setSyncStatus(text, syncing=false) {
+  const el = document.getElementById('sync-status');
+  if (!el) return;
+  el.textContent = text;
+  el.classList.toggle('syncing', syncing);
+}
+
+async function refreshAppData(showMessage=true) {
+  const btn = document.getElementById('btn-refresh');
+  if (btn) btn.disabled = true;
+  setSyncStatus('Syncing…', true);
+  try {
+    await Promise.all([fetchAllRecords(), loadUsers(), loadTargets()]);
+    updateStats(); renderTable(); renderRecentTable(); renderTargetProgress(); renderMyTargetCard();
+    const analyticsVisible = document.getElementById('tab-analytics')?.style.display !== 'none';
+    if (analyticsVisible) { populateYearFilter(); renderAnalytics(); }
+    lastSyncAt = new Date();
+    setSyncStatus(`Synced ${lastSyncAt.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit'})}`);
+    if (showMessage) showToast('Data refreshed successfully.', 'success');
+  } catch (e) {
+    setSyncStatus('Sync failed');
+    if (showMessage) showToast('Refresh failed: ' + (e.message || 'Unknown error'), 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
 function updateStats() {
   const records = getDashboardFilteredRecords();
   document.getElementById('stat-total').textContent = records.length;
-  document.getElementById('stat-mine').textContent = records.filter(r => r.inspectorId === currentUser.id || r.inspectorId === currentUser.uid).length;
+  document.getElementById('stat-mine').textContent = records.filter(r => inspectorParticipated(r, getCurrentInspectorName())).length;
   document.getElementById('stat-high').textContent = records.filter(r => r.hazard === 'HIGH').length;
   document.getElementById('stat-fsic').textContent = records.filter(r => r.fsicDate).length;
   updateIncompleteAlert();
@@ -1876,7 +2659,7 @@ function fmtDate(d) {
 function renderRecentTable() {
   const records = getDashboardFilteredRecords().slice(0,8);
   const tbody = document.getElementById('recent-tbody');
-  if (!records.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">📋</div><p>No inspection records yet. Click "+ New Record" to add one.</p></div></td></tr>'; return; }
+  if (!records.length) { tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">📋</div><p>No inspection records yet. Click "+ New Record" to add one.</p></div></td></tr>'; return; }
   tbody.innerHTML = records.map(r => `
     <tr>
       <td class="td-mono">${escHtml(r.ioNumber)||'—'}</td>
@@ -1886,32 +2669,65 @@ function renderRecentTable() {
       <td>${getHazardBadge(r.hazard)}</td>
       <td class="td-mono">${fmtDate(r.datetime)}</td>
       <td>${escHtml(r.inspector)}</td>
+      <td>${escHtml(r.partnerInspector)||'—'}</td>
     </tr>`).join('');
 }
 
-function renderTable() {
-  const search     = (document.getElementById('search-input')?.value || '').toLowerCase();
-  const filterOcc  = document.getElementById('filter-occupancy')?.value || '';
-  const filterHaz  = document.getElementById('filter-hazard')?.value || '';
-
-  let records = cachedRecords;
-  if (filterMine) records = records.filter(r => r.inspectorId === currentUser.id);
-  if (search)     records = records.filter(r =>
-    r.estname?.toLowerCase().includes(search) ||
-    r.address?.toLowerCase().includes(search) ||
-    r.ioNumber?.toLowerCase().includes(search)
+function getInspectionFilteredRecords() {
+  const search=(document.getElementById('search-input')?.value||'').toLowerCase();
+  const filterOcc=document.getElementById('filter-occupancy')?.value||'';
+  const filterHaz=document.getElementById('filter-hazard')?.value||'';
+  const start=document.getElementById('inspection-start-date')?.value||'';
+  const end=document.getElementById('inspection-end-date')?.value||'';
+  let records=cachedRecords;
+  if(filterMine) records=records.filter(r=>inspectorParticipated(r,getCurrentInspectorName()));
+  if(search) records=records.filter(r=>
+    r.estname?.toLowerCase().includes(search) || r.address?.toLowerCase().includes(search) ||
+    r.ioNumber?.toLowerCase().includes(search) || r.inspector?.toLowerCase().includes(search) ||
+    r.partnerInspector?.toLowerCase().includes(search) || r.contactPerson?.toLowerCase().includes(search)
   );
-  if (filterOcc)  records = records.filter(r => r.occupancy === filterOcc);
-  if (filterHaz)  records = records.filter(r => r.hazard === filterHaz);
+  if(filterOcc) records=records.filter(r=>r.occupancy===filterOcc);
+  if(filterHaz) records=records.filter(r=>r.hazard===filterHaz);
+  if(start||end) records=records.filter(r=>isWithinDateRange(r,start,end));
+  return records;
+}
 
-  const tbody = document.getElementById('main-tbody');
-  if (!records.length) { tbody.innerHTML = '<tr><td colspan="17"><div class="empty-state"><div class="icon">🔍</div><p>No records found.</p></div></td></tr>'; return; }
-  tbody.innerHTML = records.map((r,i) => {
-    const mine = r.inspectorId === currentUser.id;
-    const incomplete = isIncomplete(r) && mine;
-    const incBadge = incomplete ? ' <span style="color:#F87171;font-size:10px;">⚠</span>' : '';
-    return `<tr${incomplete ? ' style="background:rgba(248,113,113,.04)"' : ''}>
-      <td class="td-mono" style="color:var(--gray)">${i+1}</td>
+function resetInspectionPageAndRender(){ inspectionPage=1; renderTable(); }
+function changeInspectionPageSize(){ inspectionPageSize=Number(document.getElementById('inspection-page-size')?.value||50); inspectionPage=1; renderTable(); }
+function changeInspectionPage(delta){ inspectionPage=Math.max(1,inspectionPage+delta); renderTable(); }
+function clearInspectionFilters(){
+  ['search-input','filter-occupancy','filter-hazard','inspection-start-date','inspection-end-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  filterMine=false; const mineBtn=document.getElementById('btn-filter-mine'); if(mineBtn){mineBtn.classList.remove('active');mineBtn.textContent='👤 My Records';} inspectionPage=1; renderTable();
+}
+
+function renderInspectionPagination(total,totalPages,startIndex,endIndex){
+  const count=document.getElementById('inspection-count');
+  const label=document.getElementById('inspection-page-label');
+  const prev=document.getElementById('inspection-prev');
+  const next=document.getElementById('inspection-next');
+  if(count) count.textContent=total ? `Showing ${startIndex+1}–${endIndex} of ${total.toLocaleString()} record(s)` : '0 records';
+  if(label) label.textContent=`Page ${inspectionPage} of ${Math.max(1,totalPages)}`;
+  if(prev) prev.disabled=inspectionPage<=1;
+  if(next) next.disabled=inspectionPage>=totalPages;
+}
+
+function renderTable() {
+  const records=getInspectionFilteredRecords();
+  inspectionPageSize=Number(document.getElementById('inspection-page-size')?.value||inspectionPageSize||50);
+  const totalPages=Math.max(1,Math.ceil(records.length/inspectionPageSize));
+  if(inspectionPage>totalPages) inspectionPage=totalPages;
+  const startIndex=(inspectionPage-1)*inspectionPageSize;
+  const pageRows=records.slice(startIndex,startIndex+inspectionPageSize);
+  renderInspectionPagination(records.length,totalPages,startIndex,startIndex+pageRows.length);
+
+  const tbody=document.getElementById('main-tbody');
+  if(!records.length){tbody.innerHTML='<tr><td colspan="18"><div class="empty-state"><div class="icon">🔍</div><p>No records found.</p></div></td></tr>';return;}
+  tbody.innerHTML=pageRows.map((r,i)=>{
+    const mine=r.inspectorId===currentUser.id;
+    const incomplete=isIncomplete(r)&&mine;
+    const incBadge=incomplete?' <span style="color:#F87171;font-size:10px;">⚠</span>':'';
+    return `<tr${incomplete?' style="background:rgba(248,113,113,.04)"':''}>
+      <td class="td-mono" style="color:var(--gray)">${startIndex+i+1}</td>
       <td class="td-mono">${escHtml(r.ioNumber)||'—'}</td>
       <td class="td-name">${escHtml(r.estname)}${incBadge}</td>
       <td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(r.address)||'—'}</td>
@@ -1923,11 +2739,12 @@ function renderTable() {
       <td class="td-mono">${r.floorArea||'—'}</td>
       <td class="td-mono">${r.storeys||'—'}</td>
       <td class="td-mono">${fmtDate(r.datetime)}</td>
-      <td class="td-mono">${r.fsicDate ? fmtDate(r.fsicDate) : '—'}</td>
-      <td style="text-align:center;">${r.firstInspection ? '✓' : '—'}</td>
+      <td class="td-mono">${r.fsicDate?fmtDate(r.fsicDate):'—'}</td>
+      <td style="text-align:center;">${r.firstInspection?'✓':'—'}</td>
       <td class="td-mono" style="text-align:center;">${r.reinspections||0}</td>
-      <td style="font-size:11.5px;color:var(--gray)">${escHtml(r.inspector)}</td>
-      <td>${mine ? `<button onclick="openEditModal('${r.id}')" style="font-size:11px;padding:4px 10px;background:rgba(240,165,0,.12);color:var(--gold);border:1px solid rgba(240,165,0,.3);border-radius:5px;cursor:pointer;white-space:nowrap;">✏ Edit</button>` : ''}</td>
+      <td style="font-size:11.5px;color:var(--gray)">${escHtml(r.inspector)||'—'}</td>
+      <td style="font-size:11.5px;color:#A78BFA">${escHtml(r.partnerInspector)||'—'}</td>
+      <td>${mine?`<button onclick="openEditModal('${r.id}')" style="font-size:11px;padding:4px 10px;background:rgba(240,165,0,.12);color:var(--gold);border:1px solid rgba(240,165,0,.3);border-radius:5px;cursor:pointer;white-space:nowrap;">✏ Edit</button>`:''}</td>
     </tr>`;
   }).join('');
 }
@@ -1941,10 +2758,10 @@ function escHtml(s) {
 //  EXPORT CSV
 // ═══════════════════════════════════════════════════════
 function exportCSV() {
-  const records = cachedRecords;
+  const records = getInspectionFilteredRecords();
   if (!records.length) return showToast('No records to export','error');
-  const headers = ['Province','City','Station','Fire Marshal','Inspector','IO Number','Establishment','Address','Date & Time','Contact Person','Contact Number','FSIC Date','Occupancy','Sub-class','Floor Area (m²)','Height (m)','Storeys','Basement Levels','Hazard','1st Inspection','Re-inspections','AFSS Install','AFSS Condition','FDAS Install','FDAS Condition','Wet Standpipe Install','Wet Standpipe Condition','Fire Exit Install','Fire Exit Condition','Emergency Lights','Directional Signs','Fire Exit Signs','Fire Extinguisher','Remarks Status','Remarks Notes'];
-  const rows = records.map(r => [r.province,r.city,r.station||'ILIGAN CITY FIRE STATION',r.marshal,r.inspector,r.ioNumber,r.estname,r.address,r.datetime,r.contactPerson,r.contactNumber,r.fsicDate,r.occupancy,r.subclass,r.floorArea,r.height,r.storeys,r.basement,r.hazard,r.firstInspection?'TRUE':'FALSE',r.reinspections,r.afssInstall||'',r.afssCond||'',r.fdasInstall||'',r.fdasCond||'',r.wspInstall||'',r.wspCond||'',r.fexitInstall||'',r.fexitCond||'',r.elightInstall||'',r.dsignInstall||'',r.fesignInstall||'',r.fextInstall||'',r.remarksStatus||'',r.remarksNotes||''].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
+  const headers = ['Province','City','Station','Fire Marshal','Inspector','Partner Inspector','IO Number','Establishment','Address','Date & Time','Contact Person','Contact Number','FSIC Date','Occupancy','Sub-class','Floor Area (m²)','Height (m)','Storeys','Basement Levels','Hazard','1st Inspection','Re-inspections','AFSS Install','AFSS Condition','FDAS Install','FDAS Condition','Wet Standpipe Install','Wet Standpipe Condition','Fire Exit Install','Fire Exit Condition','Emergency Lights','Directional Signs','Fire Exit Signs','Fire Extinguisher','Remarks Status','Remarks Notes'];
+  const rows = records.map(r => [r.province,r.city,r.station||'ILIGAN CITY FIRE STATION',r.marshal,r.inspector,r.partnerInspector||'',r.ioNumber,r.estname,r.address,r.datetime,r.contactPerson,r.contactNumber,r.fsicDate,r.occupancy,r.subclass,r.floorArea,r.height,r.storeys,r.basement,r.hazard,r.firstInspection?'TRUE':'FALSE',r.reinspections,r.afssInstall||'',r.afssCond||'',r.fdasInstall||'',r.fdasCond||'',r.wspInstall||'',r.wspCond||'',r.fexitInstall||'',r.fexitCond||'',r.elightInstall||'',r.dsignInstall||'',r.fesignInstall||'',r.fextInstall||'',r.remarksStatus||'',r.remarksNotes||''].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(','));
   const csv = [headers.join(','), ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -2028,7 +2845,7 @@ function renderAnalytics() {
   const records = getFilteredRecords();
 
   // ── KPIs ────────────────────────────────────────────
-  const myCount     = records.filter(r => r.inspectorId === currentUser.id).length;
+  const myCount     = records.filter(r => inspectorParticipated(r, getCurrentInspectorName())).length;
   const highCount   = records.filter(r => r.hazard === 'HIGH').length;
   const compliant   = records.filter(r => r.remarksStatus === 'COMPLIANT').length;
   const withFsic    = records.filter(r => r.fsicDate).length;
@@ -2036,7 +2853,7 @@ function renderAnalytics() {
 
   document.getElementById('an-kpis').innerHTML = `
     <div class="an-kpi"><div class="an-kpi-val">${records.length}</div><div class="an-kpi-label">Total Inspections</div></div>
-    <div class="an-kpi"><div class="an-kpi-val" style="color:#5B9CF6">${myCount}</div><div class="an-kpi-label">My Inspections</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#5B9CF6">${myCount}</div><div class="an-kpi-label">My Accomplishments</div></div>
     <div class="an-kpi"><div class="an-kpi-val" style="color:#E05C5C">${highCount}</div><div class="an-kpi-label">High Hazard</div></div>
     <div class="an-kpi"><div class="an-kpi-val" style="color:#4CAF82">${compliant}</div><div class="an-kpi-label">Compliant</div></div>
     <div class="an-kpi"><div class="an-kpi-val" style="color:#A78BFA">${withFsic}</div><div class="an-kpi-label">With FSIC Date</div></div>
@@ -2044,18 +2861,14 @@ function renderAnalytics() {
   `;
 
   // ── 1. Inspections per Inspector (horizontal bar) ───
-  const inspMap = {};
-  records.forEach(r => {
-    const name = r.inspector || 'Unknown';
-    inspMap[name] = (inspMap[name] || 0) + 1;
-  });
-  const inspSorted = Object.entries(inspMap).sort((a,b) => b[1]-a[1]).slice(0,10);
+  const inspMap = buildInspectorAccomplishmentMap(records);
+  const inspSorted = Object.values(inspMap).sort((a,b) => b.total-a.total).slice(0,10);
   destroyChart('inspector');
   _charts['inspector'] = new Chart(document.getElementById('chart-inspector'), {
     type: 'bar',
     data: {
-      labels: inspSorted.map(e => e[0]),
-      datasets: [{ label: 'Inspections', data: inspSorted.map(e => e[1]),
+      labels: inspSorted.map(e => e.name),
+      datasets: [{ label: 'Total Accomplishments', data: inspSorted.map(e => e.total),
         backgroundColor: CHART_PALETTE.slice(0, inspSorted.length),
         borderRadius: 5, borderSkipped: false }]
     },
@@ -2172,29 +2985,34 @@ function renderAnalytics() {
   });
 
   // ── 7. Inspector Leaderboard Table ──────────────────
-  const lbData = Object.entries(inspMap).sort((a,b) => b[1]-a[1]);
-  const maxCount = lbData[0]?.[1] || 1;
+  const lbData = Object.values(inspMap).sort((a,b) => b.total-a.total);
+  const maxCount = lbData[0]?.total || 1;
   const rankClass = i => i===0?'gold-rank':i===1?'silver-rank':i===2?'bronze-rank':'';
   const lbHtml = `
     <table>
       <thead><tr>
         <th style="width:36px">Rank</th>
         <th>Inspector</th>
-        <th style="width:80px;text-align:right">Count</th>
+        <th style="width:85px;text-align:right">Primary</th>
+        <th style="width:85px;text-align:right">Buddy</th>
+        <th style="width:85px;text-align:right">Total</th>
         <th>Progress</th>
-        <th style="width:80px;text-align:right">% of Total</th>
+        <th style="width:90px;text-align:right">% of Records</th>
       </tr></thead>
       <tbody>
         ${lbData.map((e,i) => `<tr>
           <td><span class="an-rank ${rankClass(i)}">${i+1}</span></td>
-          <td>${escHtml(e[0])}</td>
-          <td style="text-align:right;font-weight:600;color:var(--gold)">${e[1]}</td>
-          <td><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;"><div style="height:100%;width:${Math.round(e[1]/maxCount*100)}%;background:var(--gold);border-radius:3px;opacity:.8;"></div></div></td>
-          <td style="text-align:right;color:var(--gray)">${records.length ? Math.round(e[1]/records.length*100) : 0}%</td>
+          <td>${escHtml(e.name)}</td>
+          <td style="text-align:right;color:#7ec8f7">${e.primary}</td>
+          <td style="text-align:right;color:#A78BFA">${e.buddy}</td>
+          <td style="text-align:right;font-weight:700;color:var(--gold)">${e.total}</td>
+          <td><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;"><div style="height:100%;width:${Math.round(e.total/maxCount*100)}%;background:var(--gold);border-radius:3px;opacity:.8;"></div></div></td>
+          <td style="text-align:right;color:var(--gray)">${records.length ? Math.round(e.total/records.length*100) : 0}%</td>
         </tr>`).join('')}
       </tbody>
     </table>`;
   document.getElementById('an-leaderboard').innerHTML = lbHtml;
+  renderTargetProgress();
 }
 (function() {
   const sess = sessionStorage.getItem('bfp_session');
@@ -2216,6 +3034,11 @@ window.exportCSV            = exportCSV;
 window.togglePw             = togglePw;
 window.toggleMineFilter     = toggleMineFilter;
 window.renderAnalytics      = renderAnalytics;
+window.renderTargetProgress = renderTargetProgress;
+window.updateTargetPeriodOptions = updateTargetPeriodOptions;
+window.openTargetModal      = openTargetModal;
+window.closeTargetModal     = closeTargetModal;
+window.saveTargets          = saveTargets;
 window.applyDashboardDateFilter = applyDashboardDateFilter;
 window.clearDashboardDateFilter = clearDashboardDateFilter;
 window.syncAnalyticsDateToDashboard = syncAnalyticsDateToDashboard;
