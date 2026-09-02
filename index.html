@@ -596,10 +596,10 @@
         </div>
         <div class="my-target-grid">
           <div class="my-target-metric"><div class="v" id="my-target-value">—</div><div class="l">Target</div></div>
-          <div class="my-target-metric"><div class="v" id="my-target-accomplished">0</div><div class="l">Accomplished</div></div>
+          <div class="my-target-metric"><div class="v" id="my-target-accomplished">0</div><div class="l">Individual Accomplished</div></div>
           <div class="my-target-metric"><div class="v" id="my-target-remaining">—</div><div class="l">Remaining</div></div>
-          <div class="my-target-metric"><div class="v" id="my-target-primary">0</div><div class="l">Primary</div></div>
-          <div class="my-target-metric"><div class="v" id="my-target-buddy">0</div><div class="l">Buddy</div></div>
+          <div class="my-target-metric"><div class="v" id="my-target-primary">0</div><div class="l">Total Participation</div></div>
+          <div class="my-target-metric"><div class="v" id="my-target-buddy">0</div><div class="l">Buddy (Info Only)</div></div>
         </div>
         <div class="my-target-progress">
           <div class="target-progress-track"><div class="target-progress-fill" id="my-target-progress-fill" style="width:0%"></div></div>
@@ -1166,7 +1166,7 @@
       <button class="btn-close" onclick="closeTargetModal()">✕</button>
     </div>
     <div class="target-note">
-      Enter the official target for each inspector for the selected period. <strong>Accomplishment counts include both primary and buddy/partner inspections.</strong> A target of 0 is treated as not assigned.
+      Enter the official target for each inspector for the selected period. <strong>Individual target progress is based on PRIMARY inspections only.</strong> Buddy/partner inspections are shown for participation tracking but do not reduce an inspector's remaining target. A target of 0 is treated as not assigned.
       <span id="target-storage-note"></span>
     </div>
     <div class="target-bulk-tools">
@@ -2353,9 +2353,9 @@ function getTargetTiming(periodType, year, periodIndex) {
   return { ...range, startDate:start, endDate:end, totalDays, elapsedDays, remainingDays, expectedPct };
 }
 
-function getTargetStatus(target, total, pct, expectedPct) {
+function getTargetStatus(target, individualCount, pct, expectedPct) {
   if (!target) return { key:'none', label:'No Target' };
-  if (total >= target) return { key:'complete', label:'Completed' };
+  if (individualCount >= target) return { key:'complete', label:'Completed' };
   if ((pct || 0) + 5 >= expectedPct) return { key:'track', label:'On Track' };
   return { key:'attention', label:'Needs Attention' };
 }
@@ -2386,17 +2386,18 @@ function renderMyTargetCard() {
   const target = getInspectorTarget(name, periodType, year, periodIndex);
   const accomplishments = buildInspectorAccomplishmentMap(getTargetPeriodRecords(periodType, year, periodIndex));
   const a = accomplishments[normalizeInspectorName(name)] || {primary:0,buddy:0,total:0};
-  const remaining = target ? Math.max(target-a.total,0) : null;
-  const pct = target ? Math.round(a.total/target*100) : null;
+  // Individual targets are fulfilled by PRIMARY inspections only. Buddy work remains informational.
+  const remaining = target ? Math.max(target-a.primary,0) : null;
+  const pct = target ? Math.round(a.primary/target*100) : null;
   const timing = getTargetTiming(periodType,year,periodIndex);
-  const status = getTargetStatus(target,a.total,pct,timing.expectedPct);
+  const status = getTargetStatus(target,a.primary,pct,timing.expectedPct);
   const neededWeek = target && remaining > 0 && timing.remainingDays > 0 ? (remaining / timing.remainingDays * 7) : 0;
   const set = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
   set('my-target-period-label', `${getTargetPeriodLabel(periodType,year,periodIndex)} · Expected progress today: ${timing.expectedPct}%`);
   set('my-target-value', target ? target.toLocaleString() : '—');
-  set('my-target-accomplished', a.total.toLocaleString());
+  set('my-target-accomplished', a.primary.toLocaleString());
   set('my-target-remaining', remaining===null ? '—' : remaining.toLocaleString());
-  set('my-target-primary', a.primary.toLocaleString());
+  set('my-target-primary', a.total.toLocaleString());
   set('my-target-buddy', a.buddy.toLocaleString());
   set('my-target-pct', pct===null ? '—' : `${pct}%`);
   const chip=document.getElementById('my-target-status');
@@ -2406,8 +2407,8 @@ function renderMyTargetCard() {
   const pace=document.getElementById('my-target-pace');
   if(pace){
     if (!target) pace.textContent='No target is assigned for your current semester. Targets can be set from Analytics.';
-    else if (status.key==='complete') pace.textContent=`Target achieved with ${Math.max(a.total-target,0)} accomplishment(s) above target.`;
-    else pace.textContent=`${timing.remainingDays} day(s) left · approximately ${neededWeek.toFixed(1)} accomplishment(s) per week needed to reach target.`;
+    else if (status.key==='complete') pace.textContent=`Individual target achieved with ${Math.max(a.primary-target,0)} primary inspection(s) above target. Buddy inspections are tracked separately.`;
+    else pace.textContent=`${timing.remainingDays} day(s) left · approximately ${neededWeek.toFixed(1)} PRIMARY inspection(s) per week needed to reach your individual target. Buddy accomplishments do not reduce this remaining target.`;
   }
 }
 
@@ -2427,23 +2428,26 @@ function renderTargetProgress() {
   let rows = roster.map((r,idx) => {
     const a = accomplishments[normalizeInspectorName(r.name)] || { primary:0, buddy:0, total:0 };
     const target = getInspectorTarget(r.name, periodType, year, periodIndex);
-    const remaining = target > 0 ? Math.max(target - a.total, 0) : null;
-    const pct = target > 0 ? Math.round((a.total / target) * 100) : null;
-    const status = getTargetStatus(target,a.total,pct,timing.expectedPct);
+    // Target credit is individual: only PRIMARY inspections reduce remaining.
+    const remaining = target > 0 ? Math.max(target - a.primary, 0) : null;
+    const pct = target > 0 ? Math.round((a.primary / target) * 100) : null;
+    const status = getTargetStatus(target,a.primary,pct,timing.expectedPct);
     const neededWeek = target > 0 && remaining > 0 && timing.remainingDays > 0 ? remaining/timing.remainingDays*7 : 0;
     return { rank:idx+1, name:r.name, target, ...a, remaining, pct, status, neededWeek };
   });
 
   const assigned = rows.filter(r => r.target > 0);
   const totalTarget = assigned.reduce((sum,r) => sum+r.target, 0);
-  const creditedAccomplishment = assigned.reduce((sum,r) => sum+r.total, 0);
-  const remaining = Math.max(totalTarget - creditedAccomplishment, 0);
+  const individualAccomplishment = assigned.reduce((sum,r) => sum+r.primary, 0);
+  // Sum each inspector's own remaining balance so one person's overachievement cannot offset another person's target.
+  const creditedAccomplishment = assigned.reduce((sum,r) => sum+Math.min(r.primary, r.target), 0);
+  const remaining = assigned.reduce((sum,r) => sum+(r.remaining || 0), 0);
   const pctOverall = totalTarget ? Math.round(creditedAccomplishment / totalTarget * 100) : 0;
   const attentionCount = assigned.filter(r => r.status.key==='attention').length;
 
   kpis.innerHTML = `
     <div class="an-kpi"><div class="an-kpi-val">${totalTarget.toLocaleString()}</div><div class="an-kpi-label">Combined Target</div></div>
-    <div class="an-kpi"><div class="an-kpi-val" style="color:#4CAF82">${creditedAccomplishment.toLocaleString()}</div><div class="an-kpi-label">Credited Accomplishment</div></div>
+    <div class="an-kpi"><div class="an-kpi-val" style="color:#4CAF82">${individualAccomplishment.toLocaleString()}</div><div class="an-kpi-label">Individual Accomplishment</div></div>
     <div class="an-kpi"><div class="an-kpi-val" style="color:#FB923C">${remaining.toLocaleString()}</div><div class="an-kpi-label">Remaining</div></div>
     <div class="an-kpi"><div class="an-kpi-val" style="color:#5B9CF6">${pctOverall}%</div><div class="an-kpi-label">Overall Completion</div></div>
     <div class="an-kpi"><div class="an-kpi-val" style="color:${attentionCount?'#FB923C':'#4CAF82'}">${attentionCount}</div><div class="an-kpi-label">Need Attention</div></div>`;
@@ -2453,9 +2457,9 @@ function renderTargetProgress() {
   const sort = document.getElementById('target-sort')?.value || 'reference';
   if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q));
   if (sf !== 'all') rows = rows.filter(r => r.status.key === sf);
-  if (sort === 'completion') rows.sort((a,b)=>(b.pct??-1)-(a.pct??-1) || b.total-a.total);
+  if (sort === 'completion') rows.sort((a,b)=>(b.pct??-1)-(a.pct??-1) || b.primary-a.primary);
   else if (sort === 'remaining') rows.sort((a,b)=>(b.remaining??-1)-(a.remaining??-1));
-  else if (sort === 'accomplishment') rows.sort((a,b)=>b.total-a.total);
+  else if (sort === 'accomplishment') rows.sort((a,b)=>b.primary-a.primary);
   else rows.sort((a,b)=>a.rank-b.rank);
 
   if (!rows.length) {
@@ -2466,8 +2470,8 @@ function renderTargetProgress() {
     <table>
       <thead><tr>
         <th style="width:44px">#</th><th>Inspector</th><th>Status</th><th style="width:90px;text-align:right">Target</th>
-        <th style="width:75px;text-align:right">Primary</th><th style="width:75px;text-align:right">Buddy</th>
-        <th style="width:105px;text-align:right">Accomplished</th><th style="width:95px;text-align:right">Remaining</th>
+        <th style="width:95px;text-align:right">Individual</th><th style="width:90px;text-align:right">Buddy</th>
+        <th style="width:110px;text-align:right">Total Participation</th><th style="width:95px;text-align:right">Remaining</th>
         <th style="width:85px;text-align:right">Need/Week</th><th style="min-width:175px">Completion</th>
       </tr></thead>
       <tbody>${rows.map(r => {
@@ -2477,8 +2481,8 @@ function renderTargetProgress() {
           <td>${r.rank}</td><td style="font-weight:600">${escHtml(r.name)}</td>
           <td><span class="status-chip ${r.status.key}">${r.status.label}</span></td>
           <td style="text-align:right;font-family:'IBM Plex Mono',monospace;color:var(--gold)">${r.target > 0 ? r.target.toLocaleString() : '—'}</td>
-          <td style="text-align:right;color:#7ec8f7">${r.primary}</td><td style="text-align:right;color:#A78BFA">${r.buddy}</td>
-          <td style="text-align:right;font-weight:700">${r.total}</td>
+          <td style="text-align:right;color:#7ec8f7;font-weight:700">${r.primary}</td><td style="text-align:right;color:#A78BFA" title="Buddy participation does not reduce the individual target">${r.buddy}</td>
+          <td style="text-align:right;font-weight:600;color:var(--white)">${r.total}</td>
           <td class="target-remaining ${done?'done':''}" style="text-align:right;color:${r.remaining===null?'var(--gray)':'#FB923C'}">${r.remaining===null?'—':r.remaining.toLocaleString()}</td>
           <td style="text-align:right;color:var(--gray)">${r.target && !done && timing.remainingDays ? r.neededWeek.toFixed(1) : '—'}</td>
           <td><div style="display:flex;align-items:center;gap:8px;"><div class="target-progress-track"><div class="target-progress-fill ${done?'done':''}" style="width:${capped}%"></div></div><span style="width:48px;text-align:right;font-size:11px;color:${done?'#4CAF82':'var(--gray)'}">${r.pct===null?'—':r.pct+'%'}</span></div><div style="font-size:9.5px;color:var(--gray);margin-top:3px">Expected ${timing.expectedPct}%</div></td>
@@ -2494,12 +2498,12 @@ function exportTargetCSV() {
   const rows=getTargetInspectorRoster(periodType,year,periodIndex).map((r,i)=>{
     const a=acc[normalizeInspectorName(r.name)]||{primary:0,buddy:0,total:0};
     const target=getInspectorTarget(r.name,periodType,year,periodIndex);
-    const rem=target?Math.max(target-a.total,0):'';
-    const pct=target?Math.round(a.total/target*100):'';
-    const status=getTargetStatus(target,a.total,pct,timing.expectedPct).label;
+    const rem=target?Math.max(target-a.primary,0):'';
+    const pct=target?Math.round(a.primary/target*100):'';
+    const status=getTargetStatus(target,a.primary,pct,timing.expectedPct).label;
     return [i+1,r.name,target||'',a.primary,a.buddy,a.total,rem,pct===''?'':`${pct}%`,status];
   });
-  const headers=['Rank','Inspector','Target','Primary','Buddy','Accomplished','Remaining','Completion','Status'];
+  const headers=['Rank','Inspector','Target','Individual Accomplishment (Primary)','Buddy (Informational)','Total Participation','Remaining Individual Target','Completion','Status'];
   const csv=[headers,...rows].map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob);
   const a=document.createElement('a'); a.href=url; a.download=`BFP_Inspector_Targets_${getTargetPeriodLabel(periodType,year,periodIndex).replace(/\s+/g,'_')}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -2516,8 +2520,8 @@ function openTargetModal() {
   const roster = getTargetInspectorRoster(periodType, year, periodIndex);
   document.getElementById('target-editor-body').innerHTML = roster.map((r,i) => {
     const val = getInspectorTarget(r.name, periodType, year, periodIndex);
-    const a = accomplishments[normalizeInspectorName(r.name)] || { total:0 };
-    return `<tr><td>${i+1}</td><td><div style="font-weight:600">${escHtml(r.name)}</div><div style="font-size:10.5px;color:var(--gray);margin-top:2px">Current accomplishment: ${a.total}</div></td><td><input type="number" min="0" step="1" data-target-name="${escHtml(r.name)}" value="${val || 0}" aria-label="Target for ${escHtml(r.name)}"></td></tr>`;
+    const a = accomplishments[normalizeInspectorName(r.name)] || { primary:0, buddy:0, total:0 };
+    return `<tr><td>${i+1}</td><td><div style="font-weight:600">${escHtml(r.name)}</div><div style="font-size:10.5px;color:var(--gray);margin-top:2px">Individual accomplishment: ${a.primary} · Buddy: ${a.buddy} · Total participation: ${a.total}</div></td><td><input type="number" min="0" step="1" data-target-name="${escHtml(r.name)}" value="${val || 0}" aria-label="Target for ${escHtml(r.name)}"></td></tr>`;
   }).join('');
   document.getElementById('target-modal').classList.add('open');
 }
